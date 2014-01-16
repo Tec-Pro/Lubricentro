@@ -13,7 +13,7 @@ CREATE  TABLE `lubricentro`.`articulos` (
 
 ALTER TABLE `lubricentro`.`articulos` ADD COLUMN `proveedor_id` INT(9) NULL  AFTER `equivalencia_fram` ;
 
-CREATE  TABLE `lubricentro`.`clientes` (
+CREATE  TABLE `lubricentro`.`cliente` (
   `id` INT NOT NULL AUTO_INCREMENT ,
   `nombre` VARCHAR(45) NULL ,
   `telefono` VARCHAR(45) NULL ,
