@@ -32,6 +32,7 @@ CREATE  TABLE `lubricentro`.`proveedors` (
 
 create table lubricentro.ventas (
     id integer not null auto_increment,
+    monto float,
     cliente_id integer,
     fecha date not null,
     pago int,
@@ -39,6 +40,7 @@ create table lubricentro.ventas (
 
 create table lubricentro.compras (
     id integer not null auto_increment,
+    monto float,
     proveedor_id integer,
     fecha date not null,
 	pago int,
@@ -60,9 +62,7 @@ create table arituculos_ventas (
     venta_id integer,
     arituculo_id integer,
     cantidad float not null,
-    precio_final float,
 	check (cantidad>0),
-	check (precio_final>0),
     primary key(id) );
 
 
@@ -71,7 +71,5 @@ create table arituculos_compras (
     compra_id integer,
     arituculo_id integer,
     cantidad float not null,
-	precio_final float,
 	check (cantidad>0),
-	check (precio_final>0),
     primary key(id));
