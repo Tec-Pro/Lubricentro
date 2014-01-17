@@ -5,6 +5,7 @@
 package abm;
 
 import modelos.Articulo;
+import modelos.Proveedor;
 import org.javalite.activejdbc.Base;
 
 /**
@@ -22,6 +23,8 @@ public class pruebaAbm {
             Base.open("com.mysql.jdbc.Driver", "jdbc:mysql://localhost/lubricentro", "root", "root");
         }
         ABMArticulo abm= new ABMArticulo();
+        ABMProveedor abmP= new ABMProveedor();
+        Proveedor prov= new Proveedor();
         Articulo art= new Articulo();
         art.set("codigo","1");
         art.set("descripcion","descripcion1");
@@ -34,7 +37,15 @@ public class pruebaAbm {
         abm.alta(art);
         art= Articulo.findFirst("codigo = ?", 1);
         System.out.println(abm.baja(art));
+        
+        prov.set("nombre", "nico");
+        prov.set("telefono","1234451");
+        System.out.println(abmP.alta(prov));
+        abmP.baja(prov);
         Base.close();
+        
+        
+        
         
     }
 }
