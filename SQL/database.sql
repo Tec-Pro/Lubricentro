@@ -30,3 +30,48 @@ CREATE  TABLE `lubricentro`.`proveedors` (
   `telefono` VARCHAR(100) NULL ,
   PRIMARY KEY (`id`) );
 
+create table lubricentro.ventas (
+    id integer not null auto_increment,
+    cliente_id integer,
+    fecha date not null,
+    pago int,
+    PRIMARY KEY (`id`) );
+
+create table lubricentro.compras (
+    id integer not null auto_increment,
+    proveedor_id integer,
+    fecha date not null,
+	pago int,
+    PRIMARY KEY (`id`) );
+
+
+
+create table clientes_arituculos(
+    id integer not null auto_increment,
+    cliente_id integer,
+    arituculo_id integer,
+    cantidad integer not null,
+	check (cantidad>0),
+    primary key(id) );
+
+
+create table arituculos_ventas (
+    id integer not null auto_increment,
+    venta_id integer,
+    arituculo_id integer,
+    cantidad float not null,
+    precio_final float,
+	check (cantidad>0),
+	check (precio_final>0),
+    primary key(id) );
+
+
+create table arituculos_compras (
+    id integer not null auto_increment,
+    compra_id integer,
+    arituculo_id integer,
+    cantidad float not null,
+	precio_final float,
+	check (cantidad>0),
+	check (precio_final>0),
+    primary key(id));
