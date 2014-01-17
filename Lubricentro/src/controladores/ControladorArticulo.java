@@ -71,21 +71,25 @@ public class ControladorArticulo implements ActionListener {
 
     private void realizarBusqueda() {
         abrirBase();
-        listArticulos = Articulo.where("codigo like ? or descripcion like ?", "%" + articuloGui.getBusqueda().getText() + "%", "%" + articuloGui.getBusqueda().getText() + "%");
+        listArticulos = Articulo.where("codigo like ? or descripcion like ? or marca like ? or equivalencia_fram like ?", "%" + articuloGui.getBusqueda().getText() + "%", "%" + articuloGui.getBusqueda().getText() + "%", "%" + articuloGui.getBusqueda().getText() + "%", "%" + articuloGui.getBusqueda().getText() + "%");
         actualizarLista();
         cerrarBase();
 
     }
 
     public void tablaMouseClicked(java.awt.event.MouseEvent evt) {
-        articuloGui.habilitarCampos(false);
         if (evt.getClickCount() == 2) {
+                    articuloGui.habilitarCampos(false);
+                    articuloGui.getBorrar().setEnabled(true);
+                    articuloGui.getModificar().setEnabled(true);
+                    articuloGui.getGuardar().setEnabled(false);
+                    articuloGui.getNuevo().setEnabled(true);
             System.out.println("hice doble click en un articulo");
             articuloGui.limpiarCampos();
             abrirBase();
-            Articulo art = Articulo.findFirst("codigo = ?", tablaArticulos.getValueAt(tablaArticulos.getSelectedRow(), 0));
+            articulo= Articulo.findFirst("codigo = ?", tablaArticulos.getValueAt(tablaArticulos.getSelectedRow(), 0));
             cerrarBase();
-            articuloGui.CargarCampos(art);
+            articuloGui.CargarCampos(articulo);
         }
     }
 
@@ -108,17 +112,7 @@ public class ControladorArticulo implements ActionListener {
         }
     }
 
-    private void agregarFila(Articulo art) {
-        Object row[] = new String[7];
-        row[0] = art.getString("codigo");
-        row[1] = art.getString("descripcion");
-        row[2] = art.getString("marca");
-        row[3] = art.getString("stock");
-        row[4] = art.getString("precio_compra");
-        row[5] = art.getString("precio_venta");
-        row[6] = art.getString("equivalencia_fram");
-        tablaArtDefault.addRow(row);
-    }
+
 
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -128,8 +122,11 @@ public class ControladorArticulo implements ActionListener {
             articuloGui.habilitarCampos(true);
             isNuevo = true;
             editandoInfo = true;
+            articuloGui.getBorrar().setEnabled(false);
+            articuloGui.getModificar().setEnabled(false);
+            articuloGui.getGuardar().setEnabled(true);
         }
-        if (e.getSource() == articuloGui.getGuardar()) {
+        if (e.getSource() == articuloGui.getGuardar() && editandoInfo && isNuevo) {
             System.out.println("Boton guardar pulsado");
             if (cargarDatosProd(articulo)) {
                 abrirBase();
@@ -138,20 +135,49 @@ public class ControladorArticulo implements ActionListener {
                     articuloGui.limpiarCampos();
                     editandoInfo = false;
                     JOptionPane.showMessageDialog(articuloGui, "¡Artículo guardado exitosamente!");
+                    articuloGui.getNuevo().setEnabled(true);
                 } else {
-                    JOptionPane.showMessageDialog(articuloGui, "Ocurrió un error, no se guardó el artículo", "Error!", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(articuloGui, "codigo repetido, no se guardó el artículo", "Error!", JOptionPane.ERROR_MESSAGE);
                 }
                 cerrarBase();
                 realizarBusqueda();
             }
         }
         if (e.getSource() == articuloGui.getBorrar()) {
+            
             System.out.println("Boton borrar pulsado");
             articuloGui.habilitarCampos(false);
+            System.out.println(articulo.getString("codigo")!=null +"-"+ !editandoInfo);
+            if(articulo.getString("codigo")!=null && !editandoInfo ){
+                Integer resp=JOptionPane.showConfirmDialog(articuloGui, "¿Desea borrar el artículo "+articuloGui.getCodigo().getText(),"Confirmar borrado", JOptionPane.YES_NO_OPTION);
+                if(resp== JOptionPane.YES_OPTION){
+                    abrirBase();
+                    Boolean seBorro=abmArticulo.baja(articulo);
+                    cerrarBase();
+                    if(seBorro){   
+                        JOptionPane.showMessageDialog(articuloGui, "¡Artículo borrado exitosamente!");
+                        articuloGui.limpiarCampos();
+                        realizarBusqueda();
+                        articuloGui.getBorrar().setEnabled(false);
+                    }
+                    else
+                        JOptionPane.showMessageDialog(articuloGui, "Ocurrió un error, no se borró el artículo", "Error!", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+            else
+                JOptionPane.showMessageDialog(articuloGui, "No se seleccionó un artículo");
+
+            
+            
         }
         if (e.getSource() == articuloGui.getModificar()) {
             System.out.println("Boton modificar pulsado");
             articuloGui.habilitarCampos(true);
+            editandoInfo=true;
+            isNuevo=false;
+            articuloGui.getCodigo().setEnabled(false);
+            articuloGui.getBorrar().setEnabled(false);
+            articuloGui.getGuardar().setEnabled(true);
         }
 
     }
