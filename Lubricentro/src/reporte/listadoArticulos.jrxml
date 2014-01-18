@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="listadoArticulos" language="groovy" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="176a4aeb-fb12-4afc-a06e-8a694291e114">
+	<property name="ireport.zoom" value="1.4641000000000013"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="63"/>
+	<style name="Title" fontName="Arial" fontSize="26" isBold="true" pdfFontName="Helvetica-Bold"/>
+	<style name="SubTitle" forecolor="#666666" fontName="Arial" fontSize="18"/>
+	<style name="Column header" forecolor="#666666" fontName="Arial" fontSize="12" isBold="true"/>
+	<style name="Detail" fontName="Arial" fontSize="12"/>
+	<parameter name="logo" class="java.io.InputStream"/>
+	<queryString>
+		<![CDATA[SELECT codigo, descripcion,marca,precio_compra,precio_venta,equivalencia_fram FROM lubricentro.articulos;]]>
+	</queryString>
+	<field name="codigo" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="descripcion" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="marca" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="precio_compra" class="java.lang.Float">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="precio_venta" class="java.lang.Float">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="equivalencia_fram" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="115" splitType="Stretch">
+			<staticText>
+				<reportElement style="Title" x="0" y="13" width="263" height="33" uuid="946a23ee-0933-4521-b9f0-7db6aed08fc5"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif"/>
+				</textElement>
+				<text><![CDATA[Sapo Lubricentro]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="SubTitle" x="63" y="46" width="200" height="22" uuid="c0d56b5c-766f-4281-8225-25ddb95c30a2"/>
+				<textElement textAlignment="Right">
+					<font fontName="SansSerif"/>
+				</textElement>
+				<text><![CDATA[Listado de artículos]]></text>
+			</staticText>
+			<image>
+				<reportElement x="276" y="0" width="300" height="64" uuid="0ea206a7-b063-49f5-9366-71b61f49658f"/>
+				<imageExpression><![CDATA[$P{logo}]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="335" y="72" width="66" height="28" uuid="90074e6f-38f9-4980-a5ea-ff34179b5584"/>
+				<textElement>
+					<font fontName="SansSerif" size="18"/>
+				</textElement>
+				<text><![CDATA[Fecha:]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="416" y="72" width="139" height="28" uuid="2d482cc6-455e-4a93-8c86-e1efa725774a"/>
+				<textElement>
+					<font fontName="SansSerif" size="18"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="36" splitType="Stretch">
+			<line>
+				<reportElement positionType="FixRelativeToBottom" x="0" y="35" width="555" height="1" uuid="ec734157-92bc-4cfa-9617-4c208aee758b"/>
+				<graphicElement>
+					<pen lineWidth="0.5" lineColor="#999999"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement style="Column header" x="0" y="21" width="63" height="15" uuid="5b80392d-5a2f-400d-bd21-24b48b9148b2"/>
+				<textElement>
+					<font fontName="SansSerif" size="10"/>
+				</textElement>
+				<text><![CDATA[codigo]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="63" y="21" width="305" height="15" uuid="eafab597-7c7f-48a8-8ad5-ef46606653f1"/>
+				<textElement>
+					<font fontName="SansSerif" size="10"/>
+				</textElement>
+				<text><![CDATA[descripcion]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="368" y="21" width="129" height="15" uuid="9bff982b-1c8c-4171-8166-f376a396df54"/>
+				<textElement>
+					<font fontName="SansSerif" size="10"/>
+				</textElement>
+				<text><![CDATA[marca]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="499" y="21" width="54" height="15" uuid="880888c1-705f-4aaf-9b38-82bf8372b59e"/>
+				<textElement>
+					<font fontName="SansSerif" size="10"/>
+				</textElement>
+				<text><![CDATA[precio]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="96" splitType="Stretch">
+			<textField>
+				<reportElement style="Detail" x="0" y="0" width="63" height="93" uuid="d5dbd674-e443-4a82-8fdc-addfa010a970"/>
+				<textElement>
+					<font fontName="SansSerif" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{codigo}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Detail" x="63" y="0" width="305" height="93" uuid="08c2b1e9-4ce9-4f19-ac0e-edc1ca0fd534"/>
+				<textElement>
+					<font fontName="SansSerif" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{descripcion}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Detail" x="499" y="0" width="56" height="93" uuid="787951bf-c239-49ae-94cd-b825b5ec653e"/>
+				<textElement>
+					<font fontName="SansSerif" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{precio_venta}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement positionType="FixRelativeToBottom" x="0" y="92" width="553" height="1" uuid="73a4fc28-4273-41b6-8b43-d9ccbf173933"/>
+				<graphicElement>
+					<pen lineWidth="0.5" lineColor="#999999"/>
+				</graphicElement>
+			</line>
+			<textField>
+				<reportElement style="Detail" x="368" y="0" width="129" height="93" uuid="792c9ee1-8765-4c00-8831-a58113a76aa9"/>
+				<textElement>
+					<font fontName="SansSerif" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{marca}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch">
+			<line>
+				<reportElement positionType="FixRelativeToBottom" x="0" y="3" width="555" height="1" uuid="be98a339-e429-446b-9aa3-c49da2e48438"/>
+				<graphicElement>
+					<pen lineWidth="0.5" lineColor="#999999"/>
+				</graphicElement>
+			</line>
+		</band>
+	</columnFooter>
+	<pageFooter>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement style="Column header" x="433" y="0" width="80" height="20" uuid="94627975-4b7d-4d7c-ab1a-73d2df5a159f"/>
+				<textElement textAlignment="Right">
+					<font fontName="SansSerif" size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement style="Column header" x="513" y="0" width="40" height="20" uuid="3481acbe-f180-4f44-aa73-397e796c7d02"/>
+				<textElement>
+					<font fontName="SansSerif" size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField pattern="EEEEE dd MMMMM yyyy">
+				<reportElement style="Column header" x="0" y="0" width="197" height="20" uuid="0da95609-e56e-4b75-8829-c23c94bc29ac"/>
+				<textElement>
+					<font fontName="SansSerif" size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

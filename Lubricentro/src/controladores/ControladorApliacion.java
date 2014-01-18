@@ -6,19 +6,26 @@ package controladores;
 
 import interfaz.AplicacionGui;
 import interfaz.ArticuloGui;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.beans.PropertyVetoException;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.UIManager;
+import net.sf.jasperreports.engine.JRException;
 
 /**
  *
  * @author nico
  */
-public class ControladorApliacion {
+public class ControladorApliacion implements ActionListener {
     private AplicacionGui aplicacionGui;
     private ArticuloGui articuloGui;
     private ControladorArticulo controladorArticulo;
 
-    public ControladorApliacion() {
+    public ControladorApliacion() throws JRException, ClassNotFoundException, SQLException {
                 JFrame.setDefaultLookAndFeelDecorated(true); //Le agrego un tema lindo al programa
         try {
             JFrame.setDefaultLookAndFeelDecorated(true);
@@ -28,18 +35,27 @@ public class ControladorApliacion {
         }
         
         aplicacionGui= new AplicacionGui();
-        aplicacionGui.setVisible(true);
+        aplicacionGui.setActionListener(this);
+        aplicacionGui.setExtendedState(JFrame.MAXIMIZED_BOTH);
         articuloGui= new ArticuloGui();
         controladorArticulo= new ControladorArticulo(articuloGui);
         aplicacionGui.getContenedor().add(articuloGui);
-        articuloGui.setVisible(true);
+        aplicacionGui.setVisible(true);
         
     }
     
-  public static void main(String[] args) {
+  public static void main(String[] args)  throws InterruptedException, ClassNotFoundException, SQLException, JRException  {
       ControladorApliacion controladorAplicacion= new ControladorApliacion();
       
 } 
+
+    @Override
+    public void actionPerformed(ActionEvent ae) {
+        if (ae.getSource()== aplicacionGui.getArticulos()){
+                articuloGui.setVisible(true);
+           
+        }
+    }
     
 }
 

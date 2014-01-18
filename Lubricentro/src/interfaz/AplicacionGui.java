@@ -4,6 +4,8 @@
  */
 package interfaz;
 
+import java.awt.event.ActionListener;
+import javax.swing.JButton;
 import javax.swing.JDesktopPane;
 
 /**
@@ -22,8 +24,14 @@ public class AplicacionGui extends javax.swing.JFrame {
     public JDesktopPane getContenedor() {
         return contenedor;
     }
+
+    public JButton getArticulos() {
+        return articulos;
+    }
     
-    
+    public void setActionListener(ActionListener lis){
+        this.getArticulos().addActionListener(lis);
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -35,63 +43,52 @@ public class AplicacionGui extends javax.swing.JFrame {
     private void initComponents() {
 
         contenedor = new javax.swing.JDesktopPane();
+        panelBotones = new javax.swing.JPanel();
+        articulos = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Lubricentro");
+
+        panelBotones.setBorder(new javax.swing.border.SoftBevelBorder(0));
+
+        articulos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/interfaz/Icons/productos.png"))); // NOI18N
+        articulos.setToolTipText("Gestión de artículos");
+
+        javax.swing.GroupLayout panelBotonesLayout = new javax.swing.GroupLayout(panelBotones);
+        panelBotones.setLayout(panelBotonesLayout);
+        panelBotonesLayout.setHorizontalGroup(
+            panelBotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(articulos, javax.swing.GroupLayout.PREFERRED_SIZE, 64, Short.MAX_VALUE)
+        );
+        panelBotonesLayout.setVerticalGroup(
+            panelBotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelBotonesLayout.createSequentialGroup()
+                .addComponent(articulos, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addComponent(panelBotones, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(contenedor, javax.swing.GroupLayout.DEFAULT_SIZE, 944, Short.MAX_VALUE)
-                .addGap(0, 0, 0))
+                .addComponent(contenedor, javax.swing.GroupLayout.DEFAULT_SIZE, 891, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(contenedor, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 236, Short.MAX_VALUE)
+            .addComponent(contenedor, javax.swing.GroupLayout.DEFAULT_SIZE, 414, Short.MAX_VALUE)
+            .addComponent(panelBotones, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(AplicacionGui.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(AplicacionGui.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(AplicacionGui.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(AplicacionGui.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new AplicacionGui().setVisible(true);
-            }
-        });
-    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton articulos;
     private javax.swing.JDesktopPane contenedor;
+    private javax.swing.JPanel panelBotones;
     // End of variables declaration//GEN-END:variables
 
 
