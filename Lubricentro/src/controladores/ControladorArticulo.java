@@ -10,6 +10,8 @@ import interfaz.ArticuloGui;
 import java.awt.List;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.SQLException;
@@ -29,7 +31,7 @@ import org.javalite.activejdbc.Base;
  *
  * @author nico
  */
-public class ControladorArticulo implements ActionListener {
+public class ControladorArticulo implements ActionListener, FocusListener{
 
     private ArticuloGui articuloGui;
     private DefaultTableModel tablaArtDefault;
@@ -47,6 +49,7 @@ public class ControladorArticulo implements ActionListener {
         articulo = new Articulo();
         this.articuloGui = articuloGui;
         this.articuloGui.setActionListener(this);
+        this.articuloGui.setFocusListener(this);
         tablaArtDefault = articuloGui.getTablaArticulosDefault();
         tablaArticulos = articuloGui.getArticulos();
         listArticulos = new LinkedList();
@@ -87,6 +90,7 @@ public class ControladorArticulo implements ActionListener {
     public void tablaMouseClicked(java.awt.event.MouseEvent evt) {
         if (evt.getClickCount() == 2) {
             articuloGui.habilitarCampos(false);
+            articuloGui.getPrecioVenta().setEnabled(false);
             articuloGui.getBorrar().setEnabled(true);
             articuloGui.getModificar().setEnabled(true);
             articuloGui.getGuardar().setEnabled(false);
@@ -110,12 +114,13 @@ public class ControladorArticulo implements ActionListener {
             row[0] = art.getString("codigo");
             row[1] = art.getString("descripcion");
             row[2] = art.getString("marca");
-            row[3] = art.getString("precio_compra");
-            row[4] = art.getString("precio_venta");
+            row[3] =  art.getBigDecimal("precio_compra").setScale(2, RoundingMode.CEILING).toString();
+            row[4] =  art.getBigDecimal("precio_venta").setScale(2, RoundingMode.CEILING).toString();
             row[5] = art.getString("equivalencia_fram");
             tablaArtDefault.addRow(row);
             cerrarBase();
         }
+        articuloGui.getCantidadArticulos().setText(String.valueOf(tablaArticulos.getRowCount()));
     }
 
     @Override
@@ -136,6 +141,7 @@ public class ControladorArticulo implements ActionListener {
                 abrirBase();
                 if (abmArticulo.alta(articulo)) {
                     articuloGui.habilitarCampos(false);
+                    articuloGui.getPrecioVenta().setEnabled(false);
                     articuloGui.limpiarCampos();
                     editandoInfo = false;
                     JOptionPane.showMessageDialog(articuloGui, "¡Artículo guardado exitosamente!");
@@ -152,6 +158,7 @@ public class ControladorArticulo implements ActionListener {
 
             System.out.println("Boton borrar pulsado");
             articuloGui.habilitarCampos(false);
+            articuloGui.getPrecioVenta().setEnabled(false);
             System.out.println(articulo.getString("codigo") != null + "-" + !editandoInfo);
             if (articulo.getString("codigo") != null && !editandoInfo) {
                 Integer resp = JOptionPane.showConfirmDialog(articuloGui, "¿Desea borrar el artículo " + articuloGui.getCodigo().getText(), "Confirmar borrado", JOptionPane.YES_NO_OPTION);
@@ -193,6 +200,7 @@ public class ControladorArticulo implements ActionListener {
                 abrirBase();
                 if (abmArticulo.modificar(articulo)) {
                     articuloGui.habilitarCampos(false);
+                    articuloGui.getPrecioVenta().setEnabled(false);
                     articuloGui.limpiarCampos();
                     editandoInfo = false;
                     JOptionPane.showMessageDialog(articuloGui, "¡Artículo modificado exitosamente!");
@@ -215,11 +223,32 @@ public class ControladorArticulo implements ActionListener {
         } catch (JRException ex) {
             Logger.getLogger(AplicacionGui.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }   
+    }
+        
+        if(e.getSource()==articuloGui.getPrecioManual()){
+            System.out.println("precioManual");
+            if(articuloGui.getPrecioManual().isSelected()){
+                articuloGui.getPrecioVenta().setEnabled(true);
+            }
+            else{
+                articuloGui.getPrecioVenta().setEnabled(false);
+                actualizarPrecioVenta();
+            }
+        }
         
 
 
 
+    }
+    
+    private void actualizarPrecioVenta(){
+        
+        try {
+            Double precioCompra = Double.valueOf(articuloGui.getPrecioCompra().getText());
+            BigDecimal precioVenta= BigDecimal.valueOf(precioCompra*5.0).setScale(2, RoundingMode.CEILING);
+            articuloGui.getPrecioVenta().setText(precioVenta.toString());
+        } catch (NumberFormatException | ClassCastException e) {
+        }
     }
 
     private void abrirBase() {
@@ -293,4 +322,18 @@ public class ControladorArticulo implements ActionListener {
         }
         return ret;
     }
+
+    @Override
+    public void focusGained(FocusEvent fe) {
+    
+    }
+
+    @Override
+    public void focusLost(FocusEvent fe) {
+        if(fe.getSource()==articuloGui.getPrecioCompra()){
+            System.out.println("perdi el foco de precio compra");
+            if(!articuloGui.getPrecioManual().isSelected())
+                actualizarPrecioVenta();
+        }
+            }
 }
