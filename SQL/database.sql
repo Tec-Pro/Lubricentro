@@ -6,7 +6,7 @@ use lubricentro;
 CREATE  TABLE `lubricentro`.`articulos` (
   `id` INT NOT NULL AUTO_INCREMENT ,
   `codigo` VARCHAR(45) NOT NULL ,
-  `descripcion` VARCHAR(150) NULL ,
+  `descripcion` VARCHAR(500) NULL ,
   `marca` VARCHAR(100) NULL ,
   `stock` INT NULL DEFAULT 0 ,
   `precio_compra` FLOAT NULL DEFAULT 0 ,
@@ -73,3 +73,9 @@ create table arituculos_compras (
     cantidad float not null,
 	check (cantidad>0),
     primary key(id));
+
+create table usuarios (
+	id integer not null auto_increment,
+	nombre varchar(50) default 'sapolubricentro',
+	pass varchar(50) default 'sapolubricentro',
+	primary key(id));
