@@ -30,18 +30,11 @@ public class ABMCompra {
             resultOp = false;
         } else {
             Integer idProveedor = (Integer) c.get("proveedor_id");
-            if (c.getBoolean("pago")) { // SI se paga se calcula el monto, si se fia no.
-                c.set("monto", calcularMonto(c.getProductos()));//seteo el monto de la venta total en el modelo
-                Compra compra = Compra.create("monto", c.get("monto"), "proveedor_id", idProveedor, "fecha", c.get("fecha"), "pago", c.get("pago"));
-                resultOp = resultOp && compra.saveIt();//guardo la venta
-                int idCompra = compra.getInteger("id");
-                resultOp = resultOp && cargarProductosComprass(idCompra, c.getProductos());//guardo los productos vendidos
-            } else {
-                Compra compra = Compra.create("proveedor_id", idProveedor, "fecha", c.get("fecha"), "pago", c.get("pago"));
-                resultOp = resultOp && compra.saveIt();//guardo la venta
-                int idCompra = compra.getInteger("id");
-                resultOp = resultOp && cargarProductosComprass(idCompra, c.getProductos());//guardo los productos vendidos
-            }
+            c.set("monto", calcularMonto(c.getProductos()));//seteo el monto de la venta total en el modelo
+            Compra compra = Compra.create("monto", c.get("monto"), "proveedor_id", idProveedor, "fecha", c.get("fecha"), "pago", c.get("pago"));
+            resultOp = resultOp && compra.saveIt();//guardo la venta
+            int idCompra = compra.getInteger("id");
+            resultOp = resultOp && cargarProductosComprass(idCompra, c.getProductos());//guardo los productos vendidos
         }
 
         Base.commitTransaction();
@@ -106,18 +99,7 @@ public class ABMCompra {
         return resultOp;
     }
 
-    /*Funcion que calcula el precio actual de los productos que se fiaron y
-     * paga la cuenta.
-     */
-    public boolean pagar(Compra c) {
-        if (c == null) {
-            return false;
-        } else {
-            c.set("pago", true);
-            c.set("monto", calcularMonto(c.getProductos()));//seteo el monto de la venta total en el modelo
-            return c.saveIt();
-        }
-    }
+
     //FUNCIONA CORRECTAMENTE
     /*Retorna una lista de pares producto-cantidad de una compra(la busca en
      * productos_comprados
