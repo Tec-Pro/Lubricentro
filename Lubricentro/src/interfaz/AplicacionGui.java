@@ -31,6 +31,11 @@ public class AplicacionGui extends javax.swing.JFrame {
     
     public void setActionListener(ActionListener lis){
         this.getArticulos().addActionListener(lis);
+        this.proveedores.addActionListener(lis);
+    }
+
+    public JButton getProveedores() {
+        return proveedores;
     }
 
     /**
@@ -45,6 +50,7 @@ public class AplicacionGui extends javax.swing.JFrame {
         contenedor = new javax.swing.JDesktopPane();
         panelBotones = new javax.swing.JPanel();
         articulos = new javax.swing.JButton();
+        proveedores = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Lubricentro");
@@ -54,16 +60,22 @@ public class AplicacionGui extends javax.swing.JFrame {
         articulos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/interfaz/Icons/productos.png"))); // NOI18N
         articulos.setToolTipText("Gestión de artículos");
 
+        proveedores.setIcon(new javax.swing.ImageIcon(getClass().getResource("/interfaz/Icons/proveedor.png"))); // NOI18N
+        proveedores.setToolTipText("Gestión de proveedores");
+
         javax.swing.GroupLayout panelBotonesLayout = new javax.swing.GroupLayout(panelBotones);
         panelBotones.setLayout(panelBotonesLayout);
         panelBotonesLayout.setHorizontalGroup(
             panelBotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(articulos, javax.swing.GroupLayout.PREFERRED_SIZE, 64, Short.MAX_VALUE)
+            .addComponent(articulos, javax.swing.GroupLayout.DEFAULT_SIZE, 88, Short.MAX_VALUE)
+            .addComponent(proveedores, javax.swing.GroupLayout.DEFAULT_SIZE, 88, Short.MAX_VALUE)
         );
         panelBotonesLayout.setVerticalGroup(
             panelBotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelBotonesLayout.createSequentialGroup()
                 .addComponent(articulos, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(proveedores, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
         );
 
@@ -74,7 +86,7 @@ public class AplicacionGui extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addComponent(panelBotones, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(contenedor, javax.swing.GroupLayout.DEFAULT_SIZE, 891, Short.MAX_VALUE))
+                .addComponent(contenedor, javax.swing.GroupLayout.DEFAULT_SIZE, 867, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -89,6 +101,7 @@ public class AplicacionGui extends javax.swing.JFrame {
     private javax.swing.JButton articulos;
     private javax.swing.JDesktopPane contenedor;
     private javax.swing.JPanel panelBotones;
+    private javax.swing.JButton proveedores;
     // End of variables declaration//GEN-END:variables
 
 

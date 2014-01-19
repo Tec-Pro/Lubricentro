@@ -7,7 +7,6 @@ package controladores;
 import abm.ABMArticulo;
 import interfaz.AplicacionGui;
 import interfaz.ArticuloGui;
-import java.awt.List;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
@@ -23,7 +22,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import modelos.Articulo;
-import modelos.Cliente;
 import net.sf.jasperreports.engine.JRException;
 import org.javalite.activejdbc.Base;
 
@@ -31,7 +29,7 @@ import org.javalite.activejdbc.Base;
  *
  * @author nico
  */
-public class ControladorArticulo implements ActionListener, FocusListener{
+public class ControladorArticulo implements ActionListener, FocusListener {
 
     private ArticuloGui articuloGui;
     private DefaultTableModel tablaArtDefault;
@@ -58,7 +56,7 @@ public class ControladorArticulo implements ActionListener, FocusListener{
         listArticulos = Articulo.findAll();
         cerrarBase();
         actualizarLista();
-        reporteArticulos= new ControladorJReport("listadoArticulos.jasper");
+        reporteArticulos = new ControladorJReport("listadoArticulos.jasper");
         articuloGui.getBusqueda().addKeyListener(new java.awt.event.KeyAdapter() {
             @Override
             public void keyReleased(java.awt.event.KeyEvent evt) {
@@ -114,8 +112,8 @@ public class ControladorArticulo implements ActionListener, FocusListener{
             row[0] = art.getString("codigo");
             row[1] = art.getString("descripcion");
             row[2] = art.getString("marca");
-            row[3] =  art.getBigDecimal("precio_compra").setScale(2, RoundingMode.CEILING).toString();
-            row[4] =  art.getBigDecimal("precio_venta").setScale(2, RoundingMode.CEILING).toString();
+            row[3] = art.getBigDecimal("precio_compra").setScale(2, RoundingMode.CEILING).toString();
+            row[4] = art.getBigDecimal("precio_venta").setScale(2, RoundingMode.CEILING).toString();
             row[5] = art.getString("equivalencia_fram");
             tablaArtDefault.addRow(row);
             cerrarBase();
@@ -213,39 +211,38 @@ public class ControladorArticulo implements ActionListener, FocusListener{
                 realizarBusqueda();
             }
         }
-        if(e.getSource()==articuloGui.getExportar()){
-                    try {
-            reporteArticulos.mostrarReporte();
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(AplicacionGui.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SQLException ex) {
-            Logger.getLogger(AplicacionGui.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (JRException ex) {
-            Logger.getLogger(AplicacionGui.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-        
-        if(e.getSource()==articuloGui.getPrecioManual()){
-            System.out.println("precioManual");
-            if(articuloGui.getPrecioManual().isSelected()){
-                articuloGui.getPrecioVenta().setEnabled(true);
+        if (e.getSource() == articuloGui.getExportar()) {
+            try {
+                reporteArticulos.mostrarReporte();
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(AplicacionGui.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (SQLException ex) {
+                Logger.getLogger(AplicacionGui.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (JRException ex) {
+                Logger.getLogger(AplicacionGui.class.getName()).log(Level.SEVERE, null, ex);
             }
-            else{
+        }
+
+        if (e.getSource() == articuloGui.getPrecioManual()) {
+            System.out.println("precioManual");
+            if (articuloGui.getPrecioManual().isSelected()) {
+                articuloGui.getPrecioVenta().setEnabled(true);
+            } else {
                 articuloGui.getPrecioVenta().setEnabled(false);
                 actualizarPrecioVenta();
             }
         }
-        
+
 
 
 
     }
-    
-    private void actualizarPrecioVenta(){
-        
+
+    private void actualizarPrecioVenta() {
+
         try {
             Double precioCompra = Double.valueOf(articuloGui.getPrecioCompra().getText());
-            BigDecimal precioVenta= BigDecimal.valueOf(precioCompra*5.0).setScale(2, RoundingMode.CEILING);
+            BigDecimal precioVenta = BigDecimal.valueOf(precioCompra * 5.0).setScale(2, RoundingMode.CEILING);
             articuloGui.getPrecioVenta().setText(precioVenta.toString());
         } catch (NumberFormatException | ClassCastException e) {
         }
@@ -325,15 +322,15 @@ public class ControladorArticulo implements ActionListener, FocusListener{
 
     @Override
     public void focusGained(FocusEvent fe) {
-    
     }
 
     @Override
     public void focusLost(FocusEvent fe) {
-        if(fe.getSource()==articuloGui.getPrecioCompra()){
+        if (fe.getSource() == articuloGui.getPrecioCompra()) {
             System.out.println("perdi el foco de precio compra");
-            if(!articuloGui.getPrecioManual().isSelected())
+            if (!articuloGui.getPrecioManual().isSelected()) {
                 actualizarPrecioVenta();
-        }
             }
+        }
+    }
 }

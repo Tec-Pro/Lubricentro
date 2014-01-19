@@ -79,3 +79,5 @@ create table usuarios (
 	nombre varchar(50) default 'sapolubricentro',
 	pass varchar(50) default 'sapolubricentro',
 	primary key(id));
+
+

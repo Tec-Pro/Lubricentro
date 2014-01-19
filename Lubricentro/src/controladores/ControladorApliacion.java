@@ -6,6 +6,7 @@ package controladores;
 
 import interfaz.AplicacionGui;
 import interfaz.ArticuloGui;
+import interfaz.ProveedorGui;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyVetoException;
@@ -24,6 +25,9 @@ public class ControladorApliacion implements ActionListener {
     private AplicacionGui aplicacionGui;
     private ArticuloGui articuloGui;
     private ControladorArticulo controladorArticulo;
+    private ControladorProveedor controladorProveedor;
+    private ProveedorGui proveedorGui;
+    
 
     public ControladorApliacion() throws JRException, ClassNotFoundException, SQLException {
                 JFrame.setDefaultLookAndFeelDecorated(true); //Le agrego un tema lindo al programa
@@ -38,7 +42,10 @@ public class ControladorApliacion implements ActionListener {
         aplicacionGui.setActionListener(this);
         aplicacionGui.setExtendedState(JFrame.MAXIMIZED_BOTH);
         articuloGui= new ArticuloGui();
+        proveedorGui= new ProveedorGui();
+        controladorProveedor= new ControladorProveedor(proveedorGui);
         controladorArticulo= new ControladorArticulo(articuloGui);
+        aplicacionGui.getContenedor().add(proveedorGui);
         aplicacionGui.getContenedor().add(articuloGui);
         aplicacionGui.setVisible(true);
         
@@ -53,7 +60,9 @@ public class ControladorApliacion implements ActionListener {
     public void actionPerformed(ActionEvent ae) {
         if (ae.getSource()== aplicacionGui.getArticulos()){
                 articuloGui.setVisible(true);
-           
+        }
+        if(ae.getSource()==aplicacionGui.getProveedores()){
+            proveedorGui.setVisible(true);
         }
     }
     
