@@ -272,10 +272,10 @@
                                                   <Component id="precioVenta" alignment="3" min="-2" max="-2" attributes="0"/>
                                                   <Component id="jLabel6" alignment="3" min="-2" max="-2" attributes="0"/>
                                               </Group>
-                                              <Group type="103" alignment="0" groupAlignment="3" attributes="0">
+                                              <Component id="precioManual" alignment="0" max="32767" attributes="0"/>
+                                              <Group type="103" groupAlignment="3" attributes="0">
                                                   <Component id="jLabel9" alignment="3" min="-2" max="-2" attributes="0"/>
                                                   <Component id="stockMinimo" alignment="3" min="-2" max="-2" attributes="0"/>
-                                                  <Component id="precioManual" alignment="0" max="32767" attributes="0"/>
                                               </Group>
                                           </Group>
                                           <EmptySpace max="-2" attributes="0"/>

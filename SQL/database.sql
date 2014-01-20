@@ -81,3 +81,12 @@ create table usuarios (
 	primary key(id));
 
 
+CREATE  TABLE `lubricentro`.`pagos` (
+  `id` INT NOT NULL AUTO_INCREMENT ,
+  `fecha` VARCHAR(45) NULL ,
+  `monto` FLOAT NULL ,
+  `proveedor_id` INT NULL ,
+  PRIMARY KEY (`id`) );
+
+ALTER TABLE `lubricentro`.`pagos` CHANGE COLUMN `fecha` `fecha` DATE NULL DEFAULT NULL  ;
+

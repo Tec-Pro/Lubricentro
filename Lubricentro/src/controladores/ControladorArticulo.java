@@ -22,6 +22,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import modelos.Articulo;
+import modelos.Proveedor;
 import net.sf.jasperreports.engine.JRException;
 import org.javalite.activejdbc.Base;
 
@@ -34,6 +35,7 @@ public class ControladorArticulo implements ActionListener, FocusListener {
     private ArticuloGui articuloGui;
     private DefaultTableModel tablaArtDefault;
     private java.util.List<Articulo> listArticulos;
+    private java.util.List<Proveedor> listProveedores;
     private JTable tablaArticulos;
     private ABMArticulo abmArticulo;
     private Boolean isNuevo;
@@ -51,6 +53,7 @@ public class ControladorArticulo implements ActionListener, FocusListener {
         tablaArtDefault = articuloGui.getTablaArticulosDefault();
         tablaArticulos = articuloGui.getArticulos();
         listArticulos = new LinkedList();
+        listProveedores= new LinkedList();
         abmArticulo = new ABMArticulo();
         abrirBase();
         listArticulos = Articulo.findAll();
@@ -97,8 +100,15 @@ public class ControladorArticulo implements ActionListener, FocusListener {
             articuloGui.limpiarCampos();
             abrirBase();
             articulo = Articulo.findFirst("codigo = ?", tablaArticulos.getValueAt(tablaArticulos.getSelectedRow(), 0));
+            Proveedor papacito= articulo.parent(Proveedor.class);
+            if(papacito==null)
+              articulo.setNombreProv("");  
+            else
+            articulo.setNombreProv(papacito.getString("nombre"));
             cerrarBase();
+            
             articuloGui.CargarCampos(articulo);
+            
         }
     }
 
@@ -132,12 +142,20 @@ public class ControladorArticulo implements ActionListener, FocusListener {
             articuloGui.getBorrar().setEnabled(false);
             articuloGui.getModificar().setEnabled(false);
             articuloGui.getGuardar().setEnabled(true);
+            cargarProveedores();
+            articuloGui.getProveedores().setSelectedItem("");
         }
         if (e.getSource() == articuloGui.getGuardar() && editandoInfo && isNuevo) {
             System.out.println("Boton guardar pulsado");
             if (cargarDatosProd(articulo)) {
                 abrirBase();
                 if (abmArticulo.alta(articulo)) {
+                    if(!articulo.getNombreProv().equals("")){
+                    Proveedor prov=Proveedor.findFirst("nombre = ?", articulo.getNombreProv());
+                    Base.openTransaction();
+                    prov.add(articulo);
+                     Base.commitTransaction();
+                    }
                     articuloGui.habilitarCampos(false);
                     articuloGui.getPrecioVenta().setEnabled(false);
                     articuloGui.limpiarCampos();
@@ -190,6 +208,8 @@ public class ControladorArticulo implements ActionListener, FocusListener {
             articuloGui.getBorrar().setEnabled(false);
             articuloGui.getGuardar().setEnabled(true);
             articuloGui.getModificar().setEnabled(false);
+            cargarProveedores();
+            articuloGui.getProveedores().setSelectedItem(articulo.getNombreProv());
         }
 
         if (e.getSource() == articuloGui.getGuardar() && editandoInfo && !isNuevo) {
@@ -197,6 +217,18 @@ public class ControladorArticulo implements ActionListener, FocusListener {
             if (cargarDatosProd(articulo)) {
                 abrirBase();
                 if (abmArticulo.modificar(articulo)) {
+                    if(!articulo.getNombreProv().equals("")){
+                    Proveedor prov=Proveedor.findFirst("nombre = ?", articulo.getNombreProv());
+                    Base.openTransaction();
+                    prov.add(articulo);
+                     Base.commitTransaction();
+                    }
+                    else{
+                        Base.openTransaction();
+                        articulo.set("proveedor_id", null);
+                        articulo.saveIt();
+                        Base.commitTransaction();
+                    }
                     articuloGui.habilitarCampos(false);
                     articuloGui.getPrecioVenta().setEnabled(false);
                     articuloGui.limpiarCampos();
@@ -317,6 +349,7 @@ public class ControladorArticulo implements ActionListener, FocusListener {
             ret = false;
             JOptionPane.showMessageDialog(articuloGui, "Error en equivalencia FRAM", "Error!", JOptionPane.ERROR_MESSAGE);
         }
+        art.setNombreProv(articuloGui.getProveedores().getSelectedItem().toString());
         return ret;
     }
 
@@ -332,5 +365,19 @@ public class ControladorArticulo implements ActionListener, FocusListener {
                 actualizarPrecioVenta();
             }
         }
+    }
+    
+    private void cargarProveedores(){
+        abrirBase();
+        articuloGui.getProveedores().removeAllItems();
+        listProveedores = Proveedor.findAll();
+        Iterator<Proveedor> it = listProveedores.iterator();
+        while (it.hasNext()) {
+            Proveedor prov = it.next();
+            articuloGui.getProveedores().addItem(prov.get("nombre"));
+        }
+        articuloGui.getProveedores().addItem("");
+
+        
     }
 }

@@ -253,10 +253,10 @@ public class ArticuloGui extends javax.swing.JInternalFrame {
                                     .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                         .addComponent(precioVenta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addComponent(jLabel6))
+                                    .addComponent(precioManual, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                         .addComponent(jLabel9)
-                                        .addComponent(stockMinimo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(precioManual, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                                        .addComponent(stockMinimo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(equivFram, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -461,6 +461,7 @@ public class ArticuloGui extends javax.swing.JInternalFrame {
         equivFram.setText("");
         precioManual.setEnabled(false);
         precioManual.setSelected(false);
+        proveedores.removeAllItems();
         
         
     }
@@ -474,6 +475,9 @@ public class ArticuloGui extends javax.swing.JInternalFrame {
         precioCompra.setText(art.getBigDecimal("precio_compra").setScale(2).toString());
         precioVenta.setText(art.getBigDecimal("precio_venta").setScale(2).toString());
         equivFram.setText(art.getString("equivalencia_fram"));
+        proveedores.removeAllItems();
+        proveedores.addItem(art.getNombreProv());
+        proveedores.setSelectedItem(art.getNombreProv());
     }
 
     public DefaultTableModel getTablaArticulosDefault() {

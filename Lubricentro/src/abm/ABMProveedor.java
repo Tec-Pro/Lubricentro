@@ -4,6 +4,7 @@
  */
 package abm;
 
+import modelos.Pago;
 import modelos.Proveedor;
 import org.javalite.activejdbc.Base;
 
@@ -50,6 +51,18 @@ public class ABMProveedor {
             Base.openTransaction();
             ret = viejo.set("nombre", p.get("nombre"), "telefono", p.get("telefono")).saveIt();
             Base.commitTransaction();
+        }
+        return ret;
+    }
+    
+    public boolean registrarPago(Proveedor prov, Pago pago){
+        boolean ret= false;
+        Proveedor viejo = Proveedor.findFirst("nombre = ?", prov.get("nombre"));
+        if(viejo!=null){
+            Base.openTransaction();
+            viejo.add(pago);
+            Base.commitTransaction();
+            ret=true;
         }
         return ret;
     }

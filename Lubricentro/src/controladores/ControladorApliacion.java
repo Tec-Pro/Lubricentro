@@ -43,7 +43,7 @@ public class ControladorApliacion implements ActionListener {
         aplicacionGui.setExtendedState(JFrame.MAXIMIZED_BOTH);
         articuloGui= new ArticuloGui();
         proveedorGui= new ProveedorGui();
-        controladorProveedor= new ControladorProveedor(proveedorGui);
+        controladorProveedor= new ControladorProveedor(proveedorGui,aplicacionGui,articuloGui);
         controladorArticulo= new ControladorArticulo(articuloGui);
         aplicacionGui.getContenedor().add(proveedorGui);
         aplicacionGui.getContenedor().add(articuloGui);
@@ -60,9 +60,11 @@ public class ControladorApliacion implements ActionListener {
     public void actionPerformed(ActionEvent ae) {
         if (ae.getSource()== aplicacionGui.getArticulos()){
                 articuloGui.setVisible(true);
+                articuloGui.toFront();
         }
         if(ae.getSource()==aplicacionGui.getProveedores()){
             proveedorGui.setVisible(true);
+            proveedorGui.toFront();
         }
     }
     
