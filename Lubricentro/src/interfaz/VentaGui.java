@@ -157,6 +157,8 @@ public class VentaGui extends javax.swing.JPanel {
         return borrarArticulosSeleccionados;
     }
 
+    
+    
     /**
      * Retorno boton modificar para confirmar cambios realizados en una factura
      *
@@ -331,7 +333,7 @@ public class VentaGui extends javax.swing.JPanel {
     }
 
     public JComboBox getAbona() {
-        return Abona;
+        return abona;
     }
 
        
@@ -381,7 +383,7 @@ public class VentaGui extends javax.swing.JPanel {
         borrarArticulosSeleccionados = new javax.swing.JButton();
         calendarioFactura = new com.toedter.calendar.JDateChooser();
         jLabel4 = new javax.swing.JLabel();
-        Abona = new javax.swing.JComboBox();
+        abona = new javax.swing.JComboBox();
         panelControlFactura = new javax.swing.JPanel();
         facturaNueva = new javax.swing.JButton();
         realizarVenta = new javax.swing.JButton();
@@ -658,7 +660,7 @@ public class VentaGui extends javax.swing.JPanel {
         jLabel4.setFont(new java.awt.Font("Century Schoolbook L", 0, 14)); // NOI18N
         jLabel4.setText("Abona");
 
-        Abona.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Si", "No" }));
+        abona.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Si", "No" }));
 
         javax.swing.GroupLayout panelFacturaLayout = new javax.swing.GroupLayout(panelFactura);
         panelFactura.setLayout(panelFacturaLayout);
@@ -679,7 +681,7 @@ public class VentaGui extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel4)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(Abona, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(abona, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(6, 6, 6)
                 .addComponent(labelTotal)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -703,7 +705,7 @@ public class VentaGui extends javax.swing.JPanel {
                         .addGroup(panelFacturaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(totalFactura, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(labelTotal)
-                            .addComponent(Abona, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(abona, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelFacturaLayout.createSequentialGroup()
                         .addComponent(jLabel4)
                         .addContainerGap())))
@@ -769,7 +771,7 @@ public class VentaGui extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JComboBox Abona;
+    private javax.swing.JComboBox abona;
     private javax.swing.JButton articulosALaFactura;
     private javax.swing.JButton borrarArticulosSeleccionados;
     private javax.swing.JTextField busquedaApellido;

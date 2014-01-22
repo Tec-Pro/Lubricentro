@@ -53,6 +53,26 @@ public class ABMVenta {
         Base.commitTransaction();
         return resultOp;
     }
+    
+    //FUNCIONA CORRECTAMENTE
+    /*Elimino una venta y los productos ligados a ella, sin hacer devolucion de stock,
+     * ni actualizacion de tablas de adquisicion ni tabla de productos_vendidos
+     */
+    public boolean baja(Venta v) {
+        Base.openTransaction();
+        boolean resultOp = true;
+        Integer idVenta = v.getInteger("id");//saco el idVenta
+        Venta venta = Venta.findById(idVenta);//la busco en BD y la traigo
+        
+        if (venta == null) {
+             resultOp = false;
+         } else {
+             ArticulosVentas.delete("venta_id = ?", idVenta);//elimino todos los productosvendidos
+             resultOp = resultOp && venta.delete();//elimino la venta
+         }
+        Base.commitTransaction();
+        return resultOp;
+    }
 
     //FUNCIONA CORRECTAMENTE
     public boolean bajaConDevolucion(Venta v) {

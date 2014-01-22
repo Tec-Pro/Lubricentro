@@ -27,7 +27,7 @@
           <Group type="102" alignment="1" attributes="0">
               <Component id="panelBotones" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="-2" pref="0" max="-2" attributes="0"/>
-              <Component id="contenedor" pref="867" max="32767" attributes="0"/>
+              <Component id="contenedor" pref="815" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -55,8 +55,8 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Component id="articulos" pref="88" max="32767" attributes="0"/>
-              <Component id="proveedores" pref="88" max="32767" attributes="0"/>
+              <Component id="articulos" pref="140" max="32767" attributes="0"/>
+              <Component id="proveedores" max="32767" attributes="0"/>
           </Group>
         </DimensionLayout>
         <DimensionLayout dim="1">

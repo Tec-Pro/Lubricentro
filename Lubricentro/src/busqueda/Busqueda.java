@@ -42,9 +42,9 @@ public class Busqueda {
      * Filtra los que tienen nombre a los pasados y
      * @return lista filtrada de clientes.
      */
-     public List<Cliente> filtroCliente(String nombre){
+     public List<Cliente> filtroCliente(String nombre,String codigo){
         List<Cliente> result;
-        result = Cliente.where("nombre like ? ","%"+nombre+"%");
+        result = Cliente.where("nombre like ? and id like ?","%"+nombre+"%", codigo+"%");
         return result;
     }
     
@@ -76,9 +76,9 @@ public class Busqueda {
      * Filtra los proveedores que tienen lo pasado en nombre.
      * @return lista filtrada de proveedores.
      */
-    public List<Proveedor> filtroProveedor(String cuil, String nombre, String codigo) {
+    public List<Proveedor> filtroProveedor(String nombre, String codigo) {
         List<Proveedor> result;
-        result = Proveedor.where("nombre like ? ","%"+nombre+"%");
+        result = Proveedor.where("nombre like ? and id like ?","%"+nombre+"%","%"+codigo+"%");
         return result;
     }
     
