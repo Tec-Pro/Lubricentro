@@ -27,6 +27,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
@@ -325,7 +326,7 @@ public class ControladorProveedor implements ActionListener {
             prov.set("telefono", telefono);
         } catch (ClassCastException e) {
             ret = false;
-            JOptionPane.showMessageDialog(proveedorGui, "Error en el nombre", "Error!", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(proveedorGui, "Error en el telefono", "Error!", JOptionPane.ERROR_MESSAGE);
         }
 
         return ret;

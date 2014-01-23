@@ -25,7 +25,7 @@ public class ABMCliente {
      public boolean alta(Cliente c) {
         if (!findCliente(c)){
             Base.openTransaction();
-            Cliente nuevo = Cliente.create("nombre","telefono",c.get("telefono"),"celular",c.get("celular"));
+            Cliente nuevo = Cliente.create("nombre" ,c.get("nombre"),"telefono",c.get("telefono"),"celular",c.get("celular"));
             nuevo.saveIt();
             Base.commitTransaction();
             return true;

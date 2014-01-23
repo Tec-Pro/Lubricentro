@@ -6,13 +6,11 @@ package controladores;
 
 import interfaz.AplicacionGui;
 import interfaz.ArticuloGui;
+import interfaz.ImportarExcelGui;
 import interfaz.ProveedorGui;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.beans.PropertyVetoException;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.UIManager;
 import net.sf.jasperreports.engine.JRException;
@@ -26,8 +24,9 @@ public class ControladorApliacion implements ActionListener {
     private ArticuloGui articuloGui;
     private ControladorArticulo controladorArticulo;
     private ControladorProveedor controladorProveedor;
+    private controladorImportarGui controladorImportarGui;
     private ProveedorGui proveedorGui;
-    
+    private ImportarExcelGui importarGui;
 
     public ControladorApliacion() throws JRException, ClassNotFoundException, SQLException {
                 JFrame.setDefaultLookAndFeelDecorated(true); //Le agrego un tema lindo al programa
@@ -45,8 +44,11 @@ public class ControladorApliacion implements ActionListener {
         proveedorGui= new ProveedorGui();
         controladorProveedor= new ControladorProveedor(proveedorGui,aplicacionGui,articuloGui);
         controladorArticulo= new ControladorArticulo(articuloGui);
+        importarGui= new ImportarExcelGui();
+        controladorImportarGui= new controladorImportarGui(importarGui);
         aplicacionGui.getContenedor().add(proveedorGui);
         aplicacionGui.getContenedor().add(articuloGui);
+        aplicacionGui.getContenedor().add(importarGui);
         aplicacionGui.setVisible(true);
         
     }
@@ -65,6 +67,10 @@ public class ControladorApliacion implements ActionListener {
         if(ae.getSource()==aplicacionGui.getProveedores()){
             proveedorGui.setVisible(true);
             proveedorGui.toFront();
+        }
+        if(ae.getSource()==aplicacionGui.getImportar()){
+            importarGui.setVisible(true);
+            importarGui.toFront();
         }
     }
     
