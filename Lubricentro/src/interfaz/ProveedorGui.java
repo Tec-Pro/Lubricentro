@@ -458,7 +458,8 @@ public class ProveedorGui extends javax.swing.JInternalFrame {
         this.nuevo.addActionListener(lis);
         this.modificar.addActionListener(lis);
         this.realizarPago.addActionListener(lis);
-        this.borrarPago.addActionListener(lis);
+        this.borrarPago.addActionListener(lis);        
+        this.exportar.addActionListener(lis);
 
     }
 

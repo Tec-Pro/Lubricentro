@@ -6,6 +6,7 @@ package controladores;
 
 import interfaz.AplicacionGui;
 import interfaz.ArticuloGui;
+import interfaz.ClienteGui;
 import interfaz.ImportarExcelGui;
 import interfaz.ProveedorGui;
 import java.awt.event.ActionEvent;
@@ -27,6 +28,8 @@ public class ControladorApliacion implements ActionListener {
     private controladorImportarGui controladorImportarGui;
     private ProveedorGui proveedorGui;
     private ImportarExcelGui importarGui;
+    private ClienteGui clienteGui;
+    private ControladorCliente controladorCliente;
 
     public ControladorApliacion() throws JRException, ClassNotFoundException, SQLException {
                 JFrame.setDefaultLookAndFeelDecorated(true); //Le agrego un tema lindo al programa
@@ -42,13 +45,16 @@ public class ControladorApliacion implements ActionListener {
         aplicacionGui.setExtendedState(JFrame.MAXIMIZED_BOTH);
         articuloGui= new ArticuloGui();
         proveedorGui= new ProveedorGui();
+        clienteGui = new ClienteGui();
         controladorProveedor= new ControladorProveedor(proveedorGui,aplicacionGui,articuloGui);
         controladorArticulo= new ControladorArticulo(articuloGui);
+        controladorCliente= new ControladorCliente(clienteGui,aplicacionGui);
         importarGui= new ImportarExcelGui();
         controladorImportarGui= new controladorImportarGui(importarGui);
         aplicacionGui.getContenedor().add(proveedorGui);
         aplicacionGui.getContenedor().add(articuloGui);
-        aplicacionGui.getContenedor().add(importarGui);
+        aplicacionGui.getContenedor().add(importarGui);        
+        aplicacionGui.getContenedor().add(clienteGui);
         aplicacionGui.setVisible(true);
         
     }
@@ -71,6 +77,10 @@ public class ControladorApliacion implements ActionListener {
         if(ae.getSource()==aplicacionGui.getImportar()){
             importarGui.setVisible(true);
             importarGui.toFront();
+        }
+        if(ae.getSource()==aplicacionGui.getClientes()){
+            clienteGui.setVisible(true);
+            clienteGui.toFront();
         }
     }
     

@@ -37,6 +37,12 @@ public class Busqueda {
         return result;
     }   
     
+    public List<Cliente> buscarCliente(String nombre){
+        List<Cliente> result;
+        result = Cliente.where("nombre like ?","%"+nombre+"%");
+        return result;
+    }   
+    
     /**
      * @param nombre, @param apellido e @param id del cliente.
      * Filtra los que tienen nombre a los pasados y

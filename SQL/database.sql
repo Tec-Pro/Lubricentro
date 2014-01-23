@@ -48,28 +48,28 @@ create table lubricentro.compras (
 
 
 
-create table clientes_arituculos(
+create table clientes_articulos(
     id integer not null auto_increment,
     cliente_id integer,
-    arituculo_id integer,
+    articulos_id integer,
     cantidad integer not null,
 	check (cantidad>0),
     primary key(id) );
 
 
-create table arituculos_ventas (
+create table articulos_ventas (
     id integer not null auto_increment,
     venta_id integer,
-    arituculo_id integer,
+    articulos_id integer,
     cantidad float not null,
 	check (cantidad>0),
     primary key(id) );
 
 
-create table arituculos_compras (
+create table articulos_compras (
     id integer not null auto_increment,
     compra_id integer,
-    arituculo_id integer,
+    articulos_id integer,
     cantidad float not null,
 	check (cantidad>0),
     primary key(id));
