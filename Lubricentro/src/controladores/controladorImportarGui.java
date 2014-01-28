@@ -63,16 +63,7 @@ public class controladorImportarGui implements ActionListener {
         cliente = new Cliente();
         articulo = new Articulo();
         importando = false;
-        abrirBase();
-        List<Proveedor> proveedores= Proveedor.findAll();
-        Iterator<Proveedor> it= proveedores.iterator();
-        while(it.hasNext()){
-            prov= it.next();
-            importarGui.getProveedor().addItem(prov.get("nombre"));
-        }
-        cerrarBase();
-        importarGui.getProveedor().addItem("");
-        importarGui.getProveedor().setSelectedItem("");
+        cargarProveedores();
         importarGui.getCategoria().addActionListener(new ActionListener () {
             public void actionPerformed(ActionEvent e) {
         habilitarProveedores();
@@ -85,8 +76,14 @@ public class controladorImportarGui implements ActionListener {
             importarGui.getProveedor().setEnabled(false);
         }
         else{
-            importarGui.getProveedor().removeAllItems();
-            abrirBase();
+            cargarProveedores();
+        importarGui.getProveedor().setEnabled(true);
+        }
+    }
+    
+    public void cargarProveedores(){
+        importarGui.getProveedor().removeAllItems();
+               abrirBase();
         List<Proveedor> proveedores= Proveedor.findAll();
         Iterator<Proveedor> it= proveedores.iterator();
         while(it.hasNext()){
@@ -95,11 +92,9 @@ public class controladorImportarGui implements ActionListener {
         }
         cerrarBase();
         importarGui.getProveedor().addItem("");
-        importarGui.getProveedor().setSelectedItem("");
-        importarGui.getProveedor().setEnabled(true);
-        }
+        importarGui.getProveedor().setSelectedItem(""); 
     }
-
+    
     @Override
     public void actionPerformed(ActionEvent ae) {
         if (ae.getSource() == importarGui.getCancelar()) {
@@ -164,6 +159,12 @@ public class controladorImportarGui implements ActionListener {
                         JOptionPane.showMessageDialog(importarGui, "Archivo incorrecto", "Error!", JOptionPane.ERROR_MESSAGE);
                     }
                 }
+            }
+            if (importarGui.getCategoria().getSelectedItem().equals("Compra")) {
+                System.out.println("compra seleccionada");
+            }
+            if (importarGui.getCategoria().getSelectedItem().equals("Venta")) {
+                System.out.println("venta seleccionada");
             }
         }
     }
@@ -402,16 +403,17 @@ public class controladorImportarGui implements ActionListener {
                     XSSFCell celdaDescripcion;
                     XSSFCell celdaMarca;
                     XSSFCell celdaPrecioCompra;
+                    XSSFCell celdaPrecioVenta;
                     XSSFCell celdaEquivalenciaFram;
                     String codigoString;
                     String descripcionString;
                     String marcaString;
                     String precioString;
+                    String precioStringVenta;
                     String equivalenciaString;
                     double precioFloat;
                     BigDecimal precioCompraBig;
                     BigDecimal precioVenta;
-                    BigDecimal porcentaje;
                     abrirBase();
                     agregados = 0;
                     modificados = 0;
@@ -421,7 +423,8 @@ public class controladorImportarGui implements ActionListener {
                         celdaDescripcion = (XSSFCell) row.getCell(1);
                         celdaMarca = (XSSFCell) row.getCell(2);
                         celdaPrecioCompra = (XSSFCell) row.getCell(3);
-                        celdaEquivalenciaFram = (XSSFCell) row.getCell(4);
+                        celdaPrecioVenta = (XSSFCell) row.getCell(4);
+                        celdaEquivalenciaFram = (XSSFCell) row.getCell(5);
                         descripcionString = "";
                         marcaString = "";
                         precioCompraBig = new BigDecimal(0);
@@ -444,8 +447,13 @@ public class controladorImportarGui implements ActionListener {
                                     precioString = celdaPrecioCompra.toString();
                                     precioFloat = Float.parseFloat(precioString);
                                     precioCompraBig = BigDecimal.valueOf(precioFloat).setScale(2, RoundingMode.CEILING);
-                                    porcentaje = new BigDecimal(5);
-                                    precioVenta = precioCompraBig.multiply(porcentaje).setScale(2, RoundingMode.CEILING);
+
+                                }
+                                if (celdaPrecioVenta != null) {
+                                    celdaPrecioVenta.setCellType(Cell.CELL_TYPE_STRING);
+                                    precioStringVenta = celdaPrecioVenta.toString();
+                                    precioFloat = Float.parseFloat(precioStringVenta);
+                                    precioVenta = BigDecimal.valueOf(precioFloat).setScale(2, RoundingMode.CEILING);
 
                                 }
                                 if (celdaEquivalenciaFram != null) {
@@ -487,16 +495,17 @@ public class controladorImportarGui implements ActionListener {
                     Cell celdaDescripcion;
                     Cell celdaMarca;
                     Cell celdaPrecioCompra;
+                    Cell celdaPrecioVenta;
                     Cell celdaEquivalenciaFram;
                     String codigoString;
                     String descripcionString;
                     String marcaString;
                     String precioString;
+                    String precioVentaString;
                     String equivalenciaString;
                     double precioFloat;
                     BigDecimal precioCompraBig;
                     BigDecimal precioVenta;
-                    BigDecimal porcentaje;
                     abrirBase();
                     agregados = 0;
                     modificados = 0;
@@ -506,7 +515,8 @@ public class controladorImportarGui implements ActionListener {
                         celdaDescripcion = row.getCell(1);
                         celdaMarca = row.getCell(2);
                         celdaPrecioCompra = row.getCell(3);
-                        celdaEquivalenciaFram = row.getCell(4);
+                        celdaPrecioVenta = row.getCell(4);
+                        celdaEquivalenciaFram = row.getCell(5);
                         descripcionString = "";
                         marcaString = "";
                         precioCompraBig = new BigDecimal(0);
@@ -530,9 +540,13 @@ public class controladorImportarGui implements ActionListener {
                                     precioString = celdaPrecioCompra.getStringCellValue();
                                     precioFloat = Float.parseFloat(precioString);
                                     precioCompraBig = BigDecimal.valueOf(precioFloat).setScale(2, RoundingMode.CEILING);
-                                    porcentaje = new BigDecimal(5);
-                                    precioVenta = precioCompraBig.multiply(porcentaje).setScale(2, RoundingMode.CEILING);
 
+                                }
+                                if (celdaPrecioVenta != null) {
+                                    celdaPrecioVenta.setCellType(Cell.CELL_TYPE_STRING);
+                                    precioString = celdaPrecioVenta.getStringCellValue();
+                                    precioFloat = Float.parseFloat(precioString);
+                                    precioVenta = BigDecimal.valueOf(precioFloat).setScale(2, RoundingMode.CEILING);
                                 }
                                 if (celdaEquivalenciaFram != null) {
                                     celdaEquivalenciaFram.setCellType(Cell.CELL_TYPE_STRING);

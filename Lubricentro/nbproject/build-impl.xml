@@ -1045,11 +1045,50 @@ is divided into following sections:
         </delete>
     </target>
     <target depends="init,compile,-pre-pre-jar,-pre-jar,-do-jar-with-libraries-create-manifest,-do-jar-with-libraries-copy-manifest,-do-jar-with-libraries-set-main,-do-jar-with-libraries-set-splashscreen,-do-jar-with-libraries-pack,-do-jar-with-libraries-delete-manifest" name="-do-jar-with-libraries"/>
-    <target name="-post-jar">
-        <!-- Empty placeholder for easier customization. -->
-        <!-- You can override this target in the ../build.xml file. -->
-    </target>
+<!--
+                =========================
+                Agregado manualmente jar con librerías
+                =========================
+            -->
+<target name="-post-jar">
+    <property name="store.jar.name" value="Lubricentro"/>
+ 
+    <property name="store.dir" value="dist"/>
+    <property name="store.jar" value="${store.dir}/${store.jar.name}.jar"/>
+ 
+    <echo message="Packaging ${application.title} into a single JAR at ${store.jar}"/>
+ 
+    <jar destfile="${store.dir}/temp_final.jar" filesetmanifest="skip">
+        <zipgroupfileset dir="dist" includes="*.jar"/>
+        <zipgroupfileset dir="dist/lib" includes="*.jar"/>
+
+ 
+        <manifest>
+            <attribute name="Main-Class" value="${main.class}"/>
+        </manifest>
+    </jar>
+ 
+    <zip destfile="${store.jar}">
+        <zipfileset src="${store.dir}/temp_final.jar"
+        excludes="META-INF/*.SF, META-INF/*.DSA, META-INF/*.RSA"/>
+    </zip>
+ 
+    <delete file="${store.dir}/temp_final.jar"/>
+    <delete dir="${store.dir}/lib"/>
+    <delete file="${store.dir}/README.TXT"/>
+    <delete file="${store.dir}"/>
+</target>
+
     <target depends="init,compile,-pre-jar,-do-jar-with-manifest,-do-jar-without-manifest,-do-jar-with-mainclass,-do-jar-with-libraries,-post-jar" description="Build JAR." name="jar"/>
+
+
+
+
+
+
+
+
+
     <!--
                 =================
                 EXECUTION SECTION

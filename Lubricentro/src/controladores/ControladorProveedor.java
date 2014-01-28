@@ -34,6 +34,7 @@ import javax.swing.table.DefaultTableModel;
 import modelos.Articulo;
 import modelos.Pago;
 import modelos.Proveedor;
+import net.sf.jasperreports.engine.JRException;
 import org.javalite.activejdbc.Base;
 
 /**
@@ -61,8 +62,9 @@ public class ControladorProveedor implements ActionListener {
     private AplicacionGui aplicacionGui;
     private ArticuloGui articuloGui;
     private JTable tablaArticulos;
+    private ControladorJReport reporteProveedor;
 
-    public ControladorProveedor(ProveedorGui proveedorGui, AplicacionGui aplicacionGui, ArticuloGui articuloGui) {
+    public ControladorProveedor(ProveedorGui proveedorGui, AplicacionGui aplicacionGui, ArticuloGui articuloGui) throws JRException, ClassNotFoundException, SQLException {
         this.aplicacionGui = aplicacionGui;
         this.articuloGui=articuloGui;
         isNuevo = true;
@@ -80,6 +82,7 @@ public class ControladorProveedor implements ActionListener {
         listPagos = new LinkedList();
         abmProveedor = new ABMProveedor();
         proveedor = new Proveedor();
+        reporteProveedor = new ControladorJReport("listadoProveedores.jasper");
         abrirBase();
         listProveedores = Proveedor.findAll();
         cerrarBase();
@@ -111,11 +114,23 @@ public class ControladorProveedor implements ActionListener {
 
     }
     
+    public void cargarTodos(){
+         abrirBase();
+        listProveedores = Proveedor.findAll();
+        cerrarBase();
+        actualizarLista();
+    }
     private void tablaArticulosClicked(java.awt.event.MouseEvent evt) {
         if (evt.getClickCount()==2){
             abrirBase();
             Articulo articulo= Articulo.findFirst("codigo = ?", tablaArticulos.getValueAt(tablaArticulos.getSelectedRow(), 0));
+            Proveedor papacito= articulo.parent(Proveedor.class);
+            if(papacito==null)
+              articulo.setNombreProv("");  
+            else
+            articulo.setNombreProv(papacito.getString("nombre"));
             cerrarBase();
+            
             articuloGui.CargarCampos(articulo);
             articuloGui.setVisible(true);
             articuloGui.toFront();
@@ -142,6 +157,7 @@ public class ControladorProveedor implements ActionListener {
 
     public void tablaMouseClicked(java.awt.event.MouseEvent evt) {
         if (evt.getClickCount() == 2) {
+            editandoInfo = false;
             proveedorGui.habilitarCampos(false);
             proveedorGui.getBorrar().setEnabled(true);
             proveedorGui.getModificar().setEnabled(true);
@@ -221,7 +237,7 @@ public class ControladorProveedor implements ActionListener {
 
             System.out.println("Boton borrar pulsado");
             proveedorGui.habilitarCampos(false);
-            if (proveedor.getString("id") != null && !editandoInfo) {
+            if (proveedor.getId() !=null && !editandoInfo) {
                 Integer resp = JOptionPane.showConfirmDialog(proveedorGui, "¿Desea borrar el proveedor " + proveedorGui.getNombre().getText(), "Confirmar borrado", JOptionPane.YES_NO_OPTION);
                 if (resp == JOptionPane.YES_OPTION) {
                     abrirBase();
@@ -283,7 +299,7 @@ public class ControladorProveedor implements ActionListener {
         }
         if (e.getSource() == proveedorGui.getBorrarPago()) {
             System.out.println("Borrar pago pulsado");
-            Integer resp = JOptionPane.showConfirmDialog(proveedorGui, "¿Desea borrar el pago seleccionado? " + proveedorGui.getNombre().getText(), "Confirmar borrado", JOptionPane.YES_NO_OPTION);
+            Integer resp = JOptionPane.showConfirmDialog(proveedorGui, "¿Desea borrar el pago seleccionado? " , "Confirmar borrado", JOptionPane.YES_NO_OPTION);
             if (resp == JOptionPane.YES_OPTION) {
                 String fecha=tablaPagos.getValueAt(tablaPagos.getSelectedRow(), 0).toString(); //Se le pasa la fecha a la que queremos darle formato
                 String dia= fecha.substring(0, 2);
@@ -296,6 +312,18 @@ public class ControladorProveedor implements ActionListener {
                 cargarPagos();
               
             }
+        }
+        if(e.getSource()==proveedorGui.getExportar()){
+            try {
+                reporteProveedor.mostrarReporte();
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(AplicacionGui.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (SQLException ex) {
+                Logger.getLogger(AplicacionGui.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (JRException ex) {
+                Logger.getLogger(AplicacionGui.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        
         }
     }
 

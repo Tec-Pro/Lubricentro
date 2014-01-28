@@ -88,6 +88,12 @@ public class ControladorArticulo implements ActionListener, FocusListener {
 
     }
 
+    public void cargarTodos(){
+        abrirBase();
+        listArticulos = Articulo.findAll();
+        cerrarBase();
+        actualizarLista();
+    }
     public void tablaMouseClicked(java.awt.event.MouseEvent evt) {
         if (evt.getClickCount() == 2) {
             articuloGui.habilitarCampos(false);
@@ -96,6 +102,7 @@ public class ControladorArticulo implements ActionListener, FocusListener {
             articuloGui.getModificar().setEnabled(true);
             articuloGui.getGuardar().setEnabled(false);
             articuloGui.getNuevo().setEnabled(true);
+            editandoInfo=false;
             System.out.println("hice doble click en un articulo");
             articuloGui.limpiarCampos();
             abrirBase();
@@ -255,22 +262,10 @@ public class ControladorArticulo implements ActionListener, FocusListener {
             }
         }
 
-        if (e.getSource() == articuloGui.getPrecioManual()) {
-            System.out.println("precioManual");
-            if (articuloGui.getPrecioManual().isSelected()) {
-                articuloGui.getPrecioVenta().setEnabled(true);
-            } else {
-                articuloGui.getPrecioVenta().setEnabled(false);
-                actualizarPrecioVenta();
-            }
-        }
-
-
-
 
     }
 
-    private void actualizarPrecioVenta() {
+    /*private void actualizarPrecioVenta() {
 
         try {
             Double precioCompra = Double.valueOf(articuloGui.getPrecioCompra().getText());
@@ -278,7 +273,7 @@ public class ControladorArticulo implements ActionListener, FocusListener {
             articuloGui.getPrecioVenta().setText(precioVenta.toString());
         } catch (NumberFormatException | ClassCastException e) {
         }
-    }
+    }*/
 
     private void abrirBase() {
         if (!Base.hasConnection()) {
@@ -361,9 +356,9 @@ public class ControladorArticulo implements ActionListener, FocusListener {
     public void focusLost(FocusEvent fe) {
         if (fe.getSource() == articuloGui.getPrecioCompra()) {
             System.out.println("perdi el foco de precio compra");
-            if (!articuloGui.getPrecioManual().isSelected()) {
+           /* if (!articuloGui.getPrecioManual().isSelected()) {
                 actualizarPrecioVenta();
-            }
+            }*/
         }
     }
     

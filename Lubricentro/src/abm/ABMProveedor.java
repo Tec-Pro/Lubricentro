@@ -46,7 +46,7 @@ public class ABMProveedor {
 
     public boolean modificar(Proveedor p) {
         boolean ret = false;
-        Proveedor viejo = Proveedor.findFirst("nombre = ?", p.get("nombre"));
+        Proveedor viejo = Proveedor.findById(p.getId());
         if (viejo != null) {          
             Base.openTransaction();
             ret = viejo.set("nombre", p.get("nombre"), "telefono", p.get("telefono")).saveIt();

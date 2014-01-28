@@ -90,3 +90,28 @@ CREATE  TABLE `lubricentro`.`pagos` (
 
 ALTER TABLE `lubricentro`.`pagos` CHANGE COLUMN `fecha` `fecha` DATE NULL DEFAULT NULL  ;
 
+
+CREATE  TABLE `lubricentro`.`emails` (
+  `email` VARCHAR(45) NOT NULL ,
+  `password` VARCHAR(45) NULL ,
+  PRIMARY KEY (`email`) );
+
+CREATE  TABLE `lubricentro`.`envios` (
+  `fecha` DATE NOT NULL ,
+  `enviado` VARCHAR(5) NULL ,
+  PRIMARY KEY (`fecha`) );
+ALTER TABLE `lubricentro`.`email` ADD COLUMN `id` VARCHAR(45) NOT NULL  AFTER `password` 
+, DROP PRIMARY KEY 
+, ADD PRIMARY KEY (`email`, `id`) ;
+
+
+ALTER TABLE `lubricentro`.`emails` CHANGE COLUMN `id` `id` INT NOT NULL AUTO_INCREMENT  
+, DROP PRIMARY KEY 
+, ADD PRIMARY KEY (`id`, `email`) ;
+
+
+ALTER TABLE `lubricentro`.`envio_email` ADD COLUMN `id` INT NOT NULL AUTO_INCREMENT  AFTER `enviado` 
+, DROP PRIMARY KEY 
+, ADD PRIMARY KEY (`id`, `fecha`) , RENAME TO  `lubricentro`.`envios` ;
+
+ALTER TABLE `lubricentro`.`envios` CHANGE COLUMN `enviado` `enviado` INT NULL DEFAULT NULL  ;

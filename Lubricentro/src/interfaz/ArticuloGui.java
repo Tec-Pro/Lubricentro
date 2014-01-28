@@ -69,7 +69,6 @@ public class ArticuloGui extends javax.swing.JInternalFrame {
         proveedores = new javax.swing.JComboBox();
         jScrollPane3 = new javax.swing.JScrollPane();
         descripcion = new javax.swing.JTextArea();
-        precioManual = new javax.swing.JCheckBox();
         jPanel4 = new javax.swing.JPanel();
         borrar = new javax.swing.JButton();
         nuevo = new javax.swing.JButton();
@@ -114,8 +113,8 @@ public class ArticuloGui extends javax.swing.JInternalFrame {
                 return canEdit [columnIndex];
             }
         });
-        articulos.setColumnSelectionAllowed(true);
         articulos.setFillsViewportHeight(true);
+        articulos.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jScrollPane4.setViewportView(articulos);
         articulos.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
 
@@ -178,9 +177,6 @@ public class ArticuloGui extends javax.swing.JInternalFrame {
         descripcion.setEnabled(false);
         jScrollPane3.setViewportView(descripcion);
 
-        precioManual.setToolTipText("Cambiar precio de venta manualmente");
-        precioManual.setEnabled(false);
-
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -194,11 +190,11 @@ public class ArticuloGui extends javax.swing.JInternalFrame {
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(codigo, javax.swing.GroupLayout.DEFAULT_SIZE, 83, Short.MAX_VALUE)
+                        .addComponent(codigo, javax.swing.GroupLayout.DEFAULT_SIZE, 77, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(marca, javax.swing.GroupLayout.DEFAULT_SIZE, 84, Short.MAX_VALUE)))
+                        .addComponent(marca, javax.swing.GroupLayout.DEFAULT_SIZE, 77, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
@@ -211,10 +207,9 @@ public class ArticuloGui extends javax.swing.JInternalFrame {
                             .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addComponent(precioVenta)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(precioManual))
-                            .addComponent(precioCompra, javax.swing.GroupLayout.DEFAULT_SIZE, 157, Short.MAX_VALUE))
+                                .addComponent(precioVenta, javax.swing.GroupLayout.DEFAULT_SIZE, 144, Short.MAX_VALUE)
+                                .addGap(26, 26, 26))
+                            .addComponent(precioCompra))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel3Layout.createSequentialGroup()
@@ -253,7 +248,6 @@ public class ArticuloGui extends javax.swing.JInternalFrame {
                                     .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                         .addComponent(precioVenta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addComponent(jLabel6))
-                                    .addComponent(precioManual, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                         .addComponent(jLabel9)
                                         .addComponent(stockMinimo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -347,13 +341,14 @@ public class ArticuloGui extends javax.swing.JInternalFrame {
                         .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
+                        .addGap(6, 6, 6)
                         .addComponent(busqueda, javax.swing.GroupLayout.PREFERRED_SIZE, 304, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(cantidadArticulos, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(92, 92, 92)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 92, Short.MAX_VALUE)
                         .addComponent(exportar))
                     .addComponent(jScrollPane4))
                 .addGap(0, 0, 0))
@@ -366,7 +361,7 @@ public class ArticuloGui extends javax.swing.JInternalFrame {
                         .addComponent(busqueda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(exportar)
                         .addComponent(jLabel4))
-                    .addComponent(cantidadArticulos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(cantidadArticulos, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 164, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -419,7 +414,6 @@ public class ArticuloGui extends javax.swing.JInternalFrame {
     private javax.swing.JButton modificar;
     private javax.swing.JButton nuevo;
     private javax.swing.JTextField precioCompra;
-    private javax.swing.JCheckBox precioManual;
     private javax.swing.JTextField precioVenta;
     private javax.swing.JComboBox proveedores;
     private javax.swing.JSpinner stock;
@@ -432,7 +426,6 @@ public class ArticuloGui extends javax.swing.JInternalFrame {
         this.nuevo.addActionListener(lis);
         this.modificar.addActionListener(lis);
         this.exportar.addActionListener(lis);
-        this.precioManual.addActionListener(lis);
     }
     
     public void setFocusListener(FocusListener lis){
@@ -444,9 +437,9 @@ public class ArticuloGui extends javax.swing.JInternalFrame {
         codigo.setEnabled(b);
         descripcion.setEnabled(b);
         precioCompra.setEnabled(b);
+        precioVenta.setEnabled(b);
         proveedores.setEnabled(b);
         equivFram.setEnabled(b);
-        precioManual.setEnabled(b);
     }
 
 
@@ -459,8 +452,6 @@ public class ArticuloGui extends javax.swing.JInternalFrame {
         precioCompra.setText("");
         precioVenta.setText("");
         equivFram.setText("");
-        precioManual.setEnabled(false);
-        precioManual.setSelected(false);
         proveedores.removeAllItems();
         
         
@@ -548,9 +539,7 @@ public class ArticuloGui extends javax.swing.JInternalFrame {
         return exportar;
     }
 
-    public JCheckBox getPrecioManual() {
-        return precioManual;
-    }
+ 
 
     public JLabel getCantidadArticulos() {
         return cantidadArticulos;

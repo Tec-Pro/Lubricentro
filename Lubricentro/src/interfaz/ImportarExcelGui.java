@@ -78,13 +78,15 @@ public class ImportarExcelGui extends javax.swing.JInternalFrame {
         aceptar = new javax.swing.JButton();
         progreso = new javax.swing.JProgressBar();
 
+        setClosable(true);
         setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
+        setTitle("Importar desde un excel");
 
         selectorArchivos.setControlButtonsAreShown(false);
 
         jLabel1.setText("Seleccione una categoría: ");
 
-        categoria.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Artículos", "Proveedores", "Clientes" }));
+        categoria.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Artículos", "Proveedores", "Clientes", "Compra", "Venta" }));
 
         jLabel2.setText("Proveedor de la lista :");
 

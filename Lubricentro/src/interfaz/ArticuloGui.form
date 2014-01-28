@@ -61,13 +61,14 @@
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="jPanel4" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <Group type="102" alignment="1" attributes="0">
+                          <Group type="102" alignment="0" attributes="0">
+                              <EmptySpace min="6" pref="6" max="-2" attributes="0"/>
                               <Component id="busqueda" min="-2" pref="304" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="jLabel4" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="cantidadArticulos" min="-2" pref="131" max="-2" attributes="0"/>
-                              <EmptySpace min="-2" pref="92" max="-2" attributes="0"/>
+                              <EmptySpace pref="92" max="32767" attributes="0"/>
                               <Component id="exportar" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <Component id="jScrollPane4" alignment="1" max="32767" attributes="0"/>
@@ -85,7 +86,7 @@
                               <Component id="exportar" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="jLabel4" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <Component id="cantidadArticulos" alignment="0" max="32767" attributes="0"/>
+                          <Component id="cantidadArticulos" alignment="0" min="-2" pref="36" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="jScrollPane4" pref="164" max="32767" attributes="0"/>
@@ -157,8 +158,10 @@
                         </Column>
                       </TableColumnModel>
                     </Property>
-                    <Property name="columnSelectionAllowed" type="boolean" value="true"/>
                     <Property name="fillsViewportHeight" type="boolean" value="true"/>
+                    <Property name="selectionModel" type="javax.swing.ListSelectionModel" editor="org.netbeans.modules.form.editors2.JTableSelectionModelEditor">
+                      <JTableSelectionModel selectionMode="0"/>
+                    </Property>
                     <Property name="tableHeader" type="javax.swing.table.JTableHeader" editor="org.netbeans.modules.form.editors2.JTableHeaderEditor">
                       <TableHeader reorderingAllowed="true" resizingAllowed="true"/>
                     </Property>
@@ -195,11 +198,11 @@
                               <Group type="102" alignment="1" attributes="0">
                                   <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace min="-2" max="-2" attributes="0"/>
-                                  <Component id="codigo" pref="83" max="32767" attributes="0"/>
+                                  <Component id="codigo" pref="77" max="32767" attributes="0"/>
                                   <EmptySpace min="-2" max="-2" attributes="0"/>
                                   <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace min="-2" max="-2" attributes="0"/>
-                                  <Component id="marca" pref="84" max="32767" attributes="0"/>
+                                  <Component id="marca" pref="77" max="32767" attributes="0"/>
                               </Group>
                           </Group>
                           <EmptySpace min="-2" max="-2" attributes="0"/>
@@ -216,11 +219,10 @@
                                   </Group>
                                   <Group type="103" groupAlignment="0" attributes="0">
                                       <Group type="102" attributes="0">
-                                          <Component id="precioVenta" max="32767" attributes="0"/>
-                                          <EmptySpace max="-2" attributes="0"/>
-                                          <Component id="precioManual" min="-2" max="-2" attributes="0"/>
+                                          <Component id="precioVenta" pref="144" max="32767" attributes="0"/>
+                                          <EmptySpace min="-2" pref="26" max="-2" attributes="0"/>
                                       </Group>
-                                      <Component id="precioCompra" pref="157" max="32767" attributes="0"/>
+                                      <Component id="precioCompra" max="32767" attributes="0"/>
                                   </Group>
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="0" attributes="0">
@@ -272,7 +274,6 @@
                                                   <Component id="precioVenta" alignment="3" min="-2" max="-2" attributes="0"/>
                                                   <Component id="jLabel6" alignment="3" min="-2" max="-2" attributes="0"/>
                                               </Group>
-                                              <Component id="precioManual" alignment="0" max="32767" attributes="0"/>
                                               <Group type="103" groupAlignment="3" attributes="0">
                                                   <Component id="jLabel9" alignment="3" min="-2" max="-2" attributes="0"/>
                                                   <Component id="stockMinimo" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -442,12 +443,6 @@
                     </Component>
                   </SubComponents>
                 </Container>
-                <Component class="javax.swing.JCheckBox" name="precioManual">
-                  <Properties>
-                    <Property name="toolTipText" type="java.lang.String" value="Cambiar precio de venta manualmente"/>
-                    <Property name="enabled" type="boolean" value="false"/>
-                  </Properties>
-                </Component>
               </SubComponents>
             </Container>
             <Container class="javax.swing.JPanel" name="jPanel4">
