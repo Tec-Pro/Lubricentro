@@ -163,7 +163,12 @@ public class EnvioEmailControlador {
             }
             ret = t.isConnected();
             if (envio) {
-                t.sendMessage(message, message.getAllRecipients());
+                try{
+                t.sendMessage(message, message.getAllRecipients());}
+                catch(  javax.mail.MessagingException ex){
+                    ret=false;
+                    
+                }
             }
             if (envio && ret) {
                 abrirBase();
@@ -172,18 +177,6 @@ public class EnvioEmailControlador {
                 Envio.deleteAll();
                 enviarModel.set("fecha", convertirFechaString());
                 enviarModel.setBoolean("enviado", true);
-                System.out.println();
-                enviarModel.saveIt();
-                Base.commitTransaction();
-                cerrarBase();
-            }
-            if (envio && !ret) {
-                abrirBase();
-                Envio enviarModel = new Envio();
-                Base.openTransaction();
-                Envio.deleteAll();
-                enviarModel.set("fecha", convertirFechaString());
-                enviarModel.setBoolean("enviado", false);
                 enviarModel.saveIt();
                 Base.commitTransaction();
                 cerrarBase();

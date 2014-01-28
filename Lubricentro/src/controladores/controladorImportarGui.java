@@ -22,8 +22,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import modelos.Articulo;
+import modelos.ArticulosVentas;
 import modelos.Cliente;
 import modelos.Proveedor;
+import modelos.Venta;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
@@ -52,6 +54,8 @@ public class controladorImportarGui implements ActionListener {
     private Articulo articulo;
     private ABMArticulo abmArticulo;
     private Boolean importando;
+    private Venta venta;
+    private ArticulosVentas ventaArticulos;
 
     public controladorImportarGui(ImportarExcelGui importarGui) {
         this.importarGui = importarGui;
@@ -64,37 +68,36 @@ public class controladorImportarGui implements ActionListener {
         articulo = new Articulo();
         importando = false;
         cargarProveedores();
-        importarGui.getCategoria().addActionListener(new ActionListener () {
+        importarGui.getCategoria().addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-        habilitarProveedores();
+                habilitarProveedores();
+            }
+        });
     }
-});
-    }
-    
-    private void habilitarProveedores(){
-        if (!importarGui.getCategoria().getSelectedItem().equals("Artículos")){
+
+    private void habilitarProveedores() {
+        if (!importarGui.getCategoria().getSelectedItem().equals("Artículos")) {
             importarGui.getProveedor().setEnabled(false);
-        }
-        else{
+        } else {
             cargarProveedores();
-        importarGui.getProveedor().setEnabled(true);
+            importarGui.getProveedor().setEnabled(true);
         }
     }
-    
-    public void cargarProveedores(){
+
+    public void cargarProveedores() {
         importarGui.getProveedor().removeAllItems();
-               abrirBase();
-        List<Proveedor> proveedores= Proveedor.findAll();
-        Iterator<Proveedor> it= proveedores.iterator();
-        while(it.hasNext()){
-            prov= it.next();
+        abrirBase();
+        List<Proveedor> proveedores = Proveedor.findAll();
+        Iterator<Proveedor> it = proveedores.iterator();
+        while (it.hasNext()) {
+            prov = it.next();
             importarGui.getProveedor().addItem(prov.get("nombre"));
         }
         cerrarBase();
         importarGui.getProveedor().addItem("");
-        importarGui.getProveedor().setSelectedItem(""); 
+        importarGui.getProveedor().setSelectedItem("");
     }
-    
+
     @Override
     public void actionPerformed(ActionEvent ae) {
         if (ae.getSource() == importarGui.getCancelar()) {
@@ -107,7 +110,8 @@ public class controladorImportarGui implements ActionListener {
             importarGui.setVisible(false);
         }
         if (ae.getSource() == importarGui.getAceptar()) {//Aceptar luego de buscar archivo
-
+            agregados = 0;
+            modificados = 0;
             if (importarGui.getCategoria().getSelectedItem().equals("Proveedores")) {//si se selecciono proveedores
                 System.out.println("boton aceptar pulsado proveedores");
                 if (importarGui.getSelectorArchivos().getSelectedFile() != null) {//corroboro que se haya seleccionado un archivo
@@ -165,6 +169,20 @@ public class controladorImportarGui implements ActionListener {
             }
             if (importarGui.getCategoria().getSelectedItem().equals("Venta")) {
                 System.out.println("venta seleccionada");
+                if (importarGui.getSelectorArchivos().getSelectedFile() != null) {
+                    if (importarGui.getSelectorArchivos().getSelectedFile().getName().contains(".xls") || importarGui.getSelectorArchivos().getSelectedFile().getName().contains(".xlsx")) {
+                        try {
+                            importarVenta();
+                        } catch (FileNotFoundException ex) {
+                            Logger.getLogger(controladorImportarGui.class.getName()).log(Level.SEVERE, null, ex);
+                            JOptionPane.showMessageDialog(importarGui, "Archivo no encontrado", "Error!", JOptionPane.ERROR_MESSAGE);
+                        } catch (IOException ex) {
+                            Logger.getLogger(controladorImportarGui.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(importarGui, "Archivo incorrecto", "Error!", JOptionPane.ERROR_MESSAGE);
+                    }
+                }
             }
         }
     }
@@ -175,79 +193,89 @@ public class controladorImportarGui implements ActionListener {
             @Override
             protected Void doInBackground() throws Exception {
                 if (importarGui.getSelectorArchivos().getSelectedFile().getName().contains("xlsx")) {//Archivos con extensión xlsx
-                    importando=true;
+                    importando = true;
                     XSSFWorkbook Libro_trabajo = new XSSFWorkbook(importarGui.getSelectorArchivos().getSelectedFile().getAbsolutePath());
                     XSSFSheet hoja = Libro_trabajo.getSheet("IMPORTARHOJA");
-                    Iterator iterarFilas = hoja.rowIterator();
-                    XSSFCell celdaNombre;
-                    XSSFCell celdaTelefono;
-                    String telefonoString;
-                    abrirBase();
-                    agregados = 0;
-                    modificados = 0;
-                    while (iterarFilas.hasNext() && importando) {
-                        XSSFRow row = (XSSFRow) iterarFilas.next();
-                        celdaNombre = (XSSFCell) row.getCell(0);
-                        celdaTelefono = (XSSFCell) row.getCell(1);
-                        telefonoString = "";
-                        if (celdaNombre != null) {
-                            if (!celdaNombre.toString().isEmpty()) {
-                                celdaNombre.setCellType(Cell.CELL_TYPE_STRING);
-                                String nombre = celdaNombre.getStringCellValue();
-                                if (celdaTelefono != null) {
-                                    celdaTelefono.setCellType(Cell.CELL_TYPE_STRING);
-                                    telefonoString = celdaTelefono.toString();
-                                }
-                                prov.set("nombre", nombre, "telefono", telefonoString);
-                                if (abmProveedor.findProveedor(prov)) {
-                                    abmProveedor.modificar(prov);
-                                    System.out.println("modificando proveedor");
-                                } else {
-                                    abmProveedor.alta(prov);
-                                    System.out.println("nuevo ");
-                                    agregados++;
+                    if (hoja == null) {
+                        JOptionPane.showMessageDialog(null, "No se encontró la hoja IMPORTARHOJA, renombrela e intente nuevamente");
+                    } else {
+                        Iterator iterarFilas = hoja.rowIterator();
+                        XSSFCell celdaNombre;
+                        XSSFCell celdaTelefono;
+                        String telefonoString;
+                        abrirBase();
+                        agregados = 0;
+                        modificados = 0;
+                        iterarFilas.next();
+                        while (iterarFilas.hasNext() && importando) {
+                            XSSFRow row = (XSSFRow) iterarFilas.next();
+                            celdaNombre = (XSSFCell) row.getCell(0);
+                            celdaTelefono = (XSSFCell) row.getCell(1);
+                            telefonoString = "";
+                            if (celdaNombre != null) {
+                                if (!celdaNombre.toString().isEmpty()) {
+                                    celdaNombre.setCellType(Cell.CELL_TYPE_STRING);
+                                    String nombre = celdaNombre.getStringCellValue();
+                                    if (celdaTelefono != null) {
+                                        celdaTelefono.setCellType(Cell.CELL_TYPE_STRING);
+                                        telefonoString = celdaTelefono.toString();
+                                    }
+                                    prov.set("nombre", nombre, "telefono", telefonoString);
+                                    if (abmProveedor.findProveedor(prov)) {
+                                        abmProveedor.modificar(prov);
+                                        System.out.println("modificando proveedor");
+                                    } else {
+                                        abmProveedor.alta(prov);
+                                        System.out.println("nuevo ");
+                                        agregados++;
+                                    }
                                 }
                             }
                         }
+                        cerrarBase();
                     }
-                    cerrarBase();
                 } else if (importarGui.getSelectorArchivos().getSelectedFile().getName().contains("xls")) {
-                    importando=true;
+                    importando = true;
                     workbook = new HSSFWorkbook(new FileInputStream(importarGui.getSelectorArchivos().getSelectedFile().getAbsolutePath()));
                     sheet = workbook.getSheet("IMPORTARHOJA");
-                    Iterator<Row> iterarFilas = sheet.iterator();
-                    Cell celdaNombre;
-                    Cell celdaTelefono;
-                    String telefonoString;
-                    abrirBase();
-                    agregados = 0;
-                    modificados = 0;
-                    while (iterarFilas.hasNext()&&importando) {
-                        Row row = iterarFilas.next();
-                        celdaNombre = row.getCell(0);
-                        celdaTelefono = row.getCell(1);
-                        telefonoString = "";
-                        if (celdaNombre != null) {
-                            if (!celdaNombre.toString().isEmpty()) {
-                                celdaNombre.setCellType(Cell.CELL_TYPE_STRING);
-                                String nombre = celdaNombre.getStringCellValue();
-                                if (celdaTelefono != null) {
-                                    celdaTelefono.setCellType(Cell.CELL_TYPE_STRING);
-                                    telefonoString = celdaTelefono.getStringCellValue();
-                                }
-                                prov.set("nombre", nombre, "telefono", telefonoString);
-                                if (abmProveedor.findProveedor(prov)) {
-                                    abmProveedor.modificar(prov);
-                                    System.out.println("modifique");
+                    if (sheet == null) {
+                        JOptionPane.showMessageDialog(null, "No se encontró la hoja IMPORTARHOJA, renombrela e intente nuevamente");
+                    } else {
+                        Iterator<Row> iterarFilas = sheet.iterator();
+                        Cell celdaNombre;
+                        Cell celdaTelefono;
+                        String telefonoString;
+                        abrirBase();
+                        agregados = 0;
+                        modificados = 0;
+                        iterarFilas.next();
+                        while (iterarFilas.hasNext() && importando) {
+                            Row row = iterarFilas.next();
+                            celdaNombre = row.getCell(0);
+                            celdaTelefono = row.getCell(1);
+                            telefonoString = "";
+                            if (celdaNombre != null) {
+                                if (!celdaNombre.toString().isEmpty()) {
+                                    celdaNombre.setCellType(Cell.CELL_TYPE_STRING);
+                                    String nombre = celdaNombre.getStringCellValue();
+                                    if (celdaTelefono != null) {
+                                        celdaTelefono.setCellType(Cell.CELL_TYPE_STRING);
+                                        telefonoString = celdaTelefono.getStringCellValue();
+                                    }
+                                    prov.set("nombre", nombre, "telefono", telefonoString);
+                                    if (abmProveedor.findProveedor(prov)) {
+                                        abmProveedor.modificar(prov);
+                                        System.out.println("modifique");
 
-                                } else {
-                                    abmProveedor.alta(prov);
-                                    agregados++;
+                                    } else {
+                                        abmProveedor.alta(prov);
+                                        agregados++;
+                                    }
                                 }
                             }
                         }
+                        cerrarBase();
                     }
-                    cerrarBase();
                 }
                 return null;
             }
@@ -256,7 +284,7 @@ public class controladorImportarGui implements ActionListener {
                 setProgress(100);
                 JOptionPane.showMessageDialog(importarGui, "Importación de registros terminada, se han agregado " + agregados + " Proveedores");
                 importarGui.getProgreso().setIndeterminate(false);
-                importando=false;
+                importando = false;
             }
         };
         worker.execute();
@@ -284,93 +312,103 @@ public class controladorImportarGui implements ActionListener {
             @Override
             protected Void doInBackground() throws Exception {
                 if (importarGui.getSelectorArchivos().getSelectedFile().getName().contains("xlsx")) {
-                    importando=true;
+                    importando = true;
                     XSSFWorkbook Libro_trabajo = new XSSFWorkbook(importarGui.getSelectorArchivos().getSelectedFile().getAbsolutePath());
                     XSSFSheet hoja = Libro_trabajo.getSheet("IMPORTARHOJA");
-                    Iterator iterarFilas = hoja.rowIterator();
-                    XSSFCell celdaNombre;
-                    XSSFCell celdaTelefono;
-                    XSSFCell celdaCelular;
-                    String telefonoString;
-                    String telefonoCelularString;
-                    abrirBase();
-                    agregados = 0;
-                    modificados = 0;
-                    while (iterarFilas.hasNext() && importando) {
-                        XSSFRow row = (XSSFRow) iterarFilas.next();
-                        celdaNombre = (XSSFCell) row.getCell(0);
-                        celdaTelefono = (XSSFCell) row.getCell(1);
-                        celdaCelular = (XSSFCell) row.getCell(2);
-                        telefonoString = "";
-                        telefonoCelularString = "";
-                        if (celdaNombre != null) {
-                            if (!celdaNombre.toString().isEmpty()) {
-                                celdaNombre.setCellType(Cell.CELL_TYPE_STRING);
-                                String nombre = celdaNombre.getStringCellValue();
-                                if (celdaTelefono != null) {
-                                    celdaTelefono.setCellType(Cell.CELL_TYPE_STRING);
-                                    telefonoString = celdaTelefono.toString();
-                                }
-                                if (celdaCelular != null) {
-                                    celdaCelular.setCellType(Cell.CELL_TYPE_STRING);
-                                    telefonoCelularString = celdaCelular.toString();
-                                }
-                                cliente.set("nombre", nombre, "telefono", telefonoString, "celular", telefonoCelularString);
-                                if (abmCliente.findCliente(cliente)) {
-                                    abmCliente.modificar(cliente);
-                                    System.out.println("modificando cliente");
-                                } else {
-                                    abmCliente.alta(cliente);
-                                    System.out.println("nuevo cliente");
-                                    agregados++;
+                    if (hoja == null) {
+                        JOptionPane.showMessageDialog(null, "No se encontró la hoja IMPORTARHOJA, renombrela e intente nuevamente");
+                    } else {
+                        Iterator iterarFilas = hoja.rowIterator();
+                        XSSFCell celdaNombre;
+                        XSSFCell celdaTelefono;
+                        XSSFCell celdaCelular;
+                        String telefonoString;
+                        String telefonoCelularString;
+                        abrirBase();
+                        agregados = 0;
+                        modificados = 0;
+                        iterarFilas.next();
+                        while (iterarFilas.hasNext() && importando) {
+                            XSSFRow row = (XSSFRow) iterarFilas.next();
+                            celdaNombre = (XSSFCell) row.getCell(0);
+                            celdaTelefono = (XSSFCell) row.getCell(1);
+                            celdaCelular = (XSSFCell) row.getCell(2);
+                            telefonoString = "";
+                            telefonoCelularString = "";
+                            if (celdaNombre != null) {
+                                if (!celdaNombre.toString().isEmpty()) {
+                                    celdaNombre.setCellType(Cell.CELL_TYPE_STRING);
+                                    String nombre = celdaNombre.getStringCellValue();
+                                    if (celdaTelefono != null) {
+                                        celdaTelefono.setCellType(Cell.CELL_TYPE_STRING);
+                                        telefonoString = celdaTelefono.toString();
+                                    }
+                                    if (celdaCelular != null) {
+                                        celdaCelular.setCellType(Cell.CELL_TYPE_STRING);
+                                        telefonoCelularString = celdaCelular.toString();
+                                    }
+                                    cliente.set("nombre", nombre, "telefono", telefonoString, "celular", telefonoCelularString);
+                                    if (abmCliente.findCliente(cliente)) {
+                                        abmCliente.modificar(cliente);
+                                        System.out.println("modificando cliente");
+                                    } else {
+                                        abmCliente.alta(cliente);
+                                        System.out.println("nuevo cliente");
+                                        agregados++;
+                                    }
                                 }
                             }
                         }
+                        cerrarBase();
                     }
-                    cerrarBase();
                 } else if (importarGui.getSelectorArchivos().getSelectedFile().getName().contains("xls")) {
-                    importando=true;
+                    importando = true;
                     workbook = new HSSFWorkbook(new FileInputStream(importarGui.getSelectorArchivos().getSelectedFile().getAbsolutePath()));
                     sheet = workbook.getSheet("IMPORTARHOJA");
-                    Iterator<Row> iterarFilas = sheet.iterator();
-                    Cell celdaNombre;
-                    Cell celdaTelefono;
-                    Cell celdaCelular;
-                    String telefonoString;
-                    String telefonoCelularString;
-                    abrirBase();
-                    agregados = 0;
-                    modificados = 0;
-                    while (iterarFilas.hasNext() && importando) {
-                        Row row = iterarFilas.next();
-                        celdaNombre = row.getCell(0);
-                        celdaTelefono = row.getCell(1);
-                        celdaCelular = row.getCell(2);
-                        telefonoString = "";
-                        telefonoCelularString = "";
-                        if (celdaNombre != null) {
-                            if (!celdaNombre.toString().isEmpty()) {
-                                celdaNombre.setCellType(Cell.CELL_TYPE_STRING);
-                                String nombre = celdaNombre.getStringCellValue();
-                                if (celdaTelefono != null) {
-                                    celdaTelefono.setCellType(Cell.CELL_TYPE_STRING);
-                                    telefonoString = celdaTelefono.getStringCellValue();
-                                }
-                                if (celdaCelular != null) {
-                                    celdaCelular.setCellType(Cell.CELL_TYPE_STRING);
-                                    telefonoCelularString = celdaCelular.getStringCellValue();
-                                }
-                                cliente.set("nombre", nombre, "telefono", telefonoString, "celular", telefonoCelularString);
-                                if (abmCliente.findCliente(cliente)) {
-                                    abmCliente.modificar(cliente);
-                                } else {
-                                    abmCliente.alta(cliente);
-                                    agregados++;
+                    if (sheet == null) {
+                        JOptionPane.showMessageDialog(null, "No se encontró la hoja IMPORTARHOJA, renombrela e intente nuevamente");
+                    } else {
+                        Iterator<Row> iterarFilas = sheet.iterator();
+                        Cell celdaNombre;
+                        Cell celdaTelefono;
+                        Cell celdaCelular;
+                        String telefonoString;
+                        String telefonoCelularString;
+                        abrirBase();
+                        agregados = 0;
+                        modificados = 0;
+                        iterarFilas.next();
+                        while (iterarFilas.hasNext() && importando) {
+                            Row row = iterarFilas.next();
+                            celdaNombre = row.getCell(0);
+                            celdaTelefono = row.getCell(1);
+                            celdaCelular = row.getCell(2);
+                            telefonoString = "";
+                            telefonoCelularString = "";
+                            if (celdaNombre != null) {
+                                if (!celdaNombre.toString().isEmpty()) {
+                                    celdaNombre.setCellType(Cell.CELL_TYPE_STRING);
+                                    String nombre = celdaNombre.getStringCellValue();
+                                    if (celdaTelefono != null) {
+                                        celdaTelefono.setCellType(Cell.CELL_TYPE_STRING);
+                                        telefonoString = celdaTelefono.getStringCellValue();
+                                    }
+                                    if (celdaCelular != null) {
+                                        celdaCelular.setCellType(Cell.CELL_TYPE_STRING);
+                                        telefonoCelularString = celdaCelular.getStringCellValue();
+                                    }
+                                    cliente.set("nombre", nombre, "telefono", telefonoString, "celular", telefonoCelularString);
+                                    if (abmCliente.findCliente(cliente)) {
+                                        abmCliente.modificar(cliente);
+                                    } else {
+                                        abmCliente.alta(cliente);
+                                        agregados++;
+                                    }
                                 }
                             }
                         }
+                        cerrarBase();
                     }
-                    cerrarBase();
                 }
                 return null;
             }
@@ -379,7 +417,7 @@ public class controladorImportarGui implements ActionListener {
                 setProgress(100);
                 JOptionPane.showMessageDialog(importarGui, "Importación de registros terminada, se han agregado " + agregados + " clientes");
                 importarGui.getProgreso().setIndeterminate(false);
-                importando=false;
+                importando = false;
             }
         };
         worker.execute();
@@ -395,198 +433,389 @@ public class controladorImportarGui implements ActionListener {
             @Override
             protected Void doInBackground() throws Exception {
                 if (importarGui.getSelectorArchivos().getSelectedFile().getName().contains("xlsx")) {
-                    importando=true;
+                    importando = true;
                     XSSFWorkbook Libro_trabajo = new XSSFWorkbook(importarGui.getSelectorArchivos().getSelectedFile().getAbsolutePath());
                     XSSFSheet hoja = Libro_trabajo.getSheet("IMPORTARHOJA");
-                    Iterator iterarFilas = hoja.rowIterator();
-                    XSSFCell celdaCodigo;
-                    XSSFCell celdaDescripcion;
-                    XSSFCell celdaMarca;
-                    XSSFCell celdaPrecioCompra;
-                    XSSFCell celdaPrecioVenta;
-                    XSSFCell celdaEquivalenciaFram;
-                    String codigoString;
-                    String descripcionString;
-                    String marcaString;
-                    String precioString;
-                    String precioStringVenta;
-                    String equivalenciaString;
-                    double precioFloat;
-                    BigDecimal precioCompraBig;
-                    BigDecimal precioVenta;
-                    abrirBase();
-                    agregados = 0;
-                    modificados = 0;
-                    while (iterarFilas.hasNext() && importando) {
-                        XSSFRow row = (XSSFRow) iterarFilas.next();
-                        celdaCodigo = (XSSFCell) row.getCell(0);
-                        celdaDescripcion = (XSSFCell) row.getCell(1);
-                        celdaMarca = (XSSFCell) row.getCell(2);
-                        celdaPrecioCompra = (XSSFCell) row.getCell(3);
-                        celdaPrecioVenta = (XSSFCell) row.getCell(4);
-                        celdaEquivalenciaFram = (XSSFCell) row.getCell(5);
-                        descripcionString = "";
-                        marcaString = "";
-                        precioCompraBig = new BigDecimal(0);
-                        precioVenta = new BigDecimal(0);
-                        equivalenciaString = "";
-                        if (celdaCodigo != null) {
-                            if (!celdaCodigo.toString().isEmpty()) {
-                                celdaCodigo.setCellType(Cell.CELL_TYPE_STRING);
-                                codigoString = celdaCodigo.getStringCellValue();
-                                if (celdaDescripcion != null) {
-                                    celdaDescripcion.setCellType(Cell.CELL_TYPE_STRING);
-                                    descripcionString = celdaDescripcion.toString();
-                                }
-                                if (celdaMarca != null) {
-                                    celdaMarca.setCellType(Cell.CELL_TYPE_STRING);
-                                    marcaString = celdaMarca.toString();
-                                }
-                                if (celdaPrecioCompra != null) {
-                                    celdaPrecioCompra.setCellType(Cell.CELL_TYPE_STRING);
-                                    precioString = celdaPrecioCompra.toString();
-                                    precioFloat = Float.parseFloat(precioString);
-                                    precioCompraBig = BigDecimal.valueOf(precioFloat).setScale(2, RoundingMode.CEILING);
+                    if (hoja == null) {
+                        JOptionPane.showMessageDialog(null, "No se encontró la hoja IMPORTARHOJA, renombrela e intente nuevamente");
+                    } else {
+                        Iterator iterarFilas = hoja.rowIterator();
+                        XSSFCell celdaCodigo;
+                        XSSFCell celdaDescripcion;
+                        XSSFCell celdaMarca;
+                        XSSFCell celdaPrecioCompra;
+                        XSSFCell celdaPrecioVenta;
+                        XSSFCell celdaEquivalenciaFram;
+                        String codigoString;
+                        String descripcionString;
+                        String marcaString;
+                        String precioString;
+                        String precioStringVenta;
+                        String equivalenciaString;
+                        double precioFloat;
+                        BigDecimal precioCompraBig;
+                        BigDecimal precioVenta;
+                        abrirBase();
+                        agregados = 0;
+                        modificados = 0;
+                        iterarFilas.next();
+                        while (iterarFilas.hasNext() && importando) {
+                            XSSFRow row = (XSSFRow) iterarFilas.next();
+                            celdaCodigo = (XSSFCell) row.getCell(0);
+                            celdaDescripcion = (XSSFCell) row.getCell(1);
+                            celdaMarca = (XSSFCell) row.getCell(2);
+                            celdaPrecioCompra = (XSSFCell) row.getCell(3);
+                            celdaPrecioVenta = (XSSFCell) row.getCell(4);
+                            celdaEquivalenciaFram = (XSSFCell) row.getCell(5);
+                            descripcionString = "";
+                            marcaString = "";
+                            precioCompraBig = new BigDecimal(0);
+                            precioVenta = new BigDecimal(0);
+                            equivalenciaString = "";
+                            if (celdaCodigo != null) {
+                                if (!celdaCodigo.toString().isEmpty()) {
+                                    celdaCodigo.setCellType(Cell.CELL_TYPE_STRING);
+                                    codigoString = celdaCodigo.getStringCellValue();
+                                    if (celdaDescripcion != null) {
+                                        celdaDescripcion.setCellType(Cell.CELL_TYPE_STRING);
+                                        descripcionString = celdaDescripcion.toString();
+                                    }
+                                    if (celdaMarca != null) {
+                                        celdaMarca.setCellType(Cell.CELL_TYPE_STRING);
+                                        marcaString = celdaMarca.toString();
+                                    }
+                                    if (celdaPrecioCompra != null) {
+                                        celdaPrecioCompra.setCellType(Cell.CELL_TYPE_STRING);
+                                        precioString = celdaPrecioCompra.toString();
+                                        precioFloat = Float.parseFloat(precioString);
+                                        precioCompraBig = BigDecimal.valueOf(precioFloat).setScale(2, RoundingMode.CEILING);
 
-                                }
-                                if (celdaPrecioVenta != null) {
-                                    celdaPrecioVenta.setCellType(Cell.CELL_TYPE_STRING);
-                                    precioStringVenta = celdaPrecioVenta.toString();
-                                    precioFloat = Float.parseFloat(precioStringVenta);
-                                    precioVenta = BigDecimal.valueOf(precioFloat).setScale(2, RoundingMode.CEILING);
+                                    }
+                                    if (celdaPrecioVenta != null) {
+                                        celdaPrecioVenta.setCellType(Cell.CELL_TYPE_STRING);
+                                        precioStringVenta = celdaPrecioVenta.toString();
+                                        precioFloat = Float.parseFloat(precioStringVenta);
+                                        precioVenta = BigDecimal.valueOf(precioFloat).setScale(2, RoundingMode.CEILING);
 
-                                }
-                                if (celdaEquivalenciaFram != null) {
-                                    celdaEquivalenciaFram.setCellType(Cell.CELL_TYPE_STRING);
-                                    equivalenciaString = celdaEquivalenciaFram.toString();
-                                }
-                                articulo.set("codigo", codigoString, "descripcion", descripcionString, "marca", marcaString, "precio_compra", precioCompraBig, "precio_venta", precioVenta, "equivalencia_fram", equivalenciaString, "stock", 0, "stock_minimo", 0);
-                                if (abmArticulo.findArticulo(articulo)) {
-                                    abmArticulo.modificar(articulo);
-                                    if(!importarGui.getProveedor().getSelectedItem().equals("")){
-                                        prov.set("nombre", importarGui.getProveedor().getSelectedItem());
-                                        prov= abmProveedor.getProveedor(prov);
-                                        prov.add(articulo);
                                     }
-                                    else{
-                                        articulo.set("proveedor_id",null);
+                                    if (celdaEquivalenciaFram != null) {
+                                        celdaEquivalenciaFram.setCellType(Cell.CELL_TYPE_STRING);
+                                        equivalenciaString = celdaEquivalenciaFram.toString();
                                     }
-                                    System.out.println("modificando articulo");
-                                } else {
-                                    abmArticulo.alta(articulo);
-                                    if(!importarGui.getProveedor().getSelectedItem().equals("")){
-                                        prov.set("nombre", importarGui.getProveedor().getSelectedItem());
-                                        prov= abmProveedor.getProveedor(prov);
-                                        prov.add(articulo);
+                                    articulo.set("codigo", codigoString, "descripcion", descripcionString, "marca", marcaString, "precio_compra", precioCompraBig, "precio_venta", precioVenta, "equivalencia_fram", equivalenciaString, "stock", 0, "stock_minimo", 0);
+                                    if (abmArticulo.findArticulo(articulo)) {
+                                        abmArticulo.modificar(articulo);
+                                        if (!importarGui.getProveedor().getSelectedItem().equals("")) {
+                                            prov.set("nombre", importarGui.getProveedor().getSelectedItem());
+                                            prov = abmProveedor.getProveedor(prov);
+                                            prov.add(articulo);
+                                        } else {
+                                            articulo.set("proveedor_id", null);
+                                        }
+                                        System.out.println("modificando articulo");
+                                    } else {
+                                        abmArticulo.alta(articulo);
+                                        if (!importarGui.getProveedor().getSelectedItem().equals("")) {
+                                            prov.set("nombre", importarGui.getProveedor().getSelectedItem());
+                                            prov = abmProveedor.getProveedor(prov);
+                                            prov.add(articulo);
+                                        }
+                                        System.out.println("nuevo articulo");
+                                        agregados++;
                                     }
-                                    System.out.println("nuevo articulo");
-                                    agregados++;
                                 }
                             }
                         }
+                        cerrarBase();
                     }
-                    cerrarBase();
                 } else if (importarGui.getSelectorArchivos().getSelectedFile().getName().contains("xls")) {
-                    importando=true;
+                    importando = true;
                     workbook = new HSSFWorkbook(new FileInputStream(importarGui.getSelectorArchivos().getSelectedFile().getAbsolutePath()));
                     sheet = workbook.getSheet("IMPORTARHOJA");
-                    Iterator<Row> iterarFilas = sheet.iterator();
-                    Cell celdaCodigo;
-                    Cell celdaDescripcion;
-                    Cell celdaMarca;
-                    Cell celdaPrecioCompra;
-                    Cell celdaPrecioVenta;
-                    Cell celdaEquivalenciaFram;
-                    String codigoString;
-                    String descripcionString;
-                    String marcaString;
-                    String precioString;
-                    String precioVentaString;
-                    String equivalenciaString;
-                    double precioFloat;
-                    BigDecimal precioCompraBig;
-                    BigDecimal precioVenta;
-                    abrirBase();
-                    agregados = 0;
-                    modificados = 0;
-                    while (iterarFilas.hasNext() && importando) {
-                        Row row = iterarFilas.next();
-                        celdaCodigo = row.getCell(0);
-                        celdaDescripcion = row.getCell(1);
-                        celdaMarca = row.getCell(2);
-                        celdaPrecioCompra = row.getCell(3);
-                        celdaPrecioVenta = row.getCell(4);
-                        celdaEquivalenciaFram = row.getCell(5);
-                        descripcionString = "";
-                        marcaString = "";
-                        precioCompraBig = new BigDecimal(0);
-                        precioVenta = new BigDecimal(0);
-                        equivalenciaString = "";
+                    if (sheet == null) {
+                        JOptionPane.showMessageDialog(null, "No se encontró la hoja IMPORTARHOJA, renombrela e intente nuevamente");
+                    } else {
+                        Iterator<Row> iterarFilas = sheet.iterator();
+                        Cell celdaCodigo;
+                        Cell celdaDescripcion;
+                        Cell celdaMarca;
+                        Cell celdaPrecioCompra;
+                        Cell celdaPrecioVenta;
+                        Cell celdaEquivalenciaFram;
+                        String codigoString;
+                        String descripcionString;
+                        String marcaString;
+                        String precioString;
+                        String precioVentaString;
+                        String equivalenciaString;
+                        double precioFloat;
+                        BigDecimal precioCompraBig;
+                        BigDecimal precioVenta;
+                        abrirBase();
+                        agregados = 0;
+                        modificados = 0;
+                        iterarFilas.next();
+                        while (iterarFilas.hasNext() && importando) {
+                            Row row = iterarFilas.next();
+                            celdaCodigo = row.getCell(0);
+                            celdaDescripcion = row.getCell(1);
+                            celdaMarca = row.getCell(2);
+                            celdaPrecioCompra = row.getCell(3);
+                            celdaPrecioVenta = row.getCell(4);
+                            celdaEquivalenciaFram = row.getCell(5);
+                            descripcionString = "";
+                            marcaString = "";
+                            precioCompraBig = new BigDecimal(0);
+                            precioVenta = new BigDecimal(0);
+                            equivalenciaString = "";
 
-                        if (celdaCodigo != null) {
-                            if (!celdaCodigo.toString().isEmpty()) {
-                                celdaCodigo.setCellType(Cell.CELL_TYPE_STRING);
-                                codigoString = celdaCodigo.getStringCellValue();
-                                if (celdaDescripcion != null) {
-                                    celdaDescripcion.setCellType(Cell.CELL_TYPE_STRING);
-                                    descripcionString = celdaDescripcion.getStringCellValue();
-                                }
-                                if (celdaMarca != null) {
-                                    celdaMarca.setCellType(Cell.CELL_TYPE_STRING);
-                                    marcaString = celdaMarca.getStringCellValue();
-                                }
-                                if (celdaPrecioCompra != null) {
-                                    celdaPrecioCompra.setCellType(Cell.CELL_TYPE_STRING);
-                                    precioString = celdaPrecioCompra.getStringCellValue();
-                                    precioFloat = Float.parseFloat(precioString);
-                                    precioCompraBig = BigDecimal.valueOf(precioFloat).setScale(2, RoundingMode.CEILING);
+                            if (celdaCodigo != null) {
+                                if (!celdaCodigo.toString().isEmpty()) {
+                                    celdaCodigo.setCellType(Cell.CELL_TYPE_STRING);
+                                    codigoString = celdaCodigo.getStringCellValue();
+                                    if (celdaDescripcion != null) {
+                                        celdaDescripcion.setCellType(Cell.CELL_TYPE_STRING);
+                                        descripcionString = celdaDescripcion.getStringCellValue();
+                                    }
+                                    if (celdaMarca != null) {
+                                        celdaMarca.setCellType(Cell.CELL_TYPE_STRING);
+                                        marcaString = celdaMarca.getStringCellValue();
+                                    }
+                                    if (celdaPrecioCompra != null) {
+                                        celdaPrecioCompra.setCellType(Cell.CELL_TYPE_STRING);
+                                        precioString = celdaPrecioCompra.getStringCellValue();
+                                        precioFloat = Float.parseFloat(precioString);
+                                        precioCompraBig = BigDecimal.valueOf(precioFloat).setScale(2, RoundingMode.CEILING);
 
-                                }
-                                if (celdaPrecioVenta != null) {
-                                    celdaPrecioVenta.setCellType(Cell.CELL_TYPE_STRING);
-                                    precioString = celdaPrecioVenta.getStringCellValue();
-                                    precioFloat = Float.parseFloat(precioString);
-                                    precioVenta = BigDecimal.valueOf(precioFloat).setScale(2, RoundingMode.CEILING);
-                                }
-                                if (celdaEquivalenciaFram != null) {
-                                    celdaEquivalenciaFram.setCellType(Cell.CELL_TYPE_STRING);
-                                    equivalenciaString = celdaEquivalenciaFram.getStringCellValue();
-                                }
-                                articulo.set("codigo", codigoString, "descripcion", descripcionString, "marca", marcaString, "precio_compra", precioCompraBig, "precio_venta", precioVenta, "equivalencia_fram", equivalenciaString, "stock", 0, "stock_minimo", 0);
-                                if (abmArticulo.findArticulo(articulo)) {
-                                    abmArticulo.modificar(articulo);
-                                    if(!importarGui.getProveedor().getSelectedItem().equals("")){
-                                        prov.set("nombre", importarGui.getProveedor().getSelectedItem());
-                                        prov= abmProveedor.getProveedor(prov);
-                                        prov.add(articulo);
                                     }
-                                    else{
-                                        articulo.set("proveedor_id",null);
+                                    if (celdaPrecioVenta != null) {
+                                        celdaPrecioVenta.setCellType(Cell.CELL_TYPE_STRING);
+                                        precioString = celdaPrecioVenta.getStringCellValue();
+                                        precioFloat = Float.parseFloat(precioString);
+                                        precioVenta = BigDecimal.valueOf(precioFloat).setScale(2, RoundingMode.CEILING);
                                     }
-                                    System.out.println("modificando articulo");
-                                } else {
-                                    abmArticulo.alta(articulo);
-                                    if(!importarGui.getProveedor().getSelectedItem().equals("")){
-                                        prov.set("nombre", importarGui.getProveedor().getSelectedItem());
-                                        prov= abmProveedor.getProveedor(prov);
-                                        prov.add(articulo);
+                                    if (celdaEquivalenciaFram != null) {
+                                        celdaEquivalenciaFram.setCellType(Cell.CELL_TYPE_STRING);
+                                        equivalenciaString = celdaEquivalenciaFram.getStringCellValue();
                                     }
-                                    System.out.println("nuevo articulo");
-                                    agregados++;
+                                    articulo.set("codigo", codigoString, "descripcion", descripcionString, "marca", marcaString, "precio_compra", precioCompraBig, "precio_venta", precioVenta, "equivalencia_fram", equivalenciaString, "stock", 0, "stock_minimo", 0);
+                                    if (abmArticulo.findArticulo(articulo)) {
+                                        abmArticulo.modificar(articulo);
+                                        if (!importarGui.getProveedor().getSelectedItem().equals("")) {
+                                            prov.set("nombre", importarGui.getProveedor().getSelectedItem());
+                                            prov = abmProveedor.getProveedor(prov);
+                                            prov.add(articulo);
+                                        } else {
+                                            articulo.set("proveedor_id", null);
+                                        }
+                                        System.out.println("modificando articulo");
+                                    } else {
+                                        abmArticulo.alta(articulo);
+                                        if (!importarGui.getProveedor().getSelectedItem().equals("")) {
+                                            prov.set("nombre", importarGui.getProveedor().getSelectedItem());
+                                            prov = abmProveedor.getProveedor(prov);
+                                            prov.add(articulo);
+                                        }
+                                        System.out.println("nuevo articulo");
+                                        agregados++;
+                                    }
                                 }
                             }
                         }
+                        cerrarBase();
                     }
-                    cerrarBase();
                 }
                 return null;
             }
 
             protected void done() {
                 setProgress(100);
-                JOptionPane.showMessageDialog(importarGui, "Importación de registros terminada, se han agregado " + agregados + "Articulos");
+                JOptionPane.showMessageDialog(importarGui, "Importación de registros terminada, se han agregado " + agregados + " Articulos");
                 importarGui.getProgreso().setIndeterminate(false);
-                importando=false;
+                importando = false;
+            }
+        };
+        worker.execute();
+    }
+
+    ;
+    
+    
+    
+    
+    
+    
+    
+    
+    private void importarVenta() throws FileNotFoundException, IOException {
+        importarGui.getProgreso().setIndeterminate(true);
+        final javax.swing.SwingWorker worker = new javax.swing.SwingWorker() {
+            @Override
+            protected Void doInBackground() throws Exception {
+                if (importarGui.getSelectorArchivos().getSelectedFile().getName().contains("xlsx")) {//Archivos con extensión xlsx
+                    importando = true;
+                    XSSFWorkbook Libro_trabajo = new XSSFWorkbook(importarGui.getSelectorArchivos().getSelectedFile().getAbsolutePath());
+                    XSSFSheet hoja = Libro_trabajo.getSheet("IMPORTARHOJA");
+                    if (hoja == null) {
+                        JOptionPane.showMessageDialog(null, "No se encontró la hoja IMPORTARHOJA, renombrela e intente nuevamente");
+                    } else {
+                        Iterator iterarFilas = hoja.rowIterator();
+                        XSSFCell celdaCliente;
+                        XSSFCell celdaFecha;
+                        XSSFCell celdaPago;
+                        XSSFCell celdaCodigo;
+                        XSSFCell celdaCantidad;
+                        XSSFCell celdaPrecio;
+                        String fechaString = "";
+                        String telefonoString;
+                        String codigoString;
+                        int cantidadInt = 0;
+                        double pagoDouble;
+                        BigDecimal pagoBig;
+                        pagoBig = new BigDecimal(0);
+                        abrirBase();
+                        agregados = 0;
+                        modificados = 0;
+                        System.out.println(1);
+                        XSSFRow primerFila = (XSSFRow) iterarFilas.next();
+                        celdaCliente = (XSSFCell) primerFila.getCell(1);
+                        celdaFecha = (XSSFCell) primerFila.getCell(3);
+                                                System.out.println(2);
+                        venta = new Venta();
+                        articulo = new Articulo();
+                        cliente = new Cliente();
+                        if (celdaCliente != null) {
+                            System.out.println(3);
+                            if (!celdaCliente.toString().isEmpty()) {
+                                System.out.println(4);
+                                celdaCliente.setCellType(Cell.CELL_TYPE_STRING);
+                                String nombre = celdaCliente.getStringCellValue();
+                                if (celdaFecha != null) {
+                                    System.out.println(5);
+                                    celdaFecha.setCellType(Cell.CELL_TYPE_STRING);
+                                    fechaString = celdaFecha.toString();
+                                }
+                                XSSFRow segundaFila = (XSSFRow) iterarFilas.next();
+                                celdaPago = (XSSFCell) segundaFila.getCell(1);
+                                if (celdaPago != null) {
+                                    System.out.println(6);
+                                    celdaPago.setCellType(Cell.CELL_TYPE_NUMERIC);
+                                    pagoDouble = celdaPago.getNumericCellValue();
+                                    pagoBig = BigDecimal.valueOf(pagoDouble).setScale(2, RoundingMode.CEILING);
+                                }
+                                iterarFilas.next();
+                                abrirBase();
+                                Base.openTransaction();
+                                System.out.println(7);
+                                
+                                cliente = Cliente.findFirst("nombre", nombre);
+                                System.out.println(8+ cliente.getString("nombre"));
+                                venta = Venta.createIt("monto", pagoBig, "fecha", fechaString, "pago", pagoBig);
+                                System.out.println(9+ venta.getString("id"));
+
+                                cliente.add(venta);
+                                Base.commitTransaction();
+                                cerrarBase();
+                                
+                                System.out.println(8);
+                                while (iterarFilas.hasNext() && importando) {
+                                    cantidadInt = 0;
+                                    pagoBig = new BigDecimal(0);
+                                    XSSFRow row = (XSSFRow) iterarFilas.next();
+                                    celdaCodigo = (XSSFCell) row.getCell(0);
+                                    celdaCantidad = (XSSFCell) row.getCell(1);
+                                    celdaPago = (XSSFCell) row.getCell(2);
+                                    if (celdaCodigo != null) {
+                                        if (!celdaCodigo.toString().isEmpty()) {
+                                            celdaCodigo.setCellType(Cell.CELL_TYPE_STRING);
+                                            codigoString = celdaCodigo.toString();
+                                            if (celdaCantidad != null) {
+                                                celdaCantidad.setCellType(Cell.CELL_TYPE_NUMERIC);
+                                                Double cantidadDouble = celdaPago.getNumericCellValue();
+                                                cantidadInt = cantidadDouble.intValue();
+                                            }
+                                            if (celdaPago != null) {
+                                                celdaPago.setCellType(Cell.CELL_TYPE_NUMERIC);
+                                                pagoDouble = celdaPago.getNumericCellValue();
+                                                pagoBig = BigDecimal.valueOf(pagoDouble).setScale(2, RoundingMode.CEILING);
+                                            }
+                                            articulo.set("codigo", codigoString);
+                                            Base.openTransaction();
+                                            abrirBase();
+                                            if (abmArticulo.findArticulo(articulo)) {
+                                                articulo = abmArticulo.getProducto(articulo);
+                                                venta.add(articulo);
+                                                ArticulosVentas articulosVentas = ArticulosVentas.findFirst("venta_id = ? and articulos_id =?  ", venta.getId(), articulo.getId());
+                                                articulosVentas.set("cantidad", cantidadInt, "precio_vendido", pagoBig);
+                                                articulosVentas.save();
+
+                                            }
+                                            Base.commitTransaction();
+                                            cerrarBase();
+                                        }
+
+
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+
+
+
+
+                    /*    } else if (importarGui.getSelectorArchivos().getSelectedFile().getName().contains("xls")) {
+                     importando = true;
+                     workbook = new HSSFWorkbook(new FileInputStream(importarGui.getSelectorArchivos().getSelectedFile().getAbsolutePath()));
+                     sheet = workbook.getSheet("IMPORTARHOJA");
+                     if (sheet == null) {
+                     JOptionPane.showMessageDialog(null, "No se encontró la hoja IMPORTARHOJA, renombrela e intente nuevamente");
+                     } else {
+                     Iterator<Row> iterarFilas = sheet.iterator();
+                     Cell celdaNombre;
+                     Cell celdaTelefono;
+                     String telefonoString;
+                     abrirBase();
+                     agregados = 0;
+                     modificados = 0;
+                     iterarFilas.next();
+                     while (iterarFilas.hasNext() && importando) {
+                     Row row = iterarFilas.next();
+                     celdaNombre = row.getCell(0);
+                     celdaTelefono = row.getCell(1);
+                     telefonoString = "";
+                     if (celdaNombre != null) {
+                     if (!celdaNombre.toString().isEmpty()) {
+                     celdaNombre.setCellType(Cell.CELL_TYPE_STRING);
+                     String nombre = celdaNombre.getStringCellValue();
+                     if (celdaTelefono != null) {
+                     celdaTelefono.setCellType(Cell.CELL_TYPE_STRING);
+                     telefonoString = celdaTelefono.getStringCellValue();
+                     }
+                     prov.set("nombre", nombre, "telefono", telefonoString);
+                     if (abmProveedor.findProveedor(prov)) {
+                     abmProveedor.modificar(prov);
+                     System.out.println("modifique");
+
+                     } else {
+                     abmProveedor.alta(prov);
+                     agregados++;
+                     }
+                     }
+                     }
+                     }
+                     cerrarBase();
+                     }*/
+                }
+                return null;
+            }
+
+            protected void done() {
+                setProgress(100);
+                JOptionPane.showMessageDialog(importarGui, "Importación de venta finalizada");
+                importarGui.getProgreso().setIndeterminate(false);
+                importando = false;
             }
         };
         worker.execute();

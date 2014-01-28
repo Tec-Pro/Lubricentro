@@ -10,8 +10,15 @@ import interfaz.LoginGui;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.mail.MessagingException;
 import javax.swing.JOptionPane;
+import modelos.Envio;
 import org.javalite.activejdbc.Base;
+import org.javalite.activejdbc.LazyList;
 
 /**
  *
@@ -51,6 +58,8 @@ public class ControladorLogin extends Thread {
                     if (mu.login(user, pass)) {
                         log.dispose();
                         app.setVisible(true);
+                        EmailThread emailThread= new EmailThread();
+                        emailThread.run();
                     } else {
                         JOptionPane.showMessageDialog(app, "INTENTE NUEVAMENTE", "¡DATOS INCORRECTOS!", JOptionPane.ERROR_MESSAGE);
                     }
@@ -59,8 +68,6 @@ public class ControladorLogin extends Thread {
                 }
             }
         });
-        EmailThread emailThread = new EmailThread();
-        emailThread.run();
     }
 
     public LoginGui getLog() {
@@ -78,4 +85,6 @@ public class ControladorLogin extends Thread {
             Base.close();
         }
     }
+
+    
 }

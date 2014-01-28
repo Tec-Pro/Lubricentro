@@ -30,10 +30,11 @@ public class EmailThread extends Thread {
         Calendar fechaActualMenosMes= Calendar.getInstance();
         fechaActualMenosMes.add(Calendar.MONTH, -1);
         java.sql.Date sqlFecha = new java.sql.Date(fechaActualMenosMes.getTime().getTime());
-        System.out.println(fechaEnviado.compareTo(sqlFecha));
-        System.out.println(fechaEnviado.compareTo(fechaEnviado));
-        System.out.println(fechaEnviado + " " + sqlFecha);
-        if(sqlFecha.toString().equals(fechaEnviado.toString())|| !fechaUltEnvio.getBoolean("enviado")){
+        System.out.println("sqlFecha "+ sqlFecha+ "  enviado "+ fechaEnviado);
+        System.out.println("after "+sqlFecha.after(fechaEnviado));
+        System.out.println("Before "+sqlFecha.before(fechaEnviado));
+        java.sql.Date.valueOf(sqlFecha.toString());
+        if(sqlFecha.toString().equals(fechaEnviado.toString())|| sqlFecha.after(fechaEnviado)){
             System.out.println("booleano"+fechaUltEnvio.getBoolean("enviado"));
             Modulo moduloBackUp= new Modulo();
             moduloBackUp.CrearBackupSilencioso();
