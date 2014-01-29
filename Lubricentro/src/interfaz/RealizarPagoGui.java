@@ -6,6 +6,7 @@ package interfaz;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import javax.swing.JOptionPane;
 import modelos.Pago;
@@ -29,6 +30,8 @@ public class RealizarPagoGui extends javax.swing.JDialog {
         initComponents();
         this.prov = prov;
         proveedor.setText(prov.getString("nombre"));
+        fecha.setDate(Calendar.getInstance().getTime());
+        monto.requestFocus();
     }
 
     /**

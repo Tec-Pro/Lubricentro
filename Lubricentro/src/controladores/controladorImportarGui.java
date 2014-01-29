@@ -16,6 +16,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
@@ -26,6 +28,7 @@ import modelos.ArticulosVentas;
 import modelos.Cliente;
 import modelos.Proveedor;
 import modelos.Venta;
+import net.sf.jasperreports.engine.query.SQLBetweenBaseClause;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
@@ -662,15 +665,17 @@ public class controladorImportarGui implements ActionListener {
                         Iterator iterarFilas = hoja.rowIterator();
                         XSSFCell celdaCliente;
                         XSSFCell celdaFecha;
-                        XSSFCell celdaPago;
+                        XSSFCell celdaSiPago;
                         XSSFCell celdaCodigo;
                         XSSFCell celdaCantidad;
                         XSSFCell celdaPrecio;
-                        String fechaString = "";
-                        String telefonoString;
+                        Date fechaDate = Calendar.getInstance().getTime();
+                        String siPago;
+                        int siPagoInt=1;
                         String codigoString;
-                        int cantidadInt = 0;
+                        Double cantidadDouble = 0.0;
                         double pagoDouble;
+                        double monto=0.0;
                         BigDecimal pagoBig;
                         pagoBig = new BigDecimal(0);
                         abrirBase();
@@ -680,7 +685,6 @@ public class controladorImportarGui implements ActionListener {
                         XSSFRow primerFila = (XSSFRow) iterarFilas.next();
                         celdaCliente = (XSSFCell) primerFila.getCell(1);
                         celdaFecha = (XSSFCell) primerFila.getCell(3);
-                                                System.out.println(2);
                         venta = new Venta();
                         articulo = new Articulo();
                         cliente = new Cliente();
@@ -692,71 +696,91 @@ public class controladorImportarGui implements ActionListener {
                                 String nombre = celdaCliente.getStringCellValue();
                                 if (celdaFecha != null) {
                                     System.out.println(5);
-                                    celdaFecha.setCellType(Cell.CELL_TYPE_STRING);
-                                    fechaString = celdaFecha.toString();
+                                    fechaDate = celdaFecha.getDateCellValue();
                                 }
                                 XSSFRow segundaFila = (XSSFRow) iterarFilas.next();
-                                celdaPago = (XSSFCell) segundaFila.getCell(1);
-                                if (celdaPago != null) {
+                                celdaSiPago = (XSSFCell) segundaFila.getCell(1);
+                                if (celdaSiPago != null) {
                                     System.out.println(6);
-                                    celdaPago.setCellType(Cell.CELL_TYPE_NUMERIC);
-                                    pagoDouble = celdaPago.getNumericCellValue();
-                                    pagoBig = BigDecimal.valueOf(pagoDouble).setScale(2, RoundingMode.CEILING);
+                                    celdaSiPago.setCellType(Cell.CELL_TYPE_STRING);
+                                    siPago = celdaSiPago.getStringCellValue();
+                                    siPago=siPago.toLowerCase();
+                                    if(siPago.compareTo("si")==0){
+                                        siPagoInt=1;
+                                    }
+                                    else{
+                                        siPagoInt=0;
+                                    }
                                 }
                                 iterarFilas.next();
                                 abrirBase();
-                                Base.openTransaction();
-                                System.out.println(7);
+                                System.out.println(7 + nombre);
                                 
-                                cliente = Cliente.findFirst("nombre", nombre);
-                                System.out.println(8+ cliente.getString("nombre"));
-                                venta = Venta.createIt("monto", pagoBig, "fecha", fechaString, "pago", pagoBig);
+                                cliente = Cliente.findFirst("nombre = ?", nombre);
+                                System.out.println(8+ nombre  +" " +fechaDate);
+                                Base.openTransaction();
+                                venta = Venta.createIt( "fecha",(new java.sql.Date(fechaDate.getTime())), "pago", siPagoInt);
+                                Base.commitTransaction();
                                 System.out.println(9+ venta.getString("id"));
-
+                                Base.openTransaction();
                                 cliente.add(venta);
                                 Base.commitTransaction();
-                                cerrarBase();
                                 
-                                System.out.println(8);
+                                cerrarBase();
                                 while (iterarFilas.hasNext() && importando) {
-                                    cantidadInt = 0;
                                     pagoBig = new BigDecimal(0);
                                     XSSFRow row = (XSSFRow) iterarFilas.next();
                                     celdaCodigo = (XSSFCell) row.getCell(0);
                                     celdaCantidad = (XSSFCell) row.getCell(1);
-                                    celdaPago = (XSSFCell) row.getCell(2);
+                                    celdaPrecio = (XSSFCell) row.getCell(2);
                                     if (celdaCodigo != null) {
                                         if (!celdaCodigo.toString().isEmpty()) {
                                             celdaCodigo.setCellType(Cell.CELL_TYPE_STRING);
                                             codigoString = celdaCodigo.toString();
+                                            System.out.println("cod " +codigoString);
+                                            cantidadDouble=0.0;
                                             if (celdaCantidad != null) {
                                                 celdaCantidad.setCellType(Cell.CELL_TYPE_NUMERIC);
-                                                Double cantidadDouble = celdaPago.getNumericCellValue();
-                                                cantidadInt = cantidadDouble.intValue();
+                                                cantidadDouble = celdaCantidad.getNumericCellValue();
+                                                System.out.println("cant "+cantidadDouble);
                                             }
-                                            if (celdaPago != null) {
-                                                celdaPago.setCellType(Cell.CELL_TYPE_NUMERIC);
-                                                pagoDouble = celdaPago.getNumericCellValue();
-                                                pagoBig = BigDecimal.valueOf(pagoDouble).setScale(2, RoundingMode.CEILING);
+                                            pagoDouble=0.0;
+                                            if (celdaPrecio != null) {
+                                                celdaPrecio.setCellType(Cell.CELL_TYPE_NUMERIC);
+                                                pagoDouble = celdaPrecio.getNumericCellValue();
+                                                pagoBig = BigDecimal.valueOf(pagoDouble).setScale(2, RoundingMode.UNNECESSARY);
+                                                System.out.println( "sale "+pagoBig);
                                             }
                                             articulo.set("codigo", codigoString);
-                                            Base.openTransaction();
+                                            monto= monto+pagoDouble*cantidadDouble;
+                                            System.out.println("monto "+monto);
                                             abrirBase();
                                             if (abmArticulo.findArticulo(articulo)) {
+                                                System.out.println("encontré el artigulo");
                                                 articulo = abmArticulo.getProducto(articulo);
+                                                System.out.println(articulo.getId());
+                                                Base.openTransaction();
                                                 venta.add(articulo);
+                                                Base.commitTransaction();
                                                 ArticulosVentas articulosVentas = ArticulosVentas.findFirst("venta_id = ? and articulos_id =?  ", venta.getId(), articulo.getId());
-                                                articulosVentas.set("cantidad", cantidadInt, "precio_vendido", pagoBig);
+                                                articulosVentas.set("cantidad", cantidadDouble, "precio_vendido", pagoBig);
+                                                Base.openTransaction();
                                                 articulosVentas.save();
+                                                Base.commitTransaction();
 
                                             }
-                                            Base.commitTransaction();
                                             cerrarBase();
                                         }
 
 
                                     }
                                 }
+                                abrirBase();
+                                Base.openTransaction();
+                                venta.set("monto",monto);
+                                Base.commitTransaction();
+                                cerrarBase();
+                                
                             }
                         }
                     }
