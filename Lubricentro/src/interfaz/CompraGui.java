@@ -10,22 +10,23 @@ import java.sql.Date;
 import java.util.Calendar;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
-
 /**
  *
- * @author max
+ * @author jacinto
  */
-public class CompraGui extends javax.swing.JPanel {
+public class CompraGui extends javax.swing.JInternalFrame {
 
+    
     private DefaultTableModel tablaArticulosDefault;//tabla default de los clientes
     private DefaultTableModel tablaCompraDefault;
     private DefaultTableModel tablaProveedoresDefault;
 
     /**
-     * Creates new form AbmClienteGui
+     * Creates new form CompraGui
      */
     public CompraGui() {
         initComponents();
@@ -39,8 +40,7 @@ public class CompraGui extends javax.swing.JPanel {
         int anio =miCalendario.get(Calendar.YEAR);
         calendarioCompra.setDate(Date.valueOf(anio+"-"+(mes+1)+"-"+diaHoy));
     }
-
-    /**
+     /**
      * Seteo el actionListener para los botones articulosALaCompra,
      * proveedorALaCompra, compraNueva, imprimir, realizarCompra,
      * borrarArticulosSeleccionados, modificar
@@ -50,12 +50,10 @@ public class CompraGui extends javax.swing.JPanel {
      * @exception
      */
     public void setActionListener(ActionListener lis) {
-        this.articulosALaCompra.addActionListener(lis);
-        this.proveedorALaCompra.addActionListener(lis);
         this.compraNueva.addActionListener(lis);
         this.realizarCompra.addActionListener(lis);
         this.borrarArticulosSeleccionados.addActionListener(lis);
-        this.modificar.addActionListener(lis);
+        this.abona.addActionListener(lis);
     }
 
     /**
@@ -100,30 +98,7 @@ public class CompraGui extends javax.swing.JPanel {
         return tablaProveedoresDefault;
     }
 
-    /**
-     * Retorno boton articulosALaCompra para enviar los articulos seleccionados
-     * en la tabla articulos a la tabla compra
-     *
-     * @param
-     * @return JButton
-     * @exception
-     */
-    public JButton getArticulosALaCompra() {
-        return articulosALaCompra;
-    }
-
-    /**
-     * Retorno el campo busqeudaApellido para poder filtrar las busquedas dado
-     * el cuil de un proveedor
-     *
-     * @param
-     * @return JTextField
-     * @exception
-     */
-    public JTextField getBusquedaCuil() {
-        return busquedaCuil;
-    }
-
+    
     /**
      * Retorno boton borrarArticulosSeleccionados para borrar los articulos
      * seleccionados en la tabla compra
@@ -135,18 +110,6 @@ public class CompraGui extends javax.swing.JPanel {
     public JButton getBorrarArticulosSeleccionados() {
         return borrarArticulosSeleccionados;
     }
-
-    /**
-     * Retorno boton modificar para confirmar cambios realizados en una compra
-     *
-     * @param
-     * @return JButton
-     * @exception
-     */
-    public JButton getModificar() {
-        return modificar;
-    }
-
     /**
      * Retorno el campo busquedaNombreProveedor para poder filtrar las busquedas
      * dado el nombre de un proveedor
@@ -159,17 +122,6 @@ public class CompraGui extends javax.swing.JPanel {
         return busquedaNombreProveedor;
     }
 
-    /**
-     * Retorno boton proveedorALacompra para enviar el proveedor seleccionado al
-     * campo proveedor en el panel de la compra
-     *
-     * @param
-     * @return JButton
-     * @exception
-     */
-    public JButton getClienteALaFactura() {
-        return proveedorALaCompra;
-    }
 
     /**
      * Retorno el campo del proveedor de la compra
@@ -280,6 +232,16 @@ public class CompraGui extends javax.swing.JPanel {
         return calendarioCompra;
     }
 
+    public JTextField getCodigo() {
+        return codigo;
+    }
+
+    public JTextField getFram() {
+        return fram;
+    }
+    
+    
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -289,7 +251,7 @@ public class CompraGui extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel4 = new javax.swing.JLabel();
+        jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         fondoImagen = new javax.swing.JPanel();
         panelTitulo = new org.edisoncor.gui.panel.PanelImage();
@@ -298,17 +260,15 @@ public class CompraGui extends javax.swing.JPanel {
         panelArticulos = new javax.swing.JPanel();
         jScrollPane6 = new javax.swing.JScrollPane();
         tablaArticulos = new javax.swing.JTable();
+        labelNombre1 = new javax.swing.JLabel();
+        codigo = new javax.swing.JTextField();
+        labelNombre2 = new javax.swing.JLabel();
+        fram = new javax.swing.JTextField();
         panelProveedores = new javax.swing.JPanel();
         busquedaNombreProveedor = new javax.swing.JTextField();
         labelNombre = new javax.swing.JLabel();
-        busquedaCuil = new javax.swing.JTextField();
-        labelCuil = new javax.swing.JLabel();
         jScrollPane7 = new javax.swing.JScrollPane();
         tablaProveedores = new javax.swing.JTable();
-        jPanel1 = new javax.swing.JPanel();
-        jPanel3 = new javax.swing.JPanel();
-        articulosALaCompra = new javax.swing.JButton();
-        proveedorALaCompra = new javax.swing.JButton();
         panelCompra = new javax.swing.JPanel();
         labelCliente = new javax.swing.JLabel();
         proveedorCompra = new javax.swing.JTextField();
@@ -324,19 +284,21 @@ public class CompraGui extends javax.swing.JPanel {
         panelControlFactura = new javax.swing.JPanel();
         compraNueva = new javax.swing.JButton();
         realizarCompra = new javax.swing.JButton();
-        modificar = new javax.swing.JButton();
 
-        jLabel4.setFont(new java.awt.Font("Century Schoolbook L", 0, 14)); // NOI18N
-        jLabel4.setText("Abona");
+        setClosable(true);
+        setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
+        setIconifiable(true);
+        setMaximizable(true);
+        setResizable(true);
+        setTitle("Registrar Compra");
 
-        setPreferredSize(new java.awt.Dimension(825, 448));
+        jPanel1.setPreferredSize(new java.awt.Dimension(825, 448));
 
         jScrollPane1.setPreferredSize(new java.awt.Dimension(822, 448));
 
         fondoImagen.setPreferredSize(new java.awt.Dimension(820, 400));
 
         panelTitulo.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        panelTitulo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/interfaz/fondoCliente2.jpg"))); // NOI18N
         panelTitulo.setPreferredSize(new java.awt.Dimension(329, 49));
 
         titulo.setFont(new java.awt.Font("Century Schoolbook L", 3, 24)); // NOI18N
@@ -353,7 +315,7 @@ public class CompraGui extends javax.swing.JPanel {
 
             },
             new String [] {
-                "Cod.", "Nombre", "Marca"
+                "Id", "Codigo", "Marca"
             }
         ) {
             Class[] types = new Class [] {
@@ -371,20 +333,44 @@ public class CompraGui extends javax.swing.JPanel {
                 return canEdit [columnIndex];
             }
         });
-        tablaArticulos.setSelectionMode(javax.swing.ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         jScrollPane6.setViewportView(tablaArticulos);
+
+        labelNombre1.setFont(new java.awt.Font("Century Schoolbook L", 0, 14)); // NOI18N
+        labelNombre1.setText("Codigo");
+
+        codigo.setToolTipText("Filtrar busqueda por codigo");
+
+        labelNombre2.setFont(new java.awt.Font("Century Schoolbook L", 0, 14)); // NOI18N
+        labelNombre2.setText("Fram");
+
+        fram.setToolTipText("Filtrar busqueda por equivalencia en fram");
 
         javax.swing.GroupLayout panelArticulosLayout = new javax.swing.GroupLayout(panelArticulos);
         panelArticulos.setLayout(panelArticulosLayout);
         panelArticulosLayout.setHorizontalGroup(
             panelArticulosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 230, Short.MAX_VALUE)
+            .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+            .addGroup(panelArticulosLayout.createSequentialGroup()
+                .addGroup(panelArticulosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(labelNombre1)
+                    .addComponent(labelNombre2))
+                .addGap(17, 17, 17)
+                .addGroup(panelArticulosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(fram)
+                    .addComponent(codigo)))
         );
         panelArticulosLayout.setVerticalGroup(
             panelArticulosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelArticulosLayout.createSequentialGroup()
-                .addGap(0, 0, 0)
-                .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 169, Short.MAX_VALUE))
+                .addGroup(panelArticulosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(codigo, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(labelNombre1))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(panelArticulosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(fram, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(labelNombre2))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         panelProveedores.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Proveedores", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Century Schoolbook L", 3, 18))); // NOI18N
@@ -394,25 +380,20 @@ public class CompraGui extends javax.swing.JPanel {
         labelNombre.setFont(new java.awt.Font("Century Schoolbook L", 0, 14)); // NOI18N
         labelNombre.setText("Nombre");
 
-        busquedaCuil.setToolTipText("Filtrar busqueda por apellido");
-
-        labelCuil.setFont(new java.awt.Font("Century Schoolbook L", 0, 14)); // NOI18N
-        labelCuil.setText("Cuil");
-
         tablaProveedores.setAutoCreateRowSorter(true);
         tablaProveedores.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "Cod.", "Nombre", "Apellido"
+                "Cod.", "Nombre"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.String.class
+                java.lang.Integer.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false
+                false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -423,7 +404,6 @@ public class CompraGui extends javax.swing.JPanel {
                 return canEdit [columnIndex];
             }
         });
-        tablaProveedores.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jScrollPane7.setViewportView(tablaProveedores);
 
         javax.swing.GroupLayout panelProveedoresLayout = new javax.swing.GroupLayout(panelProveedores);
@@ -431,40 +411,20 @@ public class CompraGui extends javax.swing.JPanel {
         panelProveedoresLayout.setHorizontalGroup(
             panelProveedoresLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelProveedoresLayout.createSequentialGroup()
-                .addGroup(panelProveedoresLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(labelCuil)
-                    .addComponent(labelNombre))
+                .addComponent(labelNombre)
                 .addGap(17, 17, 17)
-                .addGroup(panelProveedoresLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(busquedaCuil, javax.swing.GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE)
-                    .addComponent(busquedaNombreProveedor)))
+                .addComponent(busquedaNombreProveedor, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE))
             .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
         );
         panelProveedoresLayout.setVerticalGroup(
             panelProveedoresLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelProveedoresLayout.createSequentialGroup()
                 .addGroup(panelProveedoresLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(busquedaCuil, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(labelCuil))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(panelProveedoresLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(busquedaNombreProveedor, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(labelNombre))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 67, Short.MAX_VALUE))
         );
-
-        jPanel1.setBorder(null);
-        jPanel1.setLayout(new java.awt.GridLayout(1, 0));
-
-        jPanel3.setBorder(null);
-        jPanel3.setLayout(new java.awt.GridLayout(1, 0));
-
-        articulosALaCompra.setIcon(new javax.swing.ImageIcon(getClass().getResource("/interfaz/Icons/enviar.png"))); // NOI18N
-        articulosALaCompra.setToolTipText("Cargar articulos a la factura");
-
-        proveedorALaCompra.setIcon(new javax.swing.ImageIcon(getClass().getResource("/interfaz/Icons/enviar.png"))); // NOI18N
-        proveedorALaCompra.setToolTipText("Cargar Proveedor a la compra");
 
         javax.swing.GroupLayout panelClientesAarticulosLayout = new javax.swing.GroupLayout(panelClientesAarticulos);
         panelClientesAarticulos.setLayout(panelClientesAarticulosLayout);
@@ -474,34 +434,14 @@ public class CompraGui extends javax.swing.JPanel {
                 .addGroup(panelClientesAarticulosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(panelArticulos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(panelProveedores, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(panelClientesAarticulosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(panelClientesAarticulosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(articulosALaCompra, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(proveedorALaCompra, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+                .addGap(0, 0, 0))
         );
         panelClientesAarticulosLayout.setVerticalGroup(
             panelClientesAarticulosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelClientesAarticulosLayout.createSequentialGroup()
-                .addGroup(panelClientesAarticulosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(panelProveedores, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(panelClientesAarticulosLayout.createSequentialGroup()
-                        .addGap(38, 38, 38)
-                        .addComponent(proveedorALaCompra, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 60, Short.MAX_VALUE)))
-                .addGroup(panelClientesAarticulosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(panelClientesAarticulosLayout.createSequentialGroup()
-                        .addGap(66, 66, 66)
-                        .addComponent(articulosALaCompra, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, 56, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, panelClientesAarticulosLayout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(panelArticulos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                .addComponent(panelProveedores, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 46, Short.MAX_VALUE)
+                .addComponent(panelArticulos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         panelCompra.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Compra", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Century Schoolbook L", 3, 18))); // NOI18N
@@ -520,7 +460,7 @@ public class CompraGui extends javax.swing.JPanel {
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.Integer.class, java.lang.String.class, java.math.BigDecimal.class, java.math.BigDecimal.class
+                java.lang.Integer.class, java.math.BigDecimal.class, java.lang.String.class, java.math.BigDecimal.class, java.math.BigDecimal.class
             };
             boolean[] canEdit = new boolean [] {
                 false, true, false, true, false
@@ -534,16 +474,7 @@ public class CompraGui extends javax.swing.JPanel {
                 return canEdit [columnIndex];
             }
         });
-        tablaCompra.setSelectionMode(javax.swing.ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         jScrollPane8.setViewportView(tablaCompra);
-        tablaCompra.getColumnModel().getColumn(0).setPreferredWidth(70);
-        tablaCompra.getColumnModel().getColumn(0).setMaxWidth(70);
-        tablaCompra.getColumnModel().getColumn(1).setPreferredWidth(75);
-        tablaCompra.getColumnModel().getColumn(1).setMaxWidth(75);
-        tablaCompra.getColumnModel().getColumn(3).setPreferredWidth(75);
-        tablaCompra.getColumnModel().getColumn(3).setMaxWidth(75);
-        tablaCompra.getColumnModel().getColumn(4).setPreferredWidth(75);
-        tablaCompra.getColumnModel().getColumn(4).setMaxWidth(75);
 
         labelTotal.setFont(new java.awt.Font("Century Schoolbook L", 0, 14)); // NOI18N
         labelTotal.setText("Total");
@@ -553,7 +484,6 @@ public class CompraGui extends javax.swing.JPanel {
         jLabel3.setFont(new java.awt.Font("Century Schoolbook L", 0, 14)); // NOI18N
         jLabel3.setText("Fecha");
 
-        borrarArticulosSeleccionados.setIcon(new javax.swing.ImageIcon(getClass().getResource("/interfaz/Icons/borrarSeleccionado.png"))); // NOI18N
         borrarArticulosSeleccionados.setText("Borrar articulos seleccionados");
         borrarArticulosSeleccionados.setToolTipText("Borrar articulos seleccionados en la factura");
         borrarArticulosSeleccionados.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -583,7 +513,7 @@ public class CompraGui extends javax.swing.JPanel {
                 .addComponent(borrarArticulosSeleccionados)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel5)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 74, Short.MAX_VALUE)
                 .addComponent(abona, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(labelTotal)
@@ -625,20 +555,15 @@ public class CompraGui extends javax.swing.JPanel {
         realizarCompra.setToolTipText("Solo registrar la compra");
         panelControlFactura.add(realizarCompra);
 
-        modificar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/interfaz/Icons/guardar.png"))); // NOI18N
-        modificar.setToolTipText("Guardar cambios realizados en la edición de la compra");
-        modificar.setEnabled(false);
-        panelControlFactura.add(modificar);
-
         javax.swing.GroupLayout fondoImagenLayout = new javax.swing.GroupLayout(fondoImagen);
         fondoImagen.setLayout(fondoImagenLayout);
         fondoImagenLayout.setHorizontalGroup(
             fondoImagenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(panelTitulo, javax.swing.GroupLayout.DEFAULT_SIZE, 823, Short.MAX_VALUE)
+            .addComponent(panelTitulo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(fondoImagenLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(panelClientesAarticulos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(panelClientesAarticulos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
                 .addGroup(fondoImagenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(panelCompra, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(panelControlFactura, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -660,49 +585,69 @@ public class CompraGui extends javax.swing.JPanel {
 
         jScrollPane1.setViewportView(fondoImagen);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 825, Short.MAX_VALUE)
         );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(0, 0, 0))
         );
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 825, Short.MAX_VALUE)
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(0, 0, Short.MAX_VALUE)))
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 469, Short.MAX_VALUE)
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(0, 10, Short.MAX_VALUE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(0, 11, Short.MAX_VALUE)))
+        );
+
+        pack();
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox abona;
-    private javax.swing.JButton articulosALaCompra;
     private javax.swing.JButton borrarArticulosSeleccionados;
-    private javax.swing.JTextField busquedaCuil;
     private javax.swing.JTextField busquedaNombreProveedor;
     private com.toedter.calendar.JDateChooser calendarioCompra;
+    private javax.swing.JTextField codigo;
     private javax.swing.JButton compraNueva;
     private javax.swing.JPanel fondoImagen;
+    private javax.swing.JTextField fram;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JScrollPane jScrollPane7;
     private javax.swing.JScrollPane jScrollPane8;
     private javax.swing.JLabel labelCliente;
-    private javax.swing.JLabel labelCuil;
     private javax.swing.JLabel labelNombre;
+    private javax.swing.JLabel labelNombre1;
+    private javax.swing.JLabel labelNombre2;
     private javax.swing.JLabel labelTotal;
-    private javax.swing.JButton modificar;
     private javax.swing.JPanel panelArticulos;
     private javax.swing.JPanel panelClientesAarticulos;
     private javax.swing.JPanel panelCompra;
     private javax.swing.JPanel panelControlFactura;
     private javax.swing.JPanel panelProveedores;
     private org.edisoncor.gui.panel.PanelImage panelTitulo;
-    private javax.swing.JButton proveedorALaCompra;
     private javax.swing.JTextField proveedorCompra;
     private javax.swing.JButton realizarCompra;
     private javax.swing.JTable tablaArticulos;

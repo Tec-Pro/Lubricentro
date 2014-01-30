@@ -12,21 +12,20 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.event.CellEditorListener;
 import javax.swing.table.DefaultTableModel;
 
 /**
  *
- * @author nico
+ * @author jacinto
  */
-public class VentaGui extends javax.swing.JPanel {
+public class VentaGui extends javax.swing.JInternalFrame {
 
     private DefaultTableModel tablaArticulosDefault;//tabla default de los clientes
     private DefaultTableModel tablaFacturaDefault;
     private DefaultTableModel tablaClientesDefault;
 
     /**
-     * Creates new form AbmClienteGui
+     * Creates new form VentaGui
      */
     public VentaGui() {
         initComponents();
@@ -36,12 +35,10 @@ public class VentaGui extends javax.swing.JPanel {
         Calendar miCalendario = Calendar.getInstance();
         java.util.Date eldia = miCalendario.getTime();
         int diaHoy = miCalendario.get(Calendar.DAY_OF_MONTH);
-        int mes=miCalendario.get(Calendar.MONTH);
-        int anio =miCalendario.get(Calendar.YEAR);
-        calendarioFactura.setDate(Date.valueOf(anio+"-"+(mes+1)+"-"+diaHoy));
-       
+        int mes = miCalendario.get(Calendar.MONTH);
+        int anio = miCalendario.get(Calendar.YEAR);
+        calendarioFactura.setDate(Date.valueOf(anio + "-" + (mes + 1) + "-" + diaHoy));
     }
-
 
     /**
      * Seteo el actionListener para los botones articulosALafactura,
@@ -53,15 +50,23 @@ public class VentaGui extends javax.swing.JPanel {
      * @exception
      */
     public void setActionListener(ActionListener lis) {
-        this.articulosALaFactura.addActionListener(lis);
-        this.clienteALaFactura.addActionListener(lis);
         this.facturaNueva.addActionListener(lis);
         this.realizarVenta.addActionListener(lis);
         this.borrarArticulosSeleccionados.addActionListener(lis);
-        this.modificar.addActionListener(lis);
     }
 
+    public JTextField getBusquedaFram() {
+        return busquedaFram;
+    }
+
+    public JTextField getBusquedaNombre() {
+        return busquedaNombre;
+    }
+ 
+
+    
     /**
+     *
      * Retorno la tabla Articulos con tipo TableModelDefault para pdoer realizar
      * inserciones y eliminaciones de filas más facilmente
      *
@@ -97,29 +102,7 @@ public class VentaGui extends javax.swing.JPanel {
         return tablaFacturaDefault;
     }
 
-    /**
-     * Retorno boton articulosALaFactura para enviar los articulos seleccionados
-     * en la tabla articulos a la tabla factura
-     *
-     * @param
-     * @return JButton
-     * @exception
-     */
-    public JButton getArticulosALaFactura() {
-        return articulosALaFactura;
-    }
-
-    /**
-     * Retorno el campo busqeudaApellido para poder filtrar las busquedas dado
-     * el apellido de un cliente
-     *
-     * @param
-     * @return JTextField
-     * @exception
-     */
-    public JTextField getBusquedaApellido() {
-        return busquedaApellido;
-    }
+   
 
     /**
      * Retorno el campo busquedaCodigoArticulo para poder filtrar las busquedas
@@ -157,66 +140,6 @@ public class VentaGui extends javax.swing.JPanel {
         return borrarArticulosSeleccionados;
     }
 
-    
-    
-    /**
-     * Retorno boton modificar para confirmar cambios realizados en una factura
-     *
-     * @param
-     * @return JButton
-     * @exception
-     */
-    public JButton getModificar() {
-        return modificar;
-    }
-
-    /**
-     * Retorno el campo busquedaCodigoCliente para poder filtrar las busquedas
-     * dado el id de un cliente
-     *
-     * @param
-     * @return JTextField
-     * @exception
-     */
-    public JTextField getBusquedaCodigoCliente() {
-        return busquedaCodigoCliente;
-    }
-
-    /**
-     * Retorno el campo busquedaMarca para poder filtrar las busquedas dado la
-     * marca de un producto
-     *
-     * @param
-     * @return JTextField
-     * @exception
-     */
-    public JTextField getBusquedaMarca() {
-        return busquedaMarca;
-    }
-
-    /**
-     * Retorno el campo busquedaCodigoNombre para poder filtrar las busquedas
-     * dado el nombre de un producto
-     *
-     * @param
-     * @return JTextField
-     * @exception
-     */
-    public JTextField getBusquedaNombre() {
-        return busquedaNombre;
-    }
-
-    /**
-     * Retorno boton clienteALafacutra para enviar el cliente seleccionado al
-     * campo cliente en el panel de la factura
-     *
-     * @param
-     * @return JButton
-     * @exception
-     */
-    public JButton getClienteALaFactura() {
-        return clienteALaFactura;
-    }
 
     /**
      * Retorno el campo del cliente de la factura
@@ -308,36 +231,32 @@ public class VentaGui extends javax.swing.JPanel {
     public JDateChooser getCalendarioFactura() {
         return calendarioFactura;
     }
-    
-    public void limpiarVentana(){
+
+    public void limpiarVentana() {
         tablaArticulos.clearSelection();
         tablaClientes.clearSelection();
         tablaFactura.clearSelection();
-        while(tablaFactura.getRowCount()>0){
+        while (tablaFactura.getRowCount() > 0) {
             tablaFacturaDefault.removeRow(0);
         }
         Calendar miCalendario = Calendar.getInstance();
         java.util.Date eldia = miCalendario.getTime();
         int diaHoy = miCalendario.get(Calendar.DAY_OF_MONTH);
-        int mes=miCalendario.get(Calendar.MONTH);
-        int anio =miCalendario.get(Calendar.YEAR);
-        calendarioFactura.setDate(Date.valueOf(anio+"-"+(mes+1)+"-"+diaHoy));
+        int mes = miCalendario.get(Calendar.MONTH);
+        int anio = miCalendario.get(Calendar.YEAR);
+        calendarioFactura.setDate(Date.valueOf(anio + "-" + (mes + 1) + "-" + diaHoy));
         clienteFactura.setText("");
 
     }
 
-
-    
-       public JTextField getCalenFacturaText(){
-        return ((JTextField)calendarioFactura.getDateEditor().getUiComponent());
+    public JTextField getCalenFacturaText() {
+        return ((JTextField) calendarioFactura.getDateEditor().getUiComponent());
     }
 
     public JComboBox getAbona() {
         return abona;
     }
 
-       
-       
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -347,6 +266,7 @@ public class VentaGui extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         fondoImagen = new javax.swing.JPanel();
         panelTitulo = new org.edisoncor.gui.panel.PanelImage();
@@ -357,21 +277,13 @@ public class VentaGui extends javax.swing.JPanel {
         tablaArticulos = new javax.swing.JTable();
         labelBusquedaCodigo = new javax.swing.JLabel();
         labelBusquedaNombre = new javax.swing.JLabel();
-        labelBusquedaMarca = new javax.swing.JLabel();
         busquedaCodigoArticulo = new javax.swing.JTextField();
-        busquedaNombre = new javax.swing.JTextField();
-        busquedaMarca = new javax.swing.JTextField();
+        busquedaFram = new javax.swing.JTextField();
         panelClientes = new javax.swing.JPanel();
-        busquedaCodigoCliente = new javax.swing.JTextField();
-        labelCodigo = new javax.swing.JLabel();
-        busquedaApellido = new javax.swing.JTextField();
+        busquedaNombre = new javax.swing.JTextField();
         labelApellido = new javax.swing.JLabel();
         jScrollPane7 = new javax.swing.JScrollPane();
         tablaClientes = new javax.swing.JTable();
-        jPanel1 = new javax.swing.JPanel();
-        jPanel3 = new javax.swing.JPanel();
-        clienteALaFactura = new javax.swing.JButton();
-        articulosALaFactura = new javax.swing.JButton();
         panelFactura = new javax.swing.JPanel();
         labelCliente = new javax.swing.JLabel();
         clienteFactura = new javax.swing.JTextField();
@@ -387,16 +299,21 @@ public class VentaGui extends javax.swing.JPanel {
         panelControlFactura = new javax.swing.JPanel();
         facturaNueva = new javax.swing.JButton();
         realizarVenta = new javax.swing.JButton();
-        modificar = new javax.swing.JButton();
 
-        setPreferredSize(new java.awt.Dimension(825, 448));
+        setClosable(true);
+        setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
+        setIconifiable(true);
+        setMaximizable(true);
+        setResizable(true);
+        setTitle("Registro Venta");
+
+        jPanel1.setPreferredSize(new java.awt.Dimension(825, 448));
 
         jScrollPane1.setPreferredSize(new java.awt.Dimension(822, 448));
 
         fondoImagen.setPreferredSize(new java.awt.Dimension(820, 400));
 
         panelTitulo.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        panelTitulo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/interfaz/fondoCliente2.jpg"))); // NOI18N
         panelTitulo.setPreferredSize(new java.awt.Dimension(329, 49));
 
         titulo.setFont(new java.awt.Font("Century Schoolbook L", 3, 24)); // NOI18N
@@ -413,7 +330,7 @@ public class VentaGui extends javax.swing.JPanel {
 
             },
             new String [] {
-                "Cod.", "Nombre", "Marca"
+                "Id", "Codigo", "Marca"
             }
         ) {
             Class[] types = new Class [] {
@@ -431,23 +348,17 @@ public class VentaGui extends javax.swing.JPanel {
                 return canEdit [columnIndex];
             }
         });
-        tablaArticulos.setSelectionMode(javax.swing.ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         jScrollPane6.setViewportView(tablaArticulos);
 
         labelBusquedaCodigo.setFont(new java.awt.Font("Century Schoolbook L", 0, 14)); // NOI18N
         labelBusquedaCodigo.setText("Código");
 
         labelBusquedaNombre.setFont(new java.awt.Font("Century Schoolbook L", 0, 14)); // NOI18N
-        labelBusquedaNombre.setText("Nombre");
-
-        labelBusquedaMarca.setFont(new java.awt.Font("Century Schoolbook L", 0, 14)); // NOI18N
-        labelBusquedaMarca.setText("Marca");
+        labelBusquedaNombre.setText("Fram");
 
         busquedaCodigoArticulo.setToolTipText("Filtrar por código");
 
-        busquedaNombre.setToolTipText("Filtrar por nombre");
-
-        busquedaMarca.setToolTipText("Filtrar por marca");
+        busquedaFram.setToolTipText("Filtrar por nombre");
 
         javax.swing.GroupLayout panelArticulosLayout = new javax.swing.GroupLayout(panelArticulos);
         panelArticulos.setLayout(panelArticulosLayout);
@@ -457,13 +368,11 @@ public class VentaGui extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(panelArticulosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(labelBusquedaNombre)
-                    .addComponent(labelBusquedaMarca)
                     .addComponent(labelBusquedaCodigo))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelArticulosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(busquedaCodigoArticulo, javax.swing.GroupLayout.DEFAULT_SIZE, 161, Short.MAX_VALUE)
-                    .addComponent(busquedaMarca)
-                    .addComponent(busquedaNombre)))
+                    .addComponent(busquedaCodigoArticulo, javax.swing.GroupLayout.DEFAULT_SIZE, 204, Short.MAX_VALUE)
+                    .addComponent(busquedaFram)))
             .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
         );
         panelArticulosLayout.setVerticalGroup(
@@ -475,26 +384,17 @@ public class VentaGui extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelArticulosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(labelBusquedaNombre)
-                    .addComponent(busquedaNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(panelArticulosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(labelBusquedaMarca)
-                    .addComponent(busquedaMarca, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                    .addComponent(busquedaFram, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 141, Short.MAX_VALUE))
         );
 
         panelClientes.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Clientes", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Century Schoolbook L", 3, 18))); // NOI18N
 
-        busquedaCodigoCliente.setToolTipText("Filtrar busqueda por ID");
-
-        labelCodigo.setFont(new java.awt.Font("Century Schoolbook L", 0, 14)); // NOI18N
-        labelCodigo.setText("Código");
-
-        busquedaApellido.setToolTipText("Filtrar busqueda por apellido");
+        busquedaNombre.setToolTipText("Filtrar busqueda por nombre");
 
         labelApellido.setFont(new java.awt.Font("Century Schoolbook L", 0, 14)); // NOI18N
-        labelApellido.setText("Apellido");
+        labelApellido.setText("Nombre");
 
         tablaClientes.setAutoCreateRowSorter(true);
         tablaClientes.setModel(new javax.swing.table.DefaultTableModel(
@@ -502,14 +402,14 @@ public class VentaGui extends javax.swing.JPanel {
 
             },
             new String [] {
-                "Cod.", "Nombre", "Apellido"
+                "Cod.", "Nombre"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.String.class
+                java.lang.Integer.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false
+                false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -520,7 +420,6 @@ public class VentaGui extends javax.swing.JPanel {
                 return canEdit [columnIndex];
             }
         });
-        tablaClientes.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jScrollPane7.setViewportView(tablaClientes);
 
         javax.swing.GroupLayout panelClientesLayout = new javax.swing.GroupLayout(panelClientes);
@@ -528,40 +427,20 @@ public class VentaGui extends javax.swing.JPanel {
         panelClientesLayout.setHorizontalGroup(
             panelClientesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelClientesLayout.createSequentialGroup()
-                .addGroup(panelClientesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(labelApellido)
-                    .addComponent(labelCodigo))
+                .addComponent(labelApellido)
                 .addGap(17, 17, 17)
-                .addGroup(panelClientesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(busquedaApellido, javax.swing.GroupLayout.DEFAULT_SIZE, 166, Short.MAX_VALUE)
-                    .addComponent(busquedaCodigoCliente)))
+                .addComponent(busquedaNombre, javax.swing.GroupLayout.DEFAULT_SIZE, 202, Short.MAX_VALUE))
             .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
         );
         panelClientesLayout.setVerticalGroup(
             panelClientesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelClientesLayout.createSequentialGroup()
                 .addGroup(panelClientesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(busquedaApellido, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(busquedaNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(labelApellido))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(panelClientesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(busquedaCodigoCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(labelCodigo))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 89, Short.MAX_VALUE))
         );
-
-        jPanel1.setBorder(null);
-        jPanel1.setLayout(new java.awt.GridLayout(1, 0));
-
-        jPanel3.setBorder(null);
-        jPanel3.setLayout(new java.awt.GridLayout(1, 0));
-
-        clienteALaFactura.setIcon(new javax.swing.ImageIcon(getClass().getResource("/interfaz/Icons/enviar.png"))); // NOI18N
-        clienteALaFactura.setToolTipText("Cargar cliente a la factura");
-
-        articulosALaFactura.setIcon(new javax.swing.ImageIcon(getClass().getResource("/interfaz/Icons/enviar.png"))); // NOI18N
-        articulosALaFactura.setToolTipText("Cargar articulos a la factura");
 
         javax.swing.GroupLayout panelClientesAarticulosLayout = new javax.swing.GroupLayout(panelClientesAarticulos);
         panelClientesAarticulos.setLayout(panelClientesAarticulosLayout);
@@ -571,34 +450,14 @@ public class VentaGui extends javax.swing.JPanel {
                 .addGroup(panelClientesAarticulosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(panelArticulos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(panelClientes, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(panelClientesAarticulosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(panelClientesAarticulosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(clienteALaFactura, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(articulosALaFactura, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+                .addGap(0, 0, 0))
         );
         panelClientesAarticulosLayout.setVerticalGroup(
             panelClientesAarticulosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelClientesAarticulosLayout.createSequentialGroup()
-                .addGroup(panelClientesAarticulosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(panelClientes, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(panelClientesAarticulosLayout.createSequentialGroup()
-                        .addGap(42, 42, 42)
-                        .addComponent(clienteALaFactura, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addGroup(panelClientesAarticulosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, panelClientesAarticulosLayout.createSequentialGroup()
-                        .addGap(58, 58, 58)
-                        .addComponent(articulosALaFactura, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, panelClientesAarticulosLayout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(panelArticulos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                .addComponent(panelClientes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 23, Short.MAX_VALUE)
+                .addComponent(panelArticulos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         panelFactura.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Factura", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Century Schoolbook L", 3, 18))); // NOI18N
@@ -617,7 +476,7 @@ public class VentaGui extends javax.swing.JPanel {
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.Integer.class, java.lang.String.class, java.math.BigDecimal.class, java.math.BigDecimal.class
+                java.lang.Integer.class, java.math.BigDecimal.class, java.lang.String.class, java.math.BigDecimal.class, java.math.BigDecimal.class
             };
             boolean[] canEdit = new boolean [] {
                 false, true, false, true, false
@@ -631,16 +490,7 @@ public class VentaGui extends javax.swing.JPanel {
                 return canEdit [columnIndex];
             }
         });
-        tablaFactura.setSelectionMode(javax.swing.ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         jScrollPane8.setViewportView(tablaFactura);
-        tablaFactura.getColumnModel().getColumn(0).setPreferredWidth(70);
-        tablaFactura.getColumnModel().getColumn(0).setMaxWidth(70);
-        tablaFactura.getColumnModel().getColumn(1).setPreferredWidth(75);
-        tablaFactura.getColumnModel().getColumn(1).setMaxWidth(75);
-        tablaFactura.getColumnModel().getColumn(3).setPreferredWidth(75);
-        tablaFactura.getColumnModel().getColumn(3).setMaxWidth(75);
-        tablaFactura.getColumnModel().getColumn(4).setPreferredWidth(75);
-        tablaFactura.getColumnModel().getColumn(4).setMaxWidth(75);
 
         labelTotal.setFont(new java.awt.Font("Century Schoolbook L", 0, 14)); // NOI18N
         labelTotal.setText("Total");
@@ -650,7 +500,6 @@ public class VentaGui extends javax.swing.JPanel {
         jLabel3.setFont(new java.awt.Font("Century Schoolbook L", 0, 14)); // NOI18N
         jLabel3.setText("Fecha");
 
-        borrarArticulosSeleccionados.setIcon(new javax.swing.ImageIcon(getClass().getResource("/interfaz/Icons/borrarSeleccionado.png"))); // NOI18N
         borrarArticulosSeleccionados.setText("Borrar articulos seleccionados");
         borrarArticulosSeleccionados.setToolTipText("Borrar articulos seleccionados en la factura");
         borrarArticulosSeleccionados.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -680,7 +529,7 @@ public class VentaGui extends javax.swing.JPanel {
                 .addComponent(borrarArticulosSeleccionados)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel4)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 45, Short.MAX_VALUE)
                 .addComponent(abona, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(6, 6, 6)
                 .addComponent(labelTotal)
@@ -721,11 +570,6 @@ public class VentaGui extends javax.swing.JPanel {
         realizarVenta.setToolTipText("Solo registrar la venta");
         panelControlFactura.add(realizarVenta);
 
-        modificar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/interfaz/Icons/guardar.png"))); // NOI18N
-        modificar.setToolTipText("Guardar cambios realizados en la edición de la factura");
-        modificar.setEnabled(false);
-        panelControlFactura.add(modificar);
-
         javax.swing.GroupLayout fondoImagenLayout = new javax.swing.GroupLayout(fondoImagen);
         fondoImagen.setLayout(fondoImagenLayout);
         fondoImagenLayout.setHorizontalGroup(
@@ -756,50 +600,58 @@ public class VentaGui extends javax.swing.JPanel {
 
         jScrollPane1.setViewportView(fondoImagen);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 848, Short.MAX_VALUE)
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 477, Short.MAX_VALUE)
+                .addGap(0, 0, 0))
+        );
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 825, Short.MAX_VALUE)
+            .addGap(0, 848, Short.MAX_VALUE)
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 848, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(0, 0, 0))
+            .addGap(0, 477, Short.MAX_VALUE)
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 477, Short.MAX_VALUE))
         );
-    }// </editor-fold>//GEN-END:initComponents
 
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox abona;
-    private javax.swing.JButton articulosALaFactura;
     private javax.swing.JButton borrarArticulosSeleccionados;
-    private javax.swing.JTextField busquedaApellido;
     private javax.swing.JTextField busquedaCodigoArticulo;
-    private javax.swing.JTextField busquedaCodigoCliente;
-    private javax.swing.JTextField busquedaMarca;
+    private javax.swing.JTextField busquedaFram;
     private javax.swing.JTextField busquedaNombre;
     private com.toedter.calendar.JDateChooser calendarioFactura;
-    private javax.swing.JButton clienteALaFactura;
     private javax.swing.JTextField clienteFactura;
     private javax.swing.JButton facturaNueva;
     private javax.swing.JPanel fondoImagen;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JScrollPane jScrollPane7;
     private javax.swing.JScrollPane jScrollPane8;
     private javax.swing.JLabel labelApellido;
     private javax.swing.JLabel labelBusquedaCodigo;
-    private javax.swing.JLabel labelBusquedaMarca;
     private javax.swing.JLabel labelBusquedaNombre;
     private javax.swing.JLabel labelCliente;
-    private javax.swing.JLabel labelCodigo;
     private javax.swing.JLabel labelTotal;
-    private javax.swing.JButton modificar;
     private javax.swing.JPanel panelArticulos;
     private javax.swing.JPanel panelClientes;
     private javax.swing.JPanel panelClientesAarticulos;

@@ -4,6 +4,8 @@
  */
 package abm;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Iterator;
 import java.util.LinkedList;
 import modelos.Articulo;
@@ -34,7 +36,6 @@ public class ABMVenta {
         } else {
             Integer idCliente = (Integer) v.get("cliente_id");
             if (v.getBoolean("pago")) { // SI se paga se calcula el monto, si se fia no.
-                v.set("monto", calcularMonto(v.getProductos()));//seteo el monto de la venta total en el modelo
                 Venta venta = Venta.create("monto", v.get("monto"), "cliente_id", idCliente, "fecha", v.get("fecha"), "pago", v.get("pago"));
                 resultOp = resultOp && venta.saveIt();//guardo la venta
                 int idVenta = venta.getInteger("id");
@@ -96,12 +97,12 @@ public class ABMVenta {
      /*Funcion que calcula el precio actual de los productos que se fiaron y
      * paga la cuenta.
      */
-    public boolean pagar(Venta v) {
+    public boolean pagar(Venta v, BigDecimal monto) {
         if (v == null) {
             return false;
         } else {
             v.set("pago", true);
-            v.set("monto", calcularMonto(v.getProductos()));//seteo el monto de la venta total en el modelo
+            v.set("monto", monto);//seteo el monto de la venta total en el modelo
             return v.saveIt();
         }
     }
@@ -109,26 +110,27 @@ public class ABMVenta {
 //FUNCIONA CORRECTAMENTE
     /*Recibe lista de pares <Producto,cantidad> retorna precio total de la venta de todos
      los productos de la lista, multiplicados por su cantidad correspondiente*/
-    public Double calcularMonto(LinkedList<Pair> productos) {
-        Double acumMonto = 0.0;
+    public BigDecimal calcularMonto(LinkedList<Pair> productos) {
+        BigDecimal acumMonto = new BigDecimal(0);
         if (productos.isEmpty()) {
             return acumMonto;
         } else {
             Iterator itr = productos.iterator();
             Pair par;
             Articulo prod;
-            Integer cant;
-            Double precioFinal = 0.0;
+             BigDecimal cant;
+            BigDecimal precioFinal;
             while (itr.hasNext()) {
                 par = (Pair) itr.next(); //saco el par de la lista
                 prod = (Articulo) par.first(); //saco el producto del par
-                cant = (Integer) ((Pair) par.second()).first();//saco la cantidad del par
-                precioFinal = (Double) ((Pair) par.second()).second(); //saco el percio al que se vendio
-                acumMonto += (precioFinal * cant); //multiplico el precio del producto por la cantidad del mismo
+                cant = ((BigDecimal) (((Pair) par.second()).first())).setScale(2, RoundingMode.CEILING);//saco la cantidad del par
+                precioFinal = ((BigDecimal)prod.get("precio_venta")).setScale(2, RoundingMode.CEILING);
+                acumMonto.add(precioFinal.multiply(cant)).setScale(2, RoundingMode.CEILING);; //multiplico el precio del producto por la cantidad del mismo
             }
             return acumMonto;
         }
     }
+   
 
     //FUNCIONA CORRECTAMENTE
     //Carga los productos y cantidades en la tabla productos_vendidos
@@ -137,14 +139,12 @@ public class ABMVenta {
         Iterator itr = productos.iterator();
         Articulo prod;
         Pair par;
-        Integer cant;
-        Double precioFinal = 0.0;
+        BigDecimal cant;
         while (itr.hasNext()) {
             par = (Pair) itr.next(); //saco el par de la lista
             prod = (Articulo) par.first(); //saco el producto del par
-            cant = (Integer) ((Pair) par.second()).first();//saco la cantidad del par
-            precioFinal = (Double) ((Pair) par.second()).second(); //saco el percio al que se vendio
-            ArticulosVentas prodVendido = ArticulosVentas.create("venta_id", idVenta, "producto_id", prod.get("codigo"), "cantidad", cant);
+            cant = ((BigDecimal) par.second()).setScale(2, RoundingMode.CEILING);//saco la cantidad del par
+            ArticulosVentas prodVendido = ArticulosVentas.create("venta_id", idVenta, "articulo_id", prod.get("id"), "cantidad", cant);
             resultOp = resultOp && prodVendido.saveIt();
         }
         return resultOp;
@@ -160,19 +160,19 @@ public class ABMVenta {
         Iterator itr = productos.iterator();
         Articulo prod;
         Pair par;
-        Integer cant;
+        BigDecimal cant;
         while (itr.hasNext()) {
             par = (Pair) itr.next(); //saco el par de la lista
             prod = (Articulo) par.first(); //saco el producto del par
-            cant = (Integer) ((Pair) par.second()).first();//saco la cantidad del par
+            cant = ((BigDecimal) par.second()).setScale(2, RoundingMode.CEILING);//saco la cantidad del par
             ClientesArticulos prodAdquirido;
-            prodAdquirido = ClientesArticulos.findFirst("cliente_id = ? AND producto_id = ?", idCliente, prod.get("codigo"));
+            prodAdquirido = ClientesArticulos.findFirst("cliente_id = ? AND articulo_id = ?", idCliente, prod.get("id"));
             if (prodAdquirido == null) { // sino lo agrego a la tabla
-                prodAdquirido = ClientesArticulos.create("cliente_id", idCliente, "producto_id", prod.get("codigo"), "cantidad", cant);
+                prodAdquirido = ClientesArticulos.create("cliente_id", idCliente, "articulo_id", prod.get("id"), "cantidad", cant);
                 resultOp = resultOp && prodAdquirido.saveIt();
             } else { //si existe modifico la cantidad
-                cant = prodAdquirido.getInteger("cantidad") + cant;//asigno a cant el valor nuevo de cantidad
-                ClientesArticulos.update("cantidad = ?", "cliente_id = ? AND producto_id = ?", cant, idCliente, prod.get("codigo"));
+                cant = ((prodAdquirido.getBigDecimal("cantidad")).add(cant)).setScale(2, RoundingMode.CEILING);//asigno a cant el valor nuevo de cantidad
+                ClientesArticulos.update("cantidad = ?", "cliente_id = ? AND articulo_id = ?", cant, idCliente, prod.get("id"));
             }
         }
         return resultOp;
@@ -189,22 +189,22 @@ public class ABMVenta {
         Iterator itr = productos.iterator();
         Articulo prod;
         Pair par;
-        Integer cant;
+        BigDecimal cant;
         while (itr.hasNext()) {
             par = (Pair) itr.next(); //saco el par de la lista
             prod = (Articulo) par.first(); //saco el producto del par
-            cant = (Integer) ((Pair) par.second()).first();//saco la cantidad del par
+            cant = ((BigDecimal) par.second()).setScale(2, RoundingMode.CEILING);//saco la cantidad del par
             ClientesArticulos prodAdquirido;
-            prodAdquirido = ClientesArticulos.findFirst("cliente_id = ? AND producto_id = ?", idCliente, prod.get("codigo"));
+            prodAdquirido = ClientesArticulos.findFirst("cliente_id = ? AND articulo_id = ?", idCliente, prod.get("id"));
             if (prodAdquirido == null) { //si no existe lo informo
                 System.out.println("ERROR - PRODUCTO NO ENCONTRADO EN TABLA DE ADQUISICIONES DE CLIENTE");
             } else {
-                if (prodAdquirido.getInteger("cantidad") - cant > 0) {
-                    cant = prodAdquirido.getInteger("cantidad") - cant;//asigno a cant el valor nuevo de cantidad
-                    ClientesArticulos.update("cantidad = ?", "cliente_id = ? AND producto_id = ?", cant, idCliente, prod.get("codigo"));
+                if ((prodAdquirido.getBigDecimal("cantidad")).subtract(cant).signum() > 0) {
+                    cant = ((prodAdquirido.getBigDecimal("cantidad")).subtract(cant)).setScale(2, RoundingMode.CEILING);//asigno a cant el valor nuevo de cantidad
+                    ClientesArticulos.update("cantidad = ?", "cliente_id = ? AND articulo_id = ?", cant, idCliente, prod.get("id"));
                 } else {
-                    if (prodAdquirido.getInteger("cantidad") - cant == 0) {
-                        ClientesArticulos.delete("cliente_id = ? AND producto_id = ?", idCliente, prod.get("codigo"));
+                    if ((prodAdquirido.getBigDecimal("cantidad")).subtract(cant).signum() == 0) {
+                        ClientesArticulos.delete("cliente_id = ? AND articulo_id = ?", idCliente, prod.get("id"));
                     } else {
                         resultOp = false;
                         System.out.println("ERROR LA CANTIDAD DE PRODUCTOS ADQUIRIDOS ES MENOR A LA VENDIDA");
@@ -214,33 +214,48 @@ public class ABMVenta {
         }
         return resultOp;
     }
-
+    
     //FUNCIONA CORRECTAMENTE
     /*Retorna una lista de pares producto-cantidad de una compra(la busca en
      * productos_comprados y a su vez
      * elimina estos productos de la base de la misma tabla
      */
     private LinkedList<Pair> buscarProductosVendidos(int idVenta) {
-        Integer cant;
+        BigDecimal cant;
         ArticulosVentas prodVendido;
         Articulo prod;
-        Double precioFinal;
+        BigDecimal precioFinal;
         LinkedList<Pair> listaDePares = new LinkedList<Pair>();
         LazyList<ArticulosVentas> productos = ArticulosVentas.find("venta_id = ?", idVenta);
         Iterator itr = productos.iterator();
         while (itr.hasNext()) {
             prodVendido = (ArticulosVentas) itr.next(); //saco el modelo de la lista
-            prod = Articulo.findFirst("numero_producto = ?", prodVendido.getInteger("producto_id"));//saco el producto del modelo
-            cant = prodVendido.getInteger("cantidad");//saco la cantidad del modelo
-            precioFinal = prodVendido.getDouble("precio_final");
+            prod = Articulo.findById(prodVendido.get("articulo_id"));//saco el producto del modelo
+            cant = prodVendido.getBigDecimal("cantidad").setScale(2, RoundingMode.CEILING);//saco la cantidad del modelo
+            precioFinal = (prodVendido.getBigDecimal("precio_final")).setScale(2, RoundingMode.CEILING);
             Pair parInterno = new Pair(cant, precioFinal);
             Pair par = new Pair(prod, parInterno); //creo el par producto-cantidad
             listaDePares.add(par);//agrego el par a la lista de pares
-            ArticulosVentas.delete("venta_id = ? AND producto_id = ?", prodVendido.getInteger("venta_id"), prodVendido.getInteger("producto_id"));//elimino el modelo de la base de datos
+            ArticulosVentas.delete("venta_id = ? AND articulo_id= ?", prodVendido.getInteger("venta_id"), prodVendido.getInteger("articulo_id"));//elimino el modelo de la base de datos
         }
         return listaDePares;
     }
     
+      private void abrirBase() {
+        if (!Base.hasConnection()) {
+            Base.open("com.mysql.jdbc.Driver", "jdbc:mysql://localhost/lubricentro", "root", "root");
+        }
+    }
+
+    private void cerrarBase() {
+        if (Base.hasConnection()) {
+            Base.close();
+        }
+    }
+
+    public int getUltimoIdVenta() {
+        return ultimoIdVenta;
+    }
     
     
 }

@@ -6,6 +6,7 @@ package interfaz;
 
 import java.awt.event.ActionListener;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
@@ -27,8 +28,7 @@ public class ClienteGui extends javax.swing.JInternalFrame {
      */
     public ClienteGui() {
         initComponents();
-        clientes = (DefaultTableModel) tablaClientes.getModel(); //convierto la tabla
-        cobrosDefault = (DefaultTableModel) cobrosRealizados.getModel();
+        clientes = (DefaultTableModel) tablaClientes.getModel(); //convierto la tabla;
         ventasDefault=(DefaultTableModel) ventasRealizadas.getModel();
 
     }
@@ -55,22 +55,21 @@ public class ClienteGui extends javax.swing.JInternalFrame {
         telefono = new javax.swing.JTextField();
         id = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
-        exportar = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
         celular = new javax.swing.JTextField();
         jPanel4 = new javax.swing.JPanel();
         borrar = new javax.swing.JButton();
         nuevo = new javax.swing.JButton();
         modificar = new javax.swing.JButton();
-        realizarCobro = new javax.swing.JButton();
         guardar = new javax.swing.JButton();
-        jPanel5 = new javax.swing.JPanel();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        cobrosRealizados = new javax.swing.JTable();
         jPanel6 = new javax.swing.JPanel();
         jScrollPane5 = new javax.swing.JScrollPane();
         ventasRealizadas = new javax.swing.JTable();
-        borrarCobro = new javax.swing.JButton();
+        eliminarVenta = new javax.swing.JButton();
+        realizarCobro = new javax.swing.JButton();
+        verFactura = new javax.swing.JButton();
+        ver = new javax.swing.JComboBox();
+        jLabel5 = new javax.swing.JLabel();
 
         setClosable(true);
         setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
@@ -81,7 +80,9 @@ public class ClienteGui extends javax.swing.JInternalFrame {
         setOpaque(false);
         setPreferredSize(new java.awt.Dimension(852, 415));
 
-        jScrollPane1.setPreferredSize(new java.awt.Dimension(852, 415));
+        jScrollPane1.setPreferredSize(new java.awt.Dimension(1001, 407));
+
+        jPanel1.setPreferredSize(new java.awt.Dimension(1001, 407));
 
         panelClientes.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Clientes", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Century Schoolbook L", 3, 15))); // NOI18N
 
@@ -118,7 +119,7 @@ public class ClienteGui extends javax.swing.JInternalFrame {
         panelClientes.setLayout(panelClientesLayout);
         panelClientesLayout.setHorizontalGroup(
             panelClientesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 378, Short.MAX_VALUE)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 516, Short.MAX_VALUE)
             .addComponent(busqueda, javax.swing.GroupLayout.PREFERRED_SIZE, 289, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         panelClientesLayout.setVerticalGroup(
@@ -146,10 +147,6 @@ public class ClienteGui extends javax.swing.JInternalFrame {
 
         jLabel3.setText("ID");
 
-        exportar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/interfaz/Icons/exportar.png"))); // NOI18N
-        exportar.setText("Exportar listado");
-        exportar.setToolTipText("Exportar listado de articulos");
-
         jLabel4.setText("Celular");
 
         celular.addActionListener(new java.awt.event.ActionListener() {
@@ -176,8 +173,7 @@ public class ClienteGui extends javax.swing.JInternalFrame {
                     .addComponent(nombre)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(id, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
-                        .addComponent(exportar))
+                        .addGap(0, 322, Short.MAX_VALUE))
                     .addComponent(telefono))
                 .addContainerGap())
         );
@@ -186,8 +182,7 @@ public class ClienteGui extends javax.swing.JInternalFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(id, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(exportar, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(id, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel1)
@@ -196,7 +191,7 @@ public class ClienteGui extends javax.swing.JInternalFrame {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel2)
                     .addComponent(telefono, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(0, 0, 0)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel4)
                     .addComponent(celular, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -231,59 +226,12 @@ public class ClienteGui extends javax.swing.JInternalFrame {
         });
         jPanel4.add(modificar);
 
-        realizarCobro.setFont(new java.awt.Font("Cantarell", 0, 12)); // NOI18N
-        realizarCobro.setIcon(new javax.swing.ImageIcon(getClass().getResource("/interfaz/Icons/pagar.png"))); // NOI18N
-        realizarCobro.setToolTipText("Realizar cobro a cliente");
-        realizarCobro.setEnabled(false);
-        realizarCobro.setPreferredSize(new java.awt.Dimension(55, 33));
-        jPanel4.add(realizarCobro);
-
         guardar.setFont(new java.awt.Font("Cantarell", 0, 12)); // NOI18N
         guardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/interfaz/Icons/guardar.png"))); // NOI18N
         guardar.setToolTipText("Guardar cambios realizados");
         guardar.setEnabled(false);
         guardar.setPreferredSize(new java.awt.Dimension(55, 33));
         jPanel4.add(guardar);
-
-        jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Cobros realizados", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Century Schoolbook L", 3, 14))); // NOI18N
-
-        cobrosRealizados.setAutoCreateRowSorter(true);
-        cobrosRealizados.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "Fecha", "Cantidad"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class
-            };
-            boolean[] canEdit = new boolean [] {
-                false, false
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        cobrosRealizados.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        jScrollPane3.setViewportView(cobrosRealizados);
-
-        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
-        jPanel5.setLayout(jPanel5Layout);
-        jPanel5Layout.setHorizontalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 207, Short.MAX_VALUE)
-        );
-        jPanel5Layout.setVerticalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 319, Short.MAX_VALUE)
-        );
 
         jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Ventas realizadas", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Century Schoolbook L", 3, 14))); // NOI18N
 
@@ -293,14 +241,14 @@ public class ClienteGui extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "ID", "Fecha", "Cantidad"
+                "ID", "Fecha", "Monto", "Abonado"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.Float.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false
+                false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -315,39 +263,74 @@ public class ClienteGui extends javax.swing.JInternalFrame {
         ventasRealizadas.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jScrollPane5.setViewportView(ventasRealizadas);
 
+        eliminarVenta.setFont(new java.awt.Font("Cantarell", 0, 12)); // NOI18N
+        eliminarVenta.setIcon(new javax.swing.ImageIcon(getClass().getResource("/interfaz/Icons/borrar.png"))); // NOI18N
+        eliminarVenta.setToolTipText("Eliminar Venta");
+        eliminarVenta.setEnabled(false);
+        eliminarVenta.setPreferredSize(new java.awt.Dimension(55, 33));
+
+        realizarCobro.setFont(new java.awt.Font("Cantarell", 0, 12)); // NOI18N
+        realizarCobro.setIcon(new javax.swing.ImageIcon(getClass().getResource("/interfaz/Icons/pagar.png"))); // NOI18N
+        realizarCobro.setToolTipText("Realizar Cobro");
+        realizarCobro.setEnabled(false);
+        realizarCobro.setPreferredSize(new java.awt.Dimension(55, 33));
+
+        verFactura.setFont(new java.awt.Font("Cantarell", 0, 12)); // NOI18N
+        verFactura.setIcon(new javax.swing.ImageIcon(getClass().getResource("/interfaz/Icons/Details.png"))); // NOI18N
+        verFactura.setToolTipText("Detalles de la Factura");
+        verFactura.setEnabled(false);
+        verFactura.setPreferredSize(new java.awt.Dimension(55, 33));
+
+        ver.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Todas", "Fiadas", "Pagas" }));
+
+        jLabel5.setText("Ver:");
+
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
         jPanel6Layout.setHorizontalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 228, Short.MAX_VALUE)
+            .addComponent(jScrollPane5)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addComponent(eliminarVenta, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(0, 0, 0)
+                .addComponent(verFactura, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(realizarCobro, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel5)
+                .addGap(1, 1, 1)
+                .addComponent(ver, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(ver, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel5))
+                .addGap(0, 0, 0)
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 283, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(eliminarVenta, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(realizarCobro, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(verFactura, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 38, Short.MAX_VALUE)))
         );
-
-        borrarCobro.setText("Borrar cobro seleccionado");
-        borrarCobro.setEnabled(false);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+            .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(panelClientes, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGap(3, 3, 3))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(6, 6, 6)))
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(borrarCobro, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(0, 0, 0)
-                .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -355,17 +338,12 @@ public class ClienteGui extends javax.swing.JInternalFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
-                                .addComponent(panelClientes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(borrarCobro, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jPanel4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(39, Short.MAX_VALUE))
+                        .addComponent(panelClientes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, 0)
+                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(0, 0, 0))
         );
 
         jScrollPane1.setViewportView(jPanel1);
@@ -389,25 +367,22 @@ public class ClienteGui extends javax.swing.JInternalFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton borrar;
-    private javax.swing.JButton borrarCobro;
     private javax.swing.JTextField busqueda;
     private javax.swing.JTextField celular;
-    private javax.swing.JTable cobrosRealizados;
-    private javax.swing.JButton exportar;
+    private javax.swing.JButton eliminarVenta;
     private javax.swing.JButton guardar;
     private javax.swing.JTextField id;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel4;
-    private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JButton modificar;
     private javax.swing.JTextField nombre;
@@ -417,6 +392,8 @@ public class ClienteGui extends javax.swing.JInternalFrame {
     private javax.swing.JTable tablaClientes;
     private javax.swing.JTextField telefono;
     private javax.swing.JTable ventasRealizadas;
+    private javax.swing.JComboBox ver;
+    private javax.swing.JButton verFactura;
     // End of variables declaration//GEN-END:variables
 
     public void setActionListener(ActionListener lis) {
@@ -425,26 +402,36 @@ public class ClienteGui extends javax.swing.JInternalFrame {
         this.nuevo.addActionListener(lis);
         this.modificar.addActionListener(lis);
         this.realizarCobro.addActionListener(lis);
-        this.borrarCobro.addActionListener(lis);
-        this.exportar.addActionListener(lis);
+        this.eliminarVenta.addActionListener(lis);
+        this.verFactura.addActionListener(lis);
+        this.ver.addActionListener(lis);
     }
 
+        public void habilitarCamposVentas(boolean b) {
+        realizarCobro.setEnabled(b);
+        eliminarVenta.setEnabled(b);
+        verFactura.setEnabled(b);
+        }
+        
     
         public void habilitarCampos(boolean b) {
         nombre.setEnabled(b);
         telefono.setEnabled(b);
+        celular.setEnabled(b);
         }
         
         public void limpiarCampos() {
         id.setText("");
         nombre.setText("");
         telefono.setText("");
+        celular.setText("");
         }
         
         public void CargarCampos(Cliente cliente) {
         id.setText(cliente.getString("id"));
         nombre.setText(cliente.getString("nombre"));
         telefono.setText(cliente.getString("telefono"));
+        celular.setText(cliente.getString("celular"));
         }
 
     public JTextField getCelular() {
@@ -479,10 +466,6 @@ public class ClienteGui extends javax.swing.JInternalFrame {
 
     public JButton getNuevo() {
         return nuevo;
-    }
-
-    public JButton getExportar() {
-        return exportar;
     }
 
     
@@ -522,14 +505,6 @@ public class ClienteGui extends javax.swing.JInternalFrame {
         this.ventasRealizadas = ventasRealizadas;
     }
 
-    public JTable getCobrosRealizados() {
-        return cobrosRealizados;
-    }
-
-    public void setCobrosRealizados(JTable cobrosRealizados) {
-        this.cobrosRealizados = cobrosRealizados;
-    }
-
     public JButton getRealizarCobro() {
         return realizarCobro;
     }
@@ -538,10 +513,17 @@ public class ClienteGui extends javax.swing.JInternalFrame {
         this.realizarCobro = realizarCobro;
     }
 
-    public JButton getBorrarCobro() {
-        return borrarCobro;
+    public JButton getEliminarVenta() {
+        return eliminarVenta;
     }
 
+    public JButton getVerFactura() {
+        return verFactura;
+    }
+
+    public JComboBox getVer() {
+        return ver;
+    }
 
     
 }

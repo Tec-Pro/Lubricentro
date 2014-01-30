@@ -51,27 +51,33 @@ create table lubricentro.compras (
 create table clientes_articulos(
     id integer not null auto_increment,
     cliente_id integer,
-    articulos_id integer,
-    cantidad integer not null,
+    articulo_id integer,
+    cantidad float not null,
+	precio_final float,
 	check (cantidad>0),
+	check (precio_final>0),
     primary key(id) );
 
 
 create table articulos_ventas (
     id integer not null auto_increment,
     venta_id integer,
-    articulos_id integer,
+    articulo_id integer,
     cantidad float not null,
+	precio_final float,
 	check (cantidad>0),
+	check (precio_final>0),
     primary key(id) );
 
 
 create table articulos_compras (
     id integer not null auto_increment,
     compra_id integer,
-    articulos_id integer,
+    articulo_id integer,
     cantidad float not null,
+    precio_final float,
 	check (cantidad>0),
+	check (precio_final>0),
     primary key(id));
 
 create table usuarios (
@@ -100,7 +106,7 @@ CREATE  TABLE `lubricentro`.`envios` (
   `fecha` DATE NOT NULL ,
   `enviado` VARCHAR(5) NULL ,
   PRIMARY KEY (`fecha`) );
-ALTER TABLE `lubricentro`.`email` ADD COLUMN `id` VARCHAR(45) NOT NULL  AFTER `password` 
+ALTER TABLE `lubricentro`.`emails` ADD COLUMN `id` VARCHAR(45) NOT NULL  AFTER `password` 
 , DROP PRIMARY KEY 
 , ADD PRIMARY KEY (`email`, `id`) ;
 
@@ -110,7 +116,7 @@ ALTER TABLE `lubricentro`.`emails` CHANGE COLUMN `id` `id` INT NOT NULL AUTO_INC
 , ADD PRIMARY KEY (`id`, `email`) ;
 
 
-ALTER TABLE `lubricentro`.`envio_email` ADD COLUMN `id` INT NOT NULL AUTO_INCREMENT  AFTER `enviado` 
+ALTER TABLE `lubricentro`.`envios` ADD COLUMN `id` INT NOT NULL AUTO_INCREMENT  AFTER `enviado` 
 , DROP PRIMARY KEY 
 , ADD PRIMARY KEY (`id`, `fecha`) , RENAME TO  `lubricentro`.`envios` ;
 

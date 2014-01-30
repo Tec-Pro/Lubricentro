@@ -4,6 +4,8 @@
  */
 package abm;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Iterator;
 import java.util.LinkedList;
 import modelos.Articulo;
@@ -30,7 +32,6 @@ public class ABMCompra {
             resultOp = false;
         } else {
             Integer idProveedor = (Integer) c.get("proveedor_id");
-            c.set("monto", calcularMonto(c.getProductos()));//seteo el monto de la venta total en el modelo
             Compra compra = Compra.create("monto", c.get("monto"), "proveedor_id", idProveedor, "fecha", c.get("fecha"), "pago", c.get("pago"));
             resultOp = resultOp && compra.saveIt();//guardo la venta
             int idCompra = compra.getInteger("id");
@@ -48,12 +49,12 @@ public class ABMCompra {
         Iterator itr = productos.iterator();
         Articulo prod;
         Pair par;
-        Integer cant;
+        BigDecimal cant;
         while (itr.hasNext()) {
             par = (Pair) itr.next(); //saco el par de la lista
             prod = (Articulo) par.first(); //saco el producto del par
-            cant = (Integer) par.second();//saco la cantidad del par
-            ArticulosCompras prodComprado = ArticulosCompras.create("compra_id", idCompra, "articulo_id", prod.get("codigo"), "cantidad", cant, "precio_final", prod.get("precio_compra"));
+            cant = ((BigDecimal) par.second()).setScale(2, RoundingMode.CEILING);;//saco la cantidad del par
+            ArticulosCompras prodComprado = ArticulosCompras.create("compra_id", idCompra, "articulo_id", prod.get("id"), "cantidad", cant, "precio_final", prod.get("precio_compra"));
             resultOp = resultOp && prodComprado.saveIt();
 
         }
@@ -62,23 +63,23 @@ public class ABMCompra {
 //FUNCIONA CORRECTAMENTE
 //Actualiza el stock de los productos comprados (incrementandolo)
 
-    private boolean actualizarStock(LinkedList<Pair> productos) {
-        boolean resultOp = true;
-        Iterator itr = productos.iterator();
-        Articulo prodViejo;
-        Pair par;
-        Integer cant;
-        ABMArticulo abmProd = new ABMArticulo();
-        while (itr.hasNext()) {
-            par = (Pair) itr.next(); //saco el par de la lista
-            prodViejo = (Articulo) par.first(); //saco el producto del par
-            cant = (Integer) par.second();//saco la cantidad del par
-            cant = prodViejo.getInteger("stock") + cant;//asigno a cant el valor nuevo del stock
-            resultOp = resultOp && prodViejo.setInteger("stock", cant).saveIt();//actualizo el stock del producto
-            Proveedor.findById(prodViejo.get("proveedor_id")).add(prodViejo);//creo la relacion
-        }
-        return resultOp;
-    }
+//    private boolean actualizarStock(LinkedList<Pair> productos) {
+//        boolean resultOp = true;
+//        Iterator itr = productos.iterator();
+//        Articulo prodViejo;
+//        Pair par;
+//        BigDecimal cant;
+//        ABMArticulo abmProd = new ABMArticulo();
+//        while (itr.hasNext()) {
+//            par = (Pair) itr.next(); //saco el par de la lista
+//            prodViejo = (Articulo) par.first(); //saco el producto del par
+//            cant = ((BigDecimal) par.second()).setScale(2, RoundingMode.CEILING);;//saco la cantidad del par
+//            cant = prodViejo.getIntege("stock") + cant;//asigno a cant el valor nuevo del stock
+//            resultOp = resultOp && prodViejo.setInteger("stock", cant).saveIt();//actualizo el stock del producto
+//            Proveedor.findById(prodViejo.get("proveedor_id")).add(prodViejo);//creo la relacion
+//        }
+//        return resultOp;
+//    }
 
     //fUNCIONA CORRECTAMENTE
     /*Elimino una compra y los productos ligados a ella, sin hacer devolucion de stock,
@@ -99,6 +100,32 @@ public class ABMCompra {
         return resultOp;
     }
 
+    //FUNCIONA CORRECTAMENTE
+    /*Setear el id de la compra a modificar, la lista de productos nuevos, el idproveedor nuevo 
+     * y la fecha nueva, busca la venta vieja y modifica todos sus atributos calculando el nuevo 
+     * monto en base a la nueva lista de productos
+     */
+    public boolean modificar(Compra c) {
+        Base.openTransaction();
+        boolean resultOp = true;
+        if (c == null) {
+            resultOp = false;
+        } else {
+            Integer idCompra = c.getInteger("id");
+            Integer idProveedorNuevo = c.getInteger("proveedor_id");
+           // c.set("monto", calcularMonto(c.getProductos()));//calculo nuevo monto
+            Compra compra = Compra.findById(idCompra);
+            compra.set("monto", c.get("monto"));
+            compra.set("fecha", c.get("fecha"));
+            compra.set("proveedor_id", idProveedorNuevo);
+            compra.set("pago", c.get("pago"));
+            compra.saveIt();
+            LinkedList<Pair> viejosProductos = buscarProductosComprass(idCompra); //saco los viejos productos de la compra y los elimino de la misma
+            resultOp = resultOp && cargarProductosComprass(idCompra, c.getProductos());//guardo los productos nuevos
+       }
+        Base.commitTransaction();
+        return resultOp;
+    }
 
     //FUNCIONA CORRECTAMENTE
     /*Retorna una lista de pares producto-cantidad de una compra(la busca en
@@ -106,7 +133,7 @@ public class ABMCompra {
      */
 
     private LinkedList<Pair> buscarProductosComprass(int idCompra) {
-        Integer cant;
+        BigDecimal cant;
         ArticulosCompras prodComprado;
         Articulo prod;
         LinkedList<Pair> listaDePares = new LinkedList<Pair>();
@@ -115,7 +142,7 @@ public class ABMCompra {
         while (itr.hasNext()) {
             prodComprado = (ArticulosCompras) itr.next(); //saco el modelo de la lista
             prod = Articulo.findFirst("numero_producto = ?", prodComprado.getInteger("producto_id"));//saco el producto del modelo
-            cant = (Integer) prodComprado.getInteger("cantidad");//saco la cantidad del modelo
+            cant = ((BigDecimal) prodComprado.get("cantidad")).setScale(2, RoundingMode.CEILING);;//saco la cantidad del modelo
             Pair par = new Pair(prod, cant); //creo el par producto-cantidad
             listaDePares.add(par);//agrego el par a la lista de pares
         }
@@ -125,21 +152,22 @@ public class ABMCompra {
     //FUNCIONA CORRECTAMENTE
     /*Recibe lista de pares <Producto,cantidad> retorna precio total de la venta de todos
      los productos de la lista, multiplicados por su cantidad correspondiente*/
-    private Double calcularMonto(LinkedList<Pair> productos) {
-        Double acumMonto = 0.0;
+    private BigDecimal calcularMonto(LinkedList<Pair> productos) {
+        BigDecimal acumMonto = new BigDecimal(0);
         if (productos.isEmpty()) {
             return acumMonto;
         } else {
             Iterator itr = productos.iterator();
             Pair par;
             Articulo prod;
-            Integer cant;
+            BigDecimal cant;
             while (itr.hasNext()) {
                 par = (Pair) itr.next(); //saco el par de la lista
                 prod = (Articulo) par.first(); //saco el producto del par
-                cant = (Integer) par.second();//saco la cantidad del par
-                acumMonto += (prod.getDouble("precio_compra") * cant); //multiplico el precio del producto por la cantidad del mismo
+                cant = ((BigDecimal) par.second()).setScale(2, RoundingMode.CEILING);;//saco la cantidad del par
+                acumMonto.add(cant.multiply((BigDecimal)prod.get("precio_compra"))); //multiplico el precio del producto por la cantidad del mismo
             }
+            acumMonto = acumMonto.setScale(2, RoundingMode.CEILING);
             return acumMonto;
         }
     }
