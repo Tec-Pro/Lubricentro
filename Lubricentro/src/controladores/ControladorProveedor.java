@@ -8,6 +8,7 @@ import abm.ABMArticulo;
 import abm.ABMProveedor;
 import interfaz.AplicacionGui;
 import interfaz.ArticuloGui;
+import interfaz.CompraGui;
 import interfaz.ProveedorGui;
 import interfaz.RealizarPagoGui;
 import java.awt.event.ActionEvent;
@@ -21,6 +22,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Iterator;
@@ -32,10 +34,13 @@ import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import modelos.Articulo;
+import modelos.ArticulosCompras;
+import modelos.Compra;
 import modelos.Pago;
 import modelos.Proveedor;
 import net.sf.jasperreports.engine.JRException;
 import org.javalite.activejdbc.Base;
+import org.javalite.activejdbc.LazyList;
 
 /**
  *
@@ -51,6 +56,7 @@ public class ControladorProveedor implements ActionListener {
     private java.util.List<Proveedor> listProveedores;
     private java.util.List<Articulo> listArticulos;
     private java.util.List<Pago> listPagos;
+    private java.util.List<Compra> listCompras;
     private JTable tablaProveedor;
     private JTable tablaPagos;
     private JTable tablaCompras;
@@ -61,12 +67,16 @@ public class ControladorProveedor implements ActionListener {
     private RealizarPagoGui realizarPagoGui;
     private AplicacionGui aplicacionGui;
     private ArticuloGui articuloGui;
+    private CompraGui compraGui;
     private JTable tablaArticulos;
     private ControladorJReport reporteProveedor;
+    private DecimalFormat formateador = new DecimalFormat("############.##");
 
-    public ControladorProveedor(ProveedorGui proveedorGui, AplicacionGui aplicacionGui, ArticuloGui articuloGui) throws JRException, ClassNotFoundException, SQLException {
+
+    public ControladorProveedor(ProveedorGui proveedorGui, AplicacionGui aplicacionGui, ArticuloGui articuloGui, CompraGui compraGui) throws JRException, ClassNotFoundException, SQLException {
         this.aplicacionGui = aplicacionGui;
         this.articuloGui=articuloGui;
+        this.compraGui= compraGui;
         isNuevo = true;
         editandoInfo = false;
         this.proveedorGui = proveedorGui;
@@ -78,8 +88,10 @@ public class ControladorProveedor implements ActionListener {
         tablaProveedor = proveedorGui.getTablaProveedores();
         tablaPagos = proveedorGui.getPagosRealizados();
         tablaArticulos= proveedorGui.getTablaArticulosProv();
+        tablaCompras= proveedorGui.getComprasRealizadas();
         listProveedores = new LinkedList();
         listPagos = new LinkedList();
+        listCompras= new LinkedList();
         abmProveedor = new ABMProveedor();
         proveedor = new Proveedor();
         reporteProveedor = new ControladorJReport("listadoProveedores.jasper");
@@ -111,6 +123,12 @@ public class ControladorProveedor implements ActionListener {
                 tablaArticulosClicked(evt);
             }
         });
+        proveedorGui.getComprasRealizadas().addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tablaComprasClicked(evt);
+            }
+        });
 
     }
     
@@ -134,6 +152,41 @@ public class ControladorProveedor implements ActionListener {
             articuloGui.CargarCampos(articulo);
             articuloGui.setVisible(true);
             articuloGui.toFront();
+        }
+    }
+    
+        private void tablaComprasClicked(java.awt.event.MouseEvent evt) {
+        if (evt.getClickCount()==2){
+            abrirBase();
+            compraGui.limpiarVentana();
+            Compra compra= Compra.findById(tablaCompras.getValueAt(tablaCompras.getSelectedRow(), 0));
+            cerrarBase();
+            //PODRÍA HACERSE UNA FUNCION EN COMPRAGUI PARA CARGAR LA COMPRA
+            compraGui.getProveedorCompra().setText(proveedor.getString("nombre"));
+            abrirBase();
+            LazyList<ArticulosCompras> artCom = ArticulosCompras.find("compra_id = ?", compra.getId());
+                Iterator<ArticulosCompras> it = artCom.iterator();
+                while (it.hasNext()) {
+                    ArticulosCompras prodCom = it.next();
+                    Articulo art = Articulo.findById(prodCom.get("articulo_id"));
+                    if (art != null) {
+                        Integer numeroProducto = art.getInteger("id");
+                        String codigo = art.getString("codigo");
+                        Float precio = prodCom.getFloat("precio_final");
+                        Float cantidad = prodCom.getFloat("cantidad");
+                        Object cols[] = new Object[5];
+                        cols[0] = numeroProducto;
+                        cols[1] = cantidad;
+                        cols[2] = codigo;
+                        cols[3] = formateador.format(precio);
+                        cols[4] = formateador.format(precio * cantidad);
+                        compraGui.getTablaCompraDefault().addRow(cols);
+                    }
+                }
+                compraGui.getTotalCompra().setText(String.valueOf(compra.getFloat("monto")));
+            Base.close();
+            compraGui.setVisible(true);
+            compraGui.toFront();
         }
     }
 
@@ -180,10 +233,11 @@ public class ControladorProveedor implements ActionListener {
                 row[0] = art.getString("codigo");
                 row[1] = art.getString("descripcion");
                 row[2] = art.getString("marca");
-                row[3] = art.getBigDecimal("precio_compra").setScale(2, RoundingMode.CEILING).toString();
+                row[3] = formateador.format("precio_compra");
                 tablaArtProvDefault.addRow(row);
             }
             cargarPagos();
+            cargarCompras();
         }
     }
 
@@ -214,6 +268,7 @@ public class ControladorProveedor implements ActionListener {
             proveedorGui.getRealizarPago().setEnabled(false);
             proveedorGui.getModificar().setEnabled(false);
             proveedorGui.getGuardar().setEnabled(true);
+            proveedorGui.getCuenta().setText("0.00");
         }
         if (e.getSource() == proveedorGui.getGuardar() && editandoInfo && isNuevo) {
             System.out.println("Boton guardar pulsado");
@@ -325,6 +380,16 @@ public class ControladorProveedor implements ActionListener {
             }
         
         }
+        if(e.getSource()== proveedorGui.getModCuenta()){
+            if(proveedorGui.getModCuenta().isSelected()){
+                proveedorGui.getCuenta().setEnabled(true);
+            }
+            else{
+                proveedorGui.getCuenta().setEnabled(false);
+                proveedorGui.getCuenta().setText(proveedor.getString("cuenta_corriente"));
+
+            }
+        }
     }
 
     private void abrirBase() {
@@ -356,6 +421,14 @@ public class ControladorProveedor implements ActionListener {
             ret = false;
             JOptionPane.showMessageDialog(proveedorGui, "Error en el telefono", "Error!", JOptionPane.ERROR_MESSAGE);
         }
+        try {
+            String cuenta = TratamientoString.eliminarTildes(proveedorGui.getCuenta().getText());
+            Float cuentaFloat= Float.valueOf(cuenta);
+            prov.set("cuenta_corriente",formateador.format(cuentaFloat));
+        } catch (ClassCastException e) {
+            ret = false;
+            JOptionPane.showMessageDialog(proveedorGui, "Error en la cuenta ", "Error!", JOptionPane.ERROR_MESSAGE);
+        }
 
         return ret;
     }
@@ -371,9 +444,28 @@ public class ControladorProveedor implements ActionListener {
             Date sqlFecha = pago.getDate("fecha");
             SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd/MM/yyyy");
             row[0] = sdf.format(sqlFecha);
-            row[1] = pago.getBigDecimal("monto").setScale(2, RoundingMode.CEILING).toString();
+            row[1] = formateador.format(pago.getFloat("monto"));
             tablaPagosDefault.addRow(row);
             cerrarBase();
         }
     }
+    
+    private void cargarCompras(){
+                abrirBase();
+        listCompras = proveedor.getAll(Compra.class);
+        tablaComprasDefault.setRowCount(0);
+        Iterator<Compra> it = listCompras.iterator();
+        while (it.hasNext()) {
+            Compra compra = it.next();
+            Object row[] = new Object[3];
+            Date sqlFecha = compra.getDate("fecha");
+            SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd/MM/yyyy");
+            row[0]= compra.getId();
+            row[1] = sdf.format(sqlFecha);
+            row[2] = formateador.format(compra.getFloat("monto"));
+            tablaComprasDefault.addRow(row);
+            cerrarBase();
+        }
+    }
+    
 }

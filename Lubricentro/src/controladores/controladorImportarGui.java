@@ -7,6 +7,7 @@ package controladores;
 import abm.ABMArticulo;
 import abm.ABMCliente;
 import abm.ABMProveedor;
+import abm.ABMVenta;
 import interfaz.ImportarExcelGui;
 
 import java.awt.event.ActionEvent;
@@ -19,6 +20,7 @@ import java.math.RoundingMode;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -29,6 +31,7 @@ import modelos.Cliente;
 import modelos.Proveedor;
 import modelos.Venta;
 import net.sf.jasperreports.engine.query.SQLBetweenBaseClause;
+import net.sf.jasperreports.engine.util.Pair;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
@@ -59,6 +62,7 @@ public class controladorImportarGui implements ActionListener {
     private Boolean importando;
     private Venta venta;
     private ArticulosVentas ventaArticulos;
+    private ABMVenta abmVenta;
 
     public controladorImportarGui(ImportarExcelGui importarGui) {
         this.importarGui = importarGui;
@@ -66,6 +70,7 @@ public class controladorImportarGui implements ActionListener {
         abmProveedor = new ABMProveedor();
         abmCliente = new ABMCliente();
         abmArticulo = new ABMArticulo();
+        abmVenta = new ABMVenta();
         prov = new Proveedor();
         cliente = new Cliente();
         articulo = new Articulo();
@@ -671,11 +676,11 @@ public class controladorImportarGui implements ActionListener {
                         XSSFCell celdaPrecio;
                         Date fechaDate = Calendar.getInstance().getTime();
                         String siPago;
-                        int siPagoInt=1;
+                        int siPagoInt = 1;
                         String codigoString;
                         Double cantidadDouble = 0.0;
                         double pagoDouble;
-                        double monto=0.0;
+                        double monto = 0.0;
                         BigDecimal pagoBig;
                         pagoBig = new BigDecimal(0);
                         abrirBase();
@@ -704,28 +709,20 @@ public class controladorImportarGui implements ActionListener {
                                     System.out.println(6);
                                     celdaSiPago.setCellType(Cell.CELL_TYPE_STRING);
                                     siPago = celdaSiPago.getStringCellValue();
-                                    siPago=siPago.toLowerCase();
-                                    if(siPago.compareTo("si")==0){
-                                        siPagoInt=1;
-                                    }
-                                    else{
-                                        siPagoInt=0;
+                                    siPago = siPago.toLowerCase();
+                                    if (siPago.compareTo("si") == 0) {
+                                        siPagoInt = 1;
+                                    } else {
+                                        siPagoInt = 0;
                                     }
                                 }
                                 iterarFilas.next();
                                 abrirBase();
                                 System.out.println(7 + nombre);
-                                
+                                LinkedList<Pair> parDeProductos = new LinkedList();
                                 cliente = Cliente.findFirst("nombre = ?", nombre);
-                                System.out.println(8+ nombre  +" " +fechaDate);
-                                Base.openTransaction();
-                                venta = Venta.createIt( "fecha",(new java.sql.Date(fechaDate.getTime())), "pago", siPagoInt);
-                                Base.commitTransaction();
-                                System.out.println(9+ venta.getString("id"));
-                                Base.openTransaction();
-                                cliente.add(venta);
-                                Base.commitTransaction();
-                                
+                                System.out.println(8 + nombre + " " + fechaDate);
+                                venta.set("cliente_id", cliente.getId());
                                 cerrarBase();
                                 while (iterarFilas.hasNext() && importando) {
                                     pagoBig = new BigDecimal(0);
@@ -737,50 +734,62 @@ public class controladorImportarGui implements ActionListener {
                                         if (!celdaCodigo.toString().isEmpty()) {
                                             celdaCodigo.setCellType(Cell.CELL_TYPE_STRING);
                                             codigoString = celdaCodigo.toString();
-                                            System.out.println("cod " +codigoString);
-                                            cantidadDouble=0.0;
+                                            System.out.println("cod " + codigoString);
+                                            cantidadDouble = 0.0;
                                             if (celdaCantidad != null) {
                                                 celdaCantidad.setCellType(Cell.CELL_TYPE_NUMERIC);
                                                 cantidadDouble = celdaCantidad.getNumericCellValue();
-                                                System.out.println("cant "+cantidadDouble);
+                                                System.out.println("cant " + cantidadDouble);
                                             }
-                                            pagoDouble=0.0;
+                                            pagoDouble = 0.0;
                                             if (celdaPrecio != null) {
                                                 celdaPrecio.setCellType(Cell.CELL_TYPE_NUMERIC);
                                                 pagoDouble = celdaPrecio.getNumericCellValue();
                                                 pagoBig = BigDecimal.valueOf(pagoDouble).setScale(2, RoundingMode.UNNECESSARY);
-                                                System.out.println( "sale "+pagoBig);
+                                                System.out.println("sale " + pagoBig);
                                             }
                                             articulo.set("codigo", codigoString);
-                                            monto= monto+pagoDouble*cantidadDouble;
-                                            System.out.println("monto "+monto);
+                                            monto = monto + pagoDouble * cantidadDouble;
+                                            System.out.println("monto " + monto);
                                             abrirBase();
                                             if (abmArticulo.findArticulo(articulo)) {
-                                                System.out.println("encontré el artigulo");
                                                 articulo = abmArticulo.getProducto(articulo);
                                                 System.out.println(articulo.getId());
                                                 Base.openTransaction();
-                                                venta.add(articulo);
-                                                Base.commitTransaction();
-                                                ArticulosVentas articulosVentas = ArticulosVentas.findFirst("venta_id = ? and articulos_id =?  ", venta.getId(), articulo.getId());
-                                                articulosVentas.set("cantidad", cantidadDouble, "precio_vendido", pagoBig);
-                                                Base.openTransaction();
-                                                articulosVentas.save();
-                                                Base.commitTransaction();
 
+                                               /* if (siPagoInt == 1) {
+                                                    articulo.set("precio_compra", pagoBig);
+                                                }*/
+                                                //articulo.saveIt();
+                                                Pair par = new Pair(articulo, cantidadDouble); //creo el par
+                                                parDeProductos.add(par); //meto el par a la lista
                                             }
+                                            venta.set("fecha", fechaDate);
+                                            venta.setProductos(parDeProductos);
+                                            Base.commitTransaction();
                                             cerrarBase();
                                         }
 
-
                                     }
+
+
+                                }
+                                if (siPagoInt == 1) {
+                                    venta.set("pago", true);
+                                    BigDecimal bd = new BigDecimal(10);
+                                    venta.set("monto", bd);
+                                } else {
+                                    venta.set("pago", false);
+                                }
+                                abrirBase();
+                                if (abmVenta.alta(venta)) {
                                 }
                                 abrirBase();
                                 Base.openTransaction();
-                                venta.set("monto",monto);
+                                venta.set("monto", monto);
                                 Base.commitTransaction();
                                 cerrarBase();
-                                
+
                             }
                         }
                     }

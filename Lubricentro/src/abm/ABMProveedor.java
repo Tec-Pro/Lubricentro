@@ -26,7 +26,7 @@ public class ABMProveedor {
         boolean ret = false;
         if (!findProveedor(p)) {
             Base.openTransaction();
-            Proveedor nuevo = Proveedor.create("nombre", p.get("nombre"), "telefono", p.get("telefono"));
+            Proveedor nuevo = Proveedor.create("nombre", p.get("nombre"), "telefono", p.get("telefono"), "cuenta_corriente",p.get("cuenta_corriente"));
             ret = nuevo.saveIt();
             Base.commitTransaction();
         }
@@ -49,21 +49,22 @@ public class ABMProveedor {
         Proveedor viejo = Proveedor.findById(p.getId());
         if (viejo != null) {          
             Base.openTransaction();
-            ret = viejo.set("nombre", p.get("nombre"), "telefono", p.get("telefono")).saveIt();
+            ret = viejo.set("nombre", p.get("nombre"), "telefono", p.get("telefono"), "cuenta_corriente",p.get("cuenta_corriente")).saveIt();
             Base.commitTransaction();
         }
         return ret;
     }
     
-    public boolean registrarPago(Proveedor prov, Pago pago){
+   /* public boolean registrarPago(Proveedor prov, Pago pago){
         boolean ret= false;
         Proveedor viejo = Proveedor.findFirst("nombre = ?", prov.get("nombre"));
         if(viejo!=null){
             Base.openTransaction();
+            viejo.set("cuenta_corriente", viejo.getFloat("cuenta_corriente")+ pago.getFloat("monto"));
             viejo.add(pago);
             Base.commitTransaction();
             ret=true;
         }
         return ret;
-    }
+    }*/
 }

@@ -121,3 +121,5 @@ ALTER TABLE `lubricentro`.`envios` ADD COLUMN `id` INT NOT NULL AUTO_INCREMENT  
 , ADD PRIMARY KEY (`id`, `fecha`) , RENAME TO  `lubricentro`.`envios` ;
 
 ALTER TABLE `lubricentro`.`envios` CHANGE COLUMN `enviado` `enviado` INT NULL DEFAULT NULL  ;
+
+ALTER TABLE `lubricentro`.`proveedors` ADD COLUMN `cuenta_corriente` FLOAT NULL  AFTER `telefono` ;

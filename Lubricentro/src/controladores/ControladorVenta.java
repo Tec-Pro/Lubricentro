@@ -277,7 +277,7 @@ public class ControladorVenta implements ActionListener, CellEditorListener {
         if (tablaProd.getRowCount() == 1) {
             String id = (String) tablaProd.getValueAt(0, 0);
             Articulo a = Articulo.findById(id);
-            if (!(a.getString("fram").equals(""))) {
+            if (!(a.getString("equivalencia_fram").equals(""))) {
                 prodlista = busqueda.filtroProducto2(id);
                 it = prodlista.iterator();
                 tablaProd.setRowCount(1);

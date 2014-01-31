@@ -6,6 +6,7 @@ package interfaz;
 
 import java.awt.event.ActionListener;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
@@ -58,6 +59,9 @@ public class ProveedorGui extends javax.swing.JInternalFrame {
         id = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         exportar = new javax.swing.JButton();
+        jLabel4 = new javax.swing.JLabel();
+        cuenta = new javax.swing.JTextField();
+        modCuenta = new javax.swing.JCheckBox();
         jPanel4 = new javax.swing.JPanel();
         borrar = new javax.swing.JButton();
         nuevo = new javax.swing.JButton();
@@ -129,15 +133,18 @@ public class ProveedorGui extends javax.swing.JInternalFrame {
                 .addGap(2, 2, 2)
                 .addComponent(busqueda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 172, Short.MAX_VALUE))
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE))
         );
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Datos del proveedor", 0, 0, new java.awt.Font("Century Schoolbook L", 3, 15))); // NOI18N
+
+        nombre.setEnabled(false);
 
         jLabel1.setText("Nombre");
 
         jLabel2.setText("Telefono");
 
+        telefono.setEnabled(false);
         telefono.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 telefonoActionPerformed(evt);
@@ -152,6 +159,23 @@ public class ProveedorGui extends javax.swing.JInternalFrame {
         exportar.setText("Exportar listado");
         exportar.setToolTipText("Exportar listado de proveedores");
 
+        jLabel4.setText("Cuenta");
+
+        cuenta.setEnabled(false);
+        cuenta.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cuentaActionPerformed(evt);
+            }
+        });
+
+        modCuenta.setText("modificar");
+        modCuenta.setEnabled(false);
+        modCuenta.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                modCuentaActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -162,9 +186,15 @@ public class ProveedorGui extends javax.swing.JInternalFrame {
                     .addComponent(jLabel2)
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                         .addComponent(jLabel3)
-                        .addComponent(jLabel1)))
+                        .addComponent(jLabel1))
+                    .addComponent(jLabel4))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(cuenta)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(modCuenta)
+                        .addGap(25, 25, 25))
                     .addComponent(nombre)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(id, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -175,8 +205,7 @@ public class ProveedorGui extends javax.swing.JInternalFrame {
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
+            .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(id, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -188,9 +217,13 @@ public class ProveedorGui extends javax.swing.JInternalFrame {
                 .addGap(1, 1, 1)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel2)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                        .addComponent(telefono, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(1, 1, 1))))
+                    .addComponent(telefono, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(0, 0, 0)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(cuenta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(modCuenta))
+                .addGap(0, 0, 0))
         );
 
         jPanel4.setBorder(javax.swing.BorderFactory.createBevelBorder(0));
@@ -331,11 +364,11 @@ public class ProveedorGui extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "ID", "Fecha", "Cantidad"
+                "ID", "Fecha", "Monto"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.Float.class
+                java.lang.Object.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
                 false, false, false
@@ -388,9 +421,9 @@ public class ProveedorGui extends javax.swing.JInternalFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(panelProveedores, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(0, 0, 0)
+                        .addGap(18, 18, 18)
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(0, 0, 0)
                         .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -416,17 +449,27 @@ public class ProveedorGui extends javax.swing.JInternalFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_modificarActionPerformed
 
+    private void cuentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cuentaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cuentaActionPerformed
+
+    private void modCuentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modCuentaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_modCuentaActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton borrar;
     private javax.swing.JButton borrarPago;
     private javax.swing.JTextField busqueda;
     private javax.swing.JTable comprasRealizadas;
+    private javax.swing.JTextField cuenta;
     private javax.swing.JButton exportar;
     private javax.swing.JButton guardar;
     private javax.swing.JTextField id;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
@@ -438,6 +481,7 @@ public class ProveedorGui extends javax.swing.JInternalFrame {
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
+    private javax.swing.JCheckBox modCuenta;
     private javax.swing.JButton modificar;
     private javax.swing.JTextField nombre;
     private javax.swing.JButton nuevo;
@@ -457,6 +501,7 @@ public class ProveedorGui extends javax.swing.JInternalFrame {
         this.realizarPago.addActionListener(lis);
         this.borrarPago.addActionListener(lis);        
         this.exportar.addActionListener(lis);
+        this.modCuenta.addActionListener(lis);
 
     }
 
@@ -464,6 +509,8 @@ public class ProveedorGui extends javax.swing.JInternalFrame {
         public void habilitarCampos(boolean b) {
         nombre.setEnabled(b);
         telefono.setEnabled(b);
+        modCuenta.setEnabled(b);
+        
         }
         
         public void limpiarCampos() {
@@ -473,12 +520,16 @@ public class ProveedorGui extends javax.swing.JInternalFrame {
         articulosProv.setRowCount(0);
         pagosDefault.setRowCount(0);
         comprasDefault.setRowCount(0);
+        modCuenta.setSelected(false);
+        cuenta.setText("");
+        cuenta.setEnabled(false);
         }
         
         public void CargarCampos(Proveedor prov) {
         id.setText(prov.getString("id"));
         nombre.setText(prov.getString("nombre"));
         telefono.setText(prov.getString("telefono"));
+        cuenta.setText(prov.getString("cuenta_corriente"));
         }
 
     public DefaultTableModel getArticulosProv() {
@@ -575,6 +626,14 @@ public class ProveedorGui extends javax.swing.JInternalFrame {
 
     public JButton getBorrarPago() {
         return borrarPago;
+    }
+
+    public JTextField getCuenta() {
+        return cuenta;
+    }
+
+    public JCheckBox getModCuenta() {
+        return modCuenta;
     }
 
 
