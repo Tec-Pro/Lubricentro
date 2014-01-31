@@ -8,6 +8,8 @@ import abm.ABMCompra;
 import busqueda.Busqueda;
 import interfaz.AplicacionGui;
 import interfaz.CompraGui;
+import interfaz.ProveedorGui;
+import interfaz.RealizarPagoGui;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -37,6 +39,7 @@ public class ControladorCompra implements ActionListener, CellEditorListener {
 
     private Busqueda busqueda;
     private ABMCompra abmCompra;
+    private RealizarPagoGui realizarPagoGui;
     private CompraGui compraGui;
     private AplicacionGui apgui;
     //private ComprasRealizadasControlador controladorCompras;
@@ -62,7 +65,6 @@ public class ControladorCompra implements ActionListener, CellEditorListener {
         this.compraGui.setActionListener(this);
         this.apgui = apgui;
         this.idCompraAModificar = 0;
-
         textnom = compraGui.getNombreProveedor();
         textnom.addKeyListener(new java.awt.event.KeyAdapter() {
             @Override
@@ -192,6 +194,23 @@ public class ControladorCompra implements ActionListener, CellEditorListener {
             rowArray[2] = a.getString("marca");
             tablaProd.addRow(rowArray);
         }
+        if (tablaProd.getRowCount() == 1) {
+            String id = (String) tablaProd.getValueAt(0, 0);
+            Articulo a = Articulo.findById(id);
+            String fram = a.getString("equivalencia_fram");
+            if (!(fram.equals(""))) {
+                prodlista = busqueda.filtroProducto2(fram);
+                it = prodlista.iterator();
+                while (it.hasNext()) {
+                    a = it.next();
+                    String rowArray[] = new String[3];
+                    rowArray[0] = a.getId().toString();
+                    rowArray[1] = a.getString("codigo");
+                    rowArray[2] = a.getString("marca");
+                    tablaProd.addRow(rowArray);
+                }
+            }
+        }
         if (Base.hasConnection()) {
             Base.close();
         }
@@ -262,7 +281,14 @@ public class ControladorCompra implements ActionListener, CellEditorListener {
                 if (abmCompra.alta(v)) {
                     JOptionPane.showMessageDialog(apgui, "Compra realizada con exito.");
                     compraGui.limpiarVentana();
-
+                    Proveedor prov = Proveedor.findById(v.get("proveedor_id"));
+                    if (!(prov == null) && (compraGui.getAbona().getSelectedIndex() == 0)) {
+                        BigDecimal cuentaCorriente = v.getBigDecimal("monto").subtract(prov.getBigDecimal("cuenta_corriente"));
+                        prov.set("cuenta_corriente", cuentaCorriente);
+                        realizarPagoGui = new RealizarPagoGui(apgui, true, prov);
+                        realizarPagoGui.setLocationRelativeTo(compraGui);
+                        realizarPagoGui.setVisible(true);
+                    }
                 } else {
                     JOptionPane.showMessageDialog(apgui, "Ocurrió un error inesperado, compra no realizada");
                 }
@@ -313,6 +339,14 @@ public class ControladorCompra implements ActionListener, CellEditorListener {
             total = total.add((BigDecimal) tablafac.getValueAt(i, 4)).setScale(2, RoundingMode.CEILING);;
         }
         compraGui.getTotalCompra().setText(total.toString());
+    }
+
+    private boolean existeProdList(int id) {
+        boolean ret = false;
+        for (int i = 0; i < tablaProd.getRowCount() && !ret; i++) {
+            ret = (Integer) tablaProd.getValueAt(i, 0) == id;
+        }
+        return ret;
     }
 
     @Override

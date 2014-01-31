@@ -194,6 +194,7 @@ public class ControladorVenta implements ActionListener, CellEditorListener {
             } else {
                 Venta v = new Venta();
                 LinkedList<Pair> parDeProductos = new LinkedList();
+                LinkedList<BigDecimal> preciosFinales = new LinkedList();
                 String laFecha = ventaGui.getCalenFacturaText().getText(); //saco la fecha
                 String cliente = ventaGui.getClienteFactura().getText();
                 Integer idCliente = Integer.valueOf(cliente.split(" ")[0]); //saco el id prov
@@ -201,30 +202,33 @@ public class ControladorVenta implements ActionListener, CellEditorListener {
                 for (int i = 0; i < ventaGui.getTablaFactura().getRowCount(); i++) {
                     abrirBase();
                     Articulo producto = Articulo.findFirst("id = ?", tablafac.getValueAt(i, 0));
-                    //PARA PENSAR! como hacer con el precio final en caso de venta o fiado.
                     BigDecimal cantidad = ((BigDecimal) tablafac.getValueAt(i, 1)).setScale(2, RoundingMode.CEILING); //saco la cantidad
                     if (ventaGui.getAbona().getSelectedIndex() == 0) {
                         BigDecimal precioFinal = ((BigDecimal) tablafac.getValueAt(i, 3)).setScale(2, RoundingMode.CEILING);
-                        producto.set("precio_compra", precioFinal);
+                        preciosFinales.add(precioFinal);
+                        Pair par = new Pair(producto, cantidad); //creo el par
+                        parDeProductos.add(par); //meto el par a la lista
+                    } else {
+                        Pair par = new Pair(producto, cantidad); //creo el par
+                        parDeProductos.add(par); //meto el par a la lista
                     }
-                    producto.saveIt();
-                    Pair par = new Pair(producto, cantidad); //creo el par
-                    parDeProductos.add(par); //meto el par a la lista
                 }
                 v.set("fecha", laFecha);
-                v.setProductos(parDeProductos);
                 if (ventaGui.getAbona().getSelectedIndex() == 0) {
+                    v.setPreciosFinales(preciosFinales);
+                    v.setProductos(parDeProductos);
                     v.set("pago", true);
                     BigDecimal bd = new BigDecimal(ventaGui.getTotalFactura().getText());
                     v.set("monto", bd);
                 } else {
                     v.set("pago", false);
+                    v.setProductos(parDeProductos);
                 }
                 abrirBase();
                 if (abmVenta.alta(v)) {
                     JOptionPane.showMessageDialog(apgui, "Venta realizada con exito.");
                     ventaGui.limpiarVentana();
-                        try {
+                    try {
                         reporteFactura.mostrarFactura(abmVenta.getUltimoIdVenta());
                     } catch (ClassNotFoundException ex) {
                         Logger.getLogger(ControladorVenta.class.getName()).log(Level.SEVERE, null, ex);
@@ -277,10 +281,10 @@ public class ControladorVenta implements ActionListener, CellEditorListener {
         if (tablaProd.getRowCount() == 1) {
             String id = (String) tablaProd.getValueAt(0, 0);
             Articulo a = Articulo.findById(id);
-            if (!(a.getString("equivalencia_fram").equals(""))) {
-                prodlista = busqueda.filtroProducto2(id);
+            String fram = a.getString("equivalencia_fram");
+            if (!(fram.equals(""))) {
+                prodlista = busqueda.filtroProducto2(fram);
                 it = prodlista.iterator();
-                tablaProd.setRowCount(1);
                 while (it.hasNext()) {
                     a = it.next();
                     String rowArray[] = new String[3];
@@ -306,6 +310,14 @@ public class ControladorVenta implements ActionListener, CellEditorListener {
         boolean ret = false;
         for (int i = 0; i < tablafac.getRowCount() && !ret; i++) {
             ret = (Integer) tablafac.getValueAt(i, 0) == id;
+        }
+        return ret;
+    }
+
+    private boolean existeProdList(int id) {
+        boolean ret = false;
+        for (int i = 0; i < tablaProd.getRowCount() && !ret; i++) {
+            ret = (Integer) tablaProd.getValueAt(i, 0) == id;
         }
         return ret;
     }

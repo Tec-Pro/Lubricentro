@@ -214,7 +214,7 @@ public class ControladorApliacion implements ActionListener {
 //            Venta factura = Venta.findById(idFac);
 //            Object idCliente = factura.get("cliente_id");
 //            DefaultTableModel tablita = v.getTablaFacturaDefault();
-//            tablita.setRowCount(0);
+//            tablita.setRowCount>(0);
 //            Cliente cliente = Cliente.findById(idCliente);
 //            if (cliente != null) {
 //                String nombre = idCliente + " " + cliente.getString("nombre");
