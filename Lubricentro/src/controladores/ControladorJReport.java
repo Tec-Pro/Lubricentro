@@ -16,7 +16,6 @@ import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.util.JRLoader;
 import net.sf.jasperreports.view.JasperViewer;
 
-
 /**
  *
  * @author nico
@@ -44,7 +43,7 @@ public class ControladorJReport {
 
     public void mostrarFactura(int venta) throws ClassNotFoundException, SQLException, JRException {
         Class.forName("com.mysql.jdbc.Driver");
-        
+
         Connection connection = DriverManager.getConnection("jdbc:mysql://localhost/lubricentro", "root", "root");
         Map parametros = new HashMap();
         parametros.clear();

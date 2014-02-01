@@ -4,7 +4,6 @@
  */
 package abm;
 
-import modelos.Pago;
 import modelos.Proveedor;
 import org.javalite.activejdbc.Base;
 

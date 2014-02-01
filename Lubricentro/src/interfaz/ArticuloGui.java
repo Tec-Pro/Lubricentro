@@ -9,8 +9,8 @@ import java.awt.event.FocusListener;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
-import javax.swing.JEditorPane;
 import javax.swing.JLabel;
+import javax.swing.JSeparator;
 import javax.swing.JSpinner;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
@@ -77,6 +77,8 @@ public class ArticuloGui extends javax.swing.JInternalFrame {
         exportar = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
         cantidadArticulos = new javax.swing.JLabel();
+        filtroEquiv = new javax.swing.JCheckBox();
+        separador = new javax.swing.JSeparator();
 
         setClosable(true);
         setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
@@ -190,11 +192,11 @@ public class ArticuloGui extends javax.swing.JInternalFrame {
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(codigo, javax.swing.GroupLayout.DEFAULT_SIZE, 77, Short.MAX_VALUE)
+                        .addComponent(codigo)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(marca, javax.swing.GroupLayout.DEFAULT_SIZE, 77, Short.MAX_VALUE)))
+                        .addComponent(marca)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
@@ -207,7 +209,7 @@ public class ArticuloGui extends javax.swing.JInternalFrame {
                             .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addComponent(precioVenta, javax.swing.GroupLayout.DEFAULT_SIZE, 144, Short.MAX_VALUE)
+                                .addComponent(precioVenta)
                                 .addGap(26, 26, 26))
                             .addComponent(precioCompra))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -331,6 +333,10 @@ public class ArticuloGui extends javax.swing.JInternalFrame {
         cantidadArticulos.setFont(new java.awt.Font("Century Schoolbook L", 1, 18)); // NOI18N
         cantidadArticulos.setForeground(new java.awt.Color(237, 2, 24));
 
+        filtroEquiv.setText("buscar equivalentes");
+
+        separador.setOrientation(javax.swing.SwingConstants.VERTICAL);
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -341,14 +347,18 @@ public class ArticuloGui extends javax.swing.JInternalFrame {
                         .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
+                    .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(6, 6, 6)
-                        .addComponent(busqueda, javax.swing.GroupLayout.PREFERRED_SIZE, 304, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(busqueda, javax.swing.GroupLayout.DEFAULT_SIZE, 246, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(filtroEquiv)
+                        .addGap(1, 1, 1)
+                        .addComponent(separador, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(1, 1, 1)
                         .addComponent(jLabel4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cantidadArticulos, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 92, Short.MAX_VALUE)
+                        .addComponent(cantidadArticulos, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(exportar))
                     .addComponent(jScrollPane4))
                 .addGap(0, 0, 0))
@@ -357,11 +367,14 @@ public class ArticuloGui extends javax.swing.JInternalFrame {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(busqueda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(exportar)
-                        .addComponent(jLabel4))
-                    .addComponent(cantidadArticulos, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(busqueda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(exportar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(filtroEquiv)
+                            .addComponent(jLabel4))
+                        .addComponent(cantidadArticulos, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(separador, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 164, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -393,6 +406,7 @@ public class ArticuloGui extends javax.swing.JInternalFrame {
     private javax.swing.JTextArea descripcion;
     private javax.swing.JTextField equivFram;
     private javax.swing.JButton exportar;
+    private javax.swing.JCheckBox filtroEquiv;
     private javax.swing.JButton guardar;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
@@ -416,6 +430,7 @@ public class ArticuloGui extends javax.swing.JInternalFrame {
     private javax.swing.JTextField precioCompra;
     private javax.swing.JTextField precioVenta;
     private javax.swing.JComboBox proveedores;
+    private javax.swing.JSeparator separador;
     private javax.swing.JSpinner stock;
     private javax.swing.JSpinner stockMinimo;
     // End of variables declaration//GEN-END:variables
@@ -426,6 +441,7 @@ public class ArticuloGui extends javax.swing.JInternalFrame {
         this.nuevo.addActionListener(lis);
         this.modificar.addActionListener(lis);
         this.exportar.addActionListener(lis);
+        this.filtroEquiv.addActionListener(lis);
     }
     
     public void setFocusListener(FocusListener lis){
@@ -544,6 +560,12 @@ public class ArticuloGui extends javax.swing.JInternalFrame {
     public JLabel getCantidadArticulos() {
         return cantidadArticulos;
     }
+
+    public JCheckBox getFiltroEquiv() {
+        return filtroEquiv;
+    }
+
+
     
     
     

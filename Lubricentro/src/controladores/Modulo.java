@@ -9,8 +9,6 @@ import java.util.Calendar;
 import javax.swing.*;
 import java.sql.*;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class Modulo {
 
@@ -113,7 +111,7 @@ public class Modulo {
                     String comsSQL = "CREATE DATABASE " + bd;
                     sentencia.executeUpdate(comsSQL);
                     restaurar();
-                    JOptionPane.showMessageDialog(null, "Backup restaurado exitosamente!" );
+                    JOptionPane.showMessageDialog(null, "Backup restaurado exitosamente!");
                 } catch (SQLException ex) {
                 }
             } else if (conn == null) {
@@ -242,20 +240,19 @@ public class Modulo {
         os.close();
         fis.close();
     }
-    
-    
-        public void CrearBackupSilencioso() {
-        obtenerRutaMysql();
-            Runtime rt = Runtime.getRuntime();
-            try {
-                String dir = (new File(System.getProperty("user.dir")).getAbsolutePath());
-                String command = installMysql + "mysqldump --opt -u " + login + " -p" + password + " " + bd + " -r \"" + dir + "/backupEmail.sql\"";
-                System.out.println(command);
-                rt.exec(command);
-            } catch (IOException ex) {
-                ex.printStackTrace();
 
-            }
- 
+    public void CrearBackupSilencioso() {
+        obtenerRutaMysql();
+        Runtime rt = Runtime.getRuntime();
+        try {
+            String dir = (new File(System.getProperty("user.dir")).getAbsolutePath());
+            String command = installMysql + "mysqldump --opt -u " + login + " -p" + password + " " + bd + " -r \"" + dir + "/backupEmail.sql\"";
+            System.out.println(command);
+            rt.exec(command);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+
+        }
+
     }
 }

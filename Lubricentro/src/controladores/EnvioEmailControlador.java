@@ -4,9 +4,6 @@
  */
 package controladores;
 
-import static controladores.Modulo.conectadoMySQL;
-import static controladores.Modulo.login;
-import static controladores.Modulo.password;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -163,11 +160,11 @@ public class EnvioEmailControlador {
             }
             ret = t.isConnected();
             if (envio) {
-                try{
-                t.sendMessage(message, message.getAllRecipients());}
-                catch(  javax.mail.MessagingException ex){
-                    ret=false;
-                    
+                try {
+                    t.sendMessage(message, message.getAllRecipients());
+                } catch (javax.mail.MessagingException ex) {
+                    ret = false;
+
                 }
             }
             if (envio && ret) {
@@ -211,7 +208,7 @@ public class EnvioEmailControlador {
         return fechaString;
     }
 
-    public boolean enviarMailManual(String email, String passw, String dir,String para) throws MessagingException {
+    public boolean enviarMailManual(String email, String passw, String dir, String para) throws MessagingException {
         boolean ret = false;
 
         this.mail = email;
@@ -261,10 +258,10 @@ public class EnvioEmailControlador {
         } catch (javax.mail.AuthenticationFailedException ex) {
             JOptionPane.showMessageDialog(null, "¡Datos incorrectos, no se ha establecido la conexión!", "Error", JOptionPane.ERROR_MESSAGE);
         }
-        
-        if(t.isConnected()){
-        t.sendMessage(message, message.getAllRecipients());
-        ret = t.isConnected();
+
+        if (t.isConnected()) {
+            t.sendMessage(message, message.getAllRecipients());
+            ret = t.isConnected();
         }
 
         t.close();

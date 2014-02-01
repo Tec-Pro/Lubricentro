@@ -25,11 +25,8 @@ import javax.swing.table.DefaultTableModel;
 import modelos.Articulo;
 import modelos.ArticulosVentas;
 import modelos.Cliente;
-import modelos.Pago;
 import modelos.Venta;
-import net.sf.jasperreports.engine.util.Pair;
 import org.javalite.activejdbc.Base;
-import org.javalite.activejdbc.Model;
 
 /**
  *
@@ -99,6 +96,13 @@ public class ControladorCliente implements ActionListener {
 
     private void tablaVerMouseClicked(MouseEvent evt) {
         cargarVentas();
+    }
+    
+    public void cargarTodos(){
+        abrirBase();
+        listClientes = Cliente.findAll();
+        cerrarBase();
+        actualizarLista();
     }
 
     private void tablaClienteMouseClicked(MouseEvent evt) {

@@ -8,7 +8,6 @@ import abm.ABMCompra;
 import busqueda.Busqueda;
 import interfaz.AplicacionGui;
 import interfaz.CompraGui;
-import interfaz.ProveedorGui;
 import interfaz.RealizarPagoGui;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -283,12 +282,18 @@ public class ControladorCompra implements ActionListener, CellEditorListener {
                     compraGui.limpiarVentana();
                     Proveedor prov = Proveedor.findById(v.get("proveedor_id"));
                     if (!(prov == null) && (compraGui.getAbona().getSelectedIndex() == 0)) {
-                        BigDecimal cuentaCorriente = v.getBigDecimal("monto").subtract(prov.getBigDecimal("cuenta_corriente"));
+                        BigDecimal cuentaCorriente = prov.getBigDecimal("cuenta_corriente").subtract(v.getBigDecimal("monto"));
                         prov.set("cuenta_corriente", cuentaCorriente);
                         realizarPagoGui = new RealizarPagoGui(apgui, true, prov);
                         realizarPagoGui.setLocationRelativeTo(compraGui);
                         realizarPagoGui.setVisible(true);
+                    } else if ((!(prov == null) && compraGui.getAbona().getSelectedIndex() == 1)) {
+                        BigDecimal cuentaCorriente = prov.getBigDecimal("cuenta_corriente").subtract(v.getBigDecimal("monto"));
+                        Base.openTransaction();
+                        prov.set("cuenta_corriente", cuentaCorriente);
+                        Base.commitTransaction();
                     }
+
                 } else {
                     JOptionPane.showMessageDialog(apgui, "Ocurrió un error inesperado, compra no realizada");
                 }

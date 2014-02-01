@@ -292,6 +292,7 @@ public class CompraGui extends javax.swing.JInternalFrame {
         setResizable(true);
         setTitle("Registrar Compra");
         setPreferredSize(new java.awt.Dimension(841, 439));
+        getContentPane().setLayout(new java.awt.BorderLayout());
 
         jPanel1.setPreferredSize(new java.awt.Dimension(825, 448));
 

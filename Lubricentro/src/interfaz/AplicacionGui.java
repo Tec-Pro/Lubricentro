@@ -107,10 +107,10 @@ public class AplicacionGui extends javax.swing.JFrame {
         panelBotones = new javax.swing.JPanel();
         articulos = new javax.swing.JButton();
         proveedores = new javax.swing.JButton();
-        importar = new javax.swing.JButton();
         clientes = new javax.swing.JButton();
         registrarCompra = new javax.swing.JButton();
         registrarVenta = new javax.swing.JButton();
+        importar = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         cambiosEmail = new javax.swing.JMenuItem();
@@ -128,16 +128,13 @@ public class AplicacionGui extends javax.swing.JFrame {
         setTitle("Lubricentro");
         setIconImage(new ImageIcon(getClass().getResource("/interfaz/Icons/icono.png")).getImage());
 
-        panelBotones.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        panelBotones.setBorder(new javax.swing.border.SoftBevelBorder(0));
 
         articulos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/interfaz/Icons/productos.png"))); // NOI18N
         articulos.setToolTipText("Gestión de artículos");
 
         proveedores.setIcon(new javax.swing.ImageIcon(getClass().getResource("/interfaz/Icons/proveedor.png"))); // NOI18N
         proveedores.setToolTipText("Gestión de proveedores");
-
-        importar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/interfaz/Icons/importar.png"))); // NOI18N
-        importar.setToolTipText("Importar datos desde Excel");
 
         clientes.setIcon(new javax.swing.ImageIcon(getClass().getResource("/interfaz/Icons/clients.png"))); // NOI18N
         clientes.setToolTipText("Gestión de clientes");
@@ -148,20 +145,20 @@ public class AplicacionGui extends javax.swing.JFrame {
         registrarVenta.setIcon(new javax.swing.ImageIcon(getClass().getResource("/interfaz/Icons/ventas.png"))); // NOI18N
         registrarVenta.setToolTipText("Registrar Venta");
 
+        importar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/interfaz/Icons/importar.png"))); // NOI18N
+        importar.setToolTipText("Importar datos desde Excel");
+
         javax.swing.GroupLayout panelBotonesLayout = new javax.swing.GroupLayout(panelBotones);
         panelBotones.setLayout(panelBotonesLayout);
         panelBotonesLayout.setHorizontalGroup(
             panelBotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panelBotonesLayout.createSequentialGroup()
-                .addGroup(panelBotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(clientes, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, panelBotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(articulos, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(proveedores, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(importar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(registrarCompra, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(registrarVenta, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(0, 0, 0))
+            .addGroup(panelBotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                .addComponent(clientes, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(articulos, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(proveedores, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(registrarCompra, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(registrarVenta, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addComponent(importar)
         );
         panelBotonesLayout.setVerticalGroup(
             panelBotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -170,9 +167,9 @@ public class AplicacionGui extends javax.swing.JFrame {
                 .addGap(0, 0, 0)
                 .addComponent(proveedores, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(importar, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
                 .addComponent(clientes, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(importar, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
                 .addComponent(registrarCompra, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
@@ -242,8 +239,8 @@ public class AplicacionGui extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(panelBotones, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(contenedor, javax.swing.GroupLayout.DEFAULT_SIZE, 430, Short.MAX_VALUE))
+                .addGap(0, 0, 0)
+                .addComponent(contenedor, javax.swing.GroupLayout.DEFAULT_SIZE, 436, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

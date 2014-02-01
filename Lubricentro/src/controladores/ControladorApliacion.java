@@ -4,9 +4,6 @@
  */
 package controladores;
 
-import static controladores.Modulo.SQLFilter.sql;
-import static controladores.Modulo.nombrebackup;
-import static controladores.Modulo.selecRestauraBack;
 import interfaz.AplicacionGui;
 import interfaz.ArticuloGui;
 import interfaz.CambiarUsuarioGui;
@@ -15,7 +12,6 @@ import interfaz.ClienteGui;
 import interfaz.CompraGui;
 import interfaz.EnviarManualGui;
 import interfaz.ImportarExcelGui;
-import interfaz.LoginGui;
 import interfaz.ProveedorGui;
 import interfaz.VentaGui;
 import java.awt.Cursor;
@@ -23,24 +19,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.sql.SQLException;
-import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
-import javax.swing.table.DefaultTableModel;
-import modelos.Articulo;
-import modelos.ArticulosVentas;
-import modelos.Cliente;
-import modelos.Venta;
 import net.sf.jasperreports.engine.JRException;
-import org.javalite.activejdbc.Base;
-import org.javalite.activejdbc.LazyList;
 
 /**
  *
@@ -67,7 +53,7 @@ public class ControladorApliacion implements ActionListener {
     private ControladorVenta controladorVenta;
     private CompraGui compraGui;
     private VentaGui ventaGui;
-    
+
     public ControladorApliacion() throws JRException, ClassNotFoundException, SQLException {
         JFrame.setDefaultLookAndFeelDecorated(true); //Le agrego un tema lindo al programa
         try {
@@ -89,7 +75,7 @@ public class ControladorApliacion implements ActionListener {
         ventaGui = new VentaGui();
         controladorCompra = new ControladorCompra(compraGui, aplicacionGui);
         controladorVenta = new ControladorVenta(ventaGui, aplicacionGui);
-        controladorProveedor = new ControladorProveedor(proveedorGui, aplicacionGui, articuloGui,compraGui);
+        controladorProveedor = new ControladorProveedor(proveedorGui, aplicacionGui, articuloGui, compraGui);
         controladorArticulo = new ControladorArticulo(articuloGui);
         controladorCliente = new ControladorCliente(clienteGui, aplicacionGui);
         importarGui = new ImportarExcelGui();
@@ -98,10 +84,10 @@ public class ControladorApliacion implements ActionListener {
         aplicacionGui.getContenedor().add(articuloGui);
         aplicacionGui.getContenedor().add(importarGui);
         aplicacionGui.getContenedor().add(clienteGui);
-         aplicacionGui.getContenedor().add(compraGui);
+        aplicacionGui.getContenedor().add(compraGui);
         aplicacionGui.getContenedor().add(ventaGui);
         aplicacionGui.setCursor(Cursor.DEFAULT_CURSOR);
-    
+
     }
 
     public static void main(String[] args) throws InterruptedException, ClassNotFoundException, SQLException, JRException {
@@ -127,6 +113,7 @@ public class ControladorApliacion implements ActionListener {
             importarGui.toFront();
         }
         if (ae.getSource() == aplicacionGui.getClientes()) {
+            controladorCliente.cargarTodos();
             clienteGui.setVisible(true);
             clienteGui.toFront();
         }
@@ -187,8 +174,8 @@ public class ControladorApliacion implements ActionListener {
                 selecEnviarBack = 0;
             }
             if (selecEnviarBack == 1) {
-                envioEmailControlador= new EnvioEmailControlador();
-                EnviarManualGui enviarGui= new EnviarManualGui(aplicacionGui, true, archivoBackup.getAbsolutePath());
+                envioEmailControlador = new EnvioEmailControlador();
+                EnviarManualGui enviarGui = new EnviarManualGui(aplicacionGui, true, archivoBackup.getAbsolutePath());
                 enviarGui.setLocationRelativeTo(aplicacionGui);
                 enviarGui.setVisible(true);
             } else {
@@ -203,7 +190,7 @@ public class ControladorApliacion implements ActionListener {
         if (ae.getSource() == aplicacionGui.getRegistrarVenta()) {
             ventaGui.setVisible(true);
             ventaGui.toFront();
-       } //ESTO NO FUNCIONA MAÑANA LO VEO.
+        } //ESTO NO FUNCIONA MAÑANA LO VEO.
 //        if ((ae.getSource() == clienteGui.getVerFactura())) {
 //            System.out.println("entre");
 //            VentaGui v = ventaGui;

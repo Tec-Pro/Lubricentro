@@ -127,8 +127,8 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <Component id="panelBotones" min="-2" max="-2" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
-              <Component id="contenedor" pref="430" max="32767" attributes="0"/>
+              <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
+              <Component id="contenedor" pref="436" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -156,19 +156,14 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Group type="102" alignment="0" attributes="0">
-                  <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                      <Component id="clientes" alignment="0" max="32767" attributes="0"/>
-                      <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
-                          <Component id="articulos" alignment="0" max="32767" attributes="0"/>
-                          <Component id="proveedores" alignment="0" max="32767" attributes="0"/>
-                          <Component id="importar" alignment="0" max="32767" attributes="0"/>
-                          <Component id="registrarCompra" alignment="0" max="32767" attributes="0"/>
-                      </Group>
-                      <Component id="registrarVenta" alignment="0" max="32767" attributes="0"/>
-                  </Group>
-                  <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                  <Component id="clientes" alignment="0" max="32767" attributes="0"/>
+                  <Component id="articulos" alignment="0" max="32767" attributes="0"/>
+                  <Component id="proveedores" alignment="0" max="32767" attributes="0"/>
+                  <Component id="registrarCompra" alignment="0" max="32767" attributes="0"/>
+                  <Component id="registrarVenta" alignment="0" max="32767" attributes="0"/>
               </Group>
+              <Component id="importar" min="-2" max="-2" attributes="0"/>
           </Group>
         </DimensionLayout>
         <DimensionLayout dim="1">
@@ -178,9 +173,9 @@
                   <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
                   <Component id="proveedores" min="-2" pref="66" max="-2" attributes="0"/>
                   <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
-                  <Component id="importar" min="-2" pref="66" max="-2" attributes="0"/>
-                  <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
                   <Component id="clientes" min="-2" pref="66" max="-2" attributes="0"/>
+                  <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
+                  <Component id="importar" min="-2" pref="66" max="-2" attributes="0"/>
                   <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
                   <Component id="registrarCompra" min="-2" pref="66" max="-2" attributes="0"/>
                   <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
@@ -207,14 +202,6 @@
             <Property name="toolTipText" type="java.lang.String" value="Gesti&#xf3;n de proveedores"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JButton" name="importar">
-          <Properties>
-            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/interfaz/Icons/importar.png"/>
-            </Property>
-            <Property name="toolTipText" type="java.lang.String" value="Importar datos desde Excel"/>
-          </Properties>
-        </Component>
         <Component class="javax.swing.JButton" name="clientes">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
@@ -237,6 +224,14 @@
               <Image iconType="3" name="/interfaz/Icons/ventas.png"/>
             </Property>
             <Property name="toolTipText" type="java.lang.String" value="Registrar Venta"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JButton" name="importar">
+          <Properties>
+            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+              <Image iconType="3" name="/interfaz/Icons/importar.png"/>
+            </Property>
+            <Property name="toolTipText" type="java.lang.String" value="Importar datos desde Excel"/>
           </Properties>
         </Component>
       </SubComponents>

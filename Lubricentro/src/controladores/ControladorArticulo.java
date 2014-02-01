@@ -53,7 +53,7 @@ public class ControladorArticulo implements ActionListener, FocusListener {
         tablaArtDefault = articuloGui.getTablaArticulosDefault();
         tablaArticulos = articuloGui.getArticulos();
         listArticulos = new LinkedList();
-        listProveedores= new LinkedList();
+        listProveedores = new LinkedList();
         abmArticulo = new ABMArticulo();
         abrirBase();
         listArticulos = Articulo.findAll();
@@ -88,12 +88,13 @@ public class ControladorArticulo implements ActionListener, FocusListener {
 
     }
 
-    public void cargarTodos(){
+    public void cargarTodos() {
         abrirBase();
         listArticulos = Articulo.findAll();
         cerrarBase();
         actualizarLista();
     }
+
     public void tablaMouseClicked(java.awt.event.MouseEvent evt) {
         if (evt.getClickCount() == 2) {
             articuloGui.habilitarCampos(false);
@@ -102,20 +103,21 @@ public class ControladorArticulo implements ActionListener, FocusListener {
             articuloGui.getModificar().setEnabled(true);
             articuloGui.getGuardar().setEnabled(false);
             articuloGui.getNuevo().setEnabled(true);
-            editandoInfo=false;
+            editandoInfo = false;
             System.out.println("hice doble click en un articulo");
             articuloGui.limpiarCampos();
             abrirBase();
             articulo = Articulo.findFirst("codigo = ?", tablaArticulos.getValueAt(tablaArticulos.getSelectedRow(), 0));
-            Proveedor papacito= articulo.parent(Proveedor.class);
-            if(papacito==null)
-              articulo.setNombreProv("");  
-            else
-            articulo.setNombreProv(papacito.getString("nombre"));
+            Proveedor papacito = articulo.parent(Proveedor.class);
+            if (papacito == null) {
+                articulo.setNombreProv("");
+            } else {
+                articulo.setNombreProv(papacito.getString("nombre"));
+            }
             cerrarBase();
-            
+
             articuloGui.CargarCampos(articulo);
-            
+
         }
     }
 
@@ -157,11 +159,11 @@ public class ControladorArticulo implements ActionListener, FocusListener {
             if (cargarDatosProd(articulo)) {
                 abrirBase();
                 if (abmArticulo.alta(articulo)) {
-                    if(!articulo.getNombreProv().equals("")){
-                    Proveedor prov=Proveedor.findFirst("nombre = ?", articulo.getNombreProv());
-                    Base.openTransaction();
-                    prov.add(articulo);
-                     Base.commitTransaction();
+                    if (!articulo.getNombreProv().equals("")) {
+                        Proveedor prov = Proveedor.findFirst("nombre = ?", articulo.getNombreProv());
+                        Base.openTransaction();
+                        prov.add(articulo);
+                        Base.commitTransaction();
                     }
                     articuloGui.habilitarCampos(false);
                     articuloGui.getPrecioVenta().setEnabled(false);
@@ -182,7 +184,7 @@ public class ControladorArticulo implements ActionListener, FocusListener {
             System.out.println("Boton borrar pulsado");
             articuloGui.habilitarCampos(false);
             articuloGui.getPrecioVenta().setEnabled(false);
-            System.out.println(articulo.getString("codigo") != null + "-" + !editandoInfo);
+            System.out.println(!articulo.getString("codigo").equals(null + "-" + !editandoInfo));
             if (articulo.getString("codigo") != null && !editandoInfo) {
                 Integer resp = JOptionPane.showConfirmDialog(articuloGui, "¿Desea borrar el artículo " + articuloGui.getCodigo().getText(), "Confirmar borrado", JOptionPane.YES_NO_OPTION);
                 if (resp == JOptionPane.YES_OPTION) {
@@ -224,13 +226,12 @@ public class ControladorArticulo implements ActionListener, FocusListener {
             if (cargarDatosProd(articulo)) {
                 abrirBase();
                 if (abmArticulo.modificar(articulo)) {
-                    if(!articulo.getNombreProv().equals("")){
-                    Proveedor prov=Proveedor.findFirst("nombre = ?", articulo.getNombreProv());
-                    Base.openTransaction();
-                    prov.add(articulo);
-                     Base.commitTransaction();
-                    }
-                    else{
+                    if (!articulo.getNombreProv().equals("")) {
+                        Proveedor prov = Proveedor.findFirst("nombre = ?", articulo.getNombreProv());
+                        Base.openTransaction();
+                        prov.add(articulo);
+                        Base.commitTransaction();
+                    } else {
                         Base.openTransaction();
                         articulo.set("proveedor_id", null);
                         articulo.saveIt();
@@ -253,28 +254,29 @@ public class ControladorArticulo implements ActionListener, FocusListener {
         if (e.getSource() == articuloGui.getExportar()) {
             try {
                 reporteArticulos.mostrarReporte();
-            } catch (ClassNotFoundException ex) {
-                Logger.getLogger(AplicacionGui.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (SQLException ex) {
-                Logger.getLogger(AplicacionGui.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (JRException ex) {
+            } catch (ClassNotFoundException | SQLException | JRException ex) {
                 Logger.getLogger(AplicacionGui.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-
+        if (e.getSource() == articuloGui.getFiltroEquiv()) {
+            if (articuloGui.getFiltroEquiv().isSelected()) {
+                //ACA VA EL FILTRO 
+            } else {
+                realizarBusqueda();
+            }
+        }
 
     }
 
     /*private void actualizarPrecioVenta() {
 
-        try {
-            Double precioCompra = Double.valueOf(articuloGui.getPrecioCompra().getText());
-            BigDecimal precioVenta = BigDecimal.valueOf(precioCompra * 5.0).setScale(2, RoundingMode.CEILING);
-            articuloGui.getPrecioVenta().setText(precioVenta.toString());
-        } catch (NumberFormatException | ClassCastException e) {
-        }
-    }*/
-
+     try {
+     Double precioCompra = Double.valueOf(articuloGui.getPrecioCompra().getText());
+     BigDecimal precioVenta = BigDecimal.valueOf(precioCompra * 5.0).setScale(2, RoundingMode.CEILING);
+     articuloGui.getPrecioVenta().setText(precioVenta.toString());
+     } catch (NumberFormatException | ClassCastException e) {
+     }
+     }*/
     private void abrirBase() {
         if (!Base.hasConnection()) {
             Base.open("com.mysql.jdbc.Driver", "jdbc:mysql://localhost/lubricentro", "root", "root");
@@ -356,13 +358,10 @@ public class ControladorArticulo implements ActionListener, FocusListener {
     public void focusLost(FocusEvent fe) {
         if (fe.getSource() == articuloGui.getPrecioCompra()) {
             System.out.println("perdi el foco de precio compra");
-           /* if (!articuloGui.getPrecioManual().isSelected()) {
-                actualizarPrecioVenta();
-            }*/
         }
     }
-    
-    private void cargarProveedores(){
+
+    private void cargarProveedores() {
         abrirBase();
         articuloGui.getProveedores().removeAllItems();
         listProveedores = Proveedor.findAll();
@@ -372,7 +371,5 @@ public class ControladorArticulo implements ActionListener, FocusListener {
             articuloGui.getProveedores().addItem(prov.get("nombre"));
         }
         articuloGui.getProveedores().addItem("");
-
-        
     }
 }

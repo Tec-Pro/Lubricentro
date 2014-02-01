@@ -104,7 +104,6 @@ public class ABMVenta {
         } else {
             v.set("pago", true);
             v.set("monto", monto);//seteo el monto de la venta total en el modelo
-            Busqueda busqueda = new Busqueda();
             LinkedList<BigDecimal> preciosFinales = new LinkedList();
             LinkedList<Pair> pairList = buscarProductosVendidos(v.getInteger("id"));
             Iterator<Pair> itr = pairList.iterator();
@@ -137,8 +136,8 @@ public class ABMVenta {
                 prod = (Articulo) par.first(); //saco el producto del par
                 cant = ((BigDecimal) (((Pair) par.second()).first())).setScale(2, RoundingMode.CEILING);//saco la cantidad del par
                 precioFinal = ((BigDecimal) prod.get("precio_venta")).setScale(2, RoundingMode.CEILING);
-                acumMonto.add(precioFinal.multiply(cant)).setScale(2, RoundingMode.CEILING);; //multiplico el precio del producto por la cantidad del mismo
-            }
+                acumMonto.add(precioFinal.multiply(cant)).setScale(2, RoundingMode.CEILING); //multiplico el precio del producto por la cantidad del mismo     
+                }
             return acumMonto;
         }
     }
@@ -247,8 +246,7 @@ public class ABMVenta {
         BigDecimal cant;
         ArticulosVentas prodVendido;
         Articulo prod;
-        BigDecimal precioFinal;
-        LinkedList<Pair> listaDePares = new LinkedList<Pair>();
+        LinkedList<Pair> listaDePares = new LinkedList();
         LazyList<ArticulosVentas> productos = ArticulosVentas.find("venta_id = ?", idVenta);
         Iterator itr = productos.iterator();
         while (itr.hasNext()) {
@@ -260,18 +258,6 @@ public class ABMVenta {
             ArticulosVentas.delete("venta_id = ? AND articulo_id= ?", prodVendido.getInteger("venta_id"), prodVendido.getInteger("articulo_id"));//elimino el modelo de la base de datos
         }
         return listaDePares;
-    }
-
-    private void abrirBase() {
-        if (!Base.hasConnection()) {
-            Base.open("com.mysql.jdbc.Driver", "jdbc:mysql://localhost/lubricentro", "root", "root");
-        }
-    }
-
-    private void cerrarBase() {
-        if (Base.hasConnection()) {
-            Base.close();
-        }
     }
 
     public int getUltimoIdVenta() {

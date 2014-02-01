@@ -4,11 +4,9 @@
  */
 package controladores;
 
-import abm.ABMCompra;
 import abm.ABMVenta;
 import busqueda.Busqueda;
 import interfaz.AplicacionGui;
-import interfaz.CompraGui;
 import interfaz.VentaGui;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -30,8 +28,6 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.table.DefaultTableModel;
 import modelos.Articulo;
 import modelos.Cliente;
-import modelos.Compra;
-import modelos.Proveedor;
 import modelos.Venta;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.util.Pair;
@@ -57,6 +53,7 @@ public class ControladorVenta implements ActionListener, CellEditorListener {
     private DefaultTableModel tablaProd;
     private JTable tablafac;
     private ControladorJReport reporteFactura;
+    private ControladorJReport reporteFacturaSinPagar;
     private Integer idFacturaAModificar;
     private AplicacionGui apgui;
 
@@ -112,6 +109,8 @@ public class ControladorVenta implements ActionListener, CellEditorListener {
         actualizarListaCliente();
         actualizarListaProd();
         reporteFactura = new ControladorJReport(("factura.jasper"));
+        reporteFacturaSinPagar = new ControladorJReport(("facturaSinPago.jasper"));
+
     }
 
     private void busquedaClienteKeyReleased(KeyEvent evt) {
@@ -226,10 +225,15 @@ public class ControladorVenta implements ActionListener, CellEditorListener {
                 }
                 abrirBase();
                 if (abmVenta.alta(v)) {
+
                     JOptionPane.showMessageDialog(apgui, "Venta realizada con exito.");
                     ventaGui.limpiarVentana();
                     try {
-                        reporteFactura.mostrarFactura(abmVenta.getUltimoIdVenta());
+                        if (v.getBoolean("pago")) {
+                            reporteFactura.mostrarFactura(abmVenta.getUltimoIdVenta());
+                        } else {
+                            reporteFacturaSinPagar.mostrarFactura(abmVenta.getUltimoIdVenta());
+                        }
                     } catch (ClassNotFoundException ex) {
                         Logger.getLogger(ControladorVenta.class.getName()).log(Level.SEVERE, null, ex);
                     } catch (SQLException ex) {

@@ -6,6 +6,7 @@ package controladores;
 
 import abm.ABMArticulo;
 import abm.ABMCliente;
+import abm.ABMCompra;
 import abm.ABMProveedor;
 import abm.ABMVenta;
 import interfaz.ImportarExcelGui;
@@ -28,9 +29,10 @@ import javax.swing.JOptionPane;
 import modelos.Articulo;
 import modelos.ArticulosVentas;
 import modelos.Cliente;
+import modelos.Compra;
+import modelos.Pago;
 import modelos.Proveedor;
 import modelos.Venta;
-import net.sf.jasperreports.engine.query.SQLBetweenBaseClause;
 import net.sf.jasperreports.engine.util.Pair;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -61,8 +63,10 @@ public class controladorImportarGui implements ActionListener {
     private ABMArticulo abmArticulo;
     private Boolean importando;
     private Venta venta;
+    private Compra compra;
     private ArticulosVentas ventaArticulos;
     private ABMVenta abmVenta;
+    private ABMCompra abmCompra;
 
     public controladorImportarGui(ImportarExcelGui importarGui) {
         this.importarGui = importarGui;
@@ -71,6 +75,7 @@ public class controladorImportarGui implements ActionListener {
         abmCliente = new ABMCliente();
         abmArticulo = new ABMArticulo();
         abmVenta = new ABMVenta();
+        abmCompra = new ABMCompra();
         prov = new Proveedor();
         cliente = new Cliente();
         articulo = new Articulo();
@@ -186,6 +191,27 @@ public class controladorImportarGui implements ActionListener {
                             JOptionPane.showMessageDialog(importarGui, "Archivo no encontrado", "Error!", JOptionPane.ERROR_MESSAGE);
                         } catch (IOException ex) {
                             Logger.getLogger(controladorImportarGui.class.getName()).log(Level.SEVERE, null, ex);
+                        } catch (Exception ex) {
+                            System.out.println(ex);
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(importarGui, "Archivo incorrecto", "Error!", JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+            }
+            if (importarGui.getCategoria().getSelectedItem().equals("Compra")) {
+                System.out.println("compra seleccionada");
+                if (importarGui.getSelectorArchivos().getSelectedFile() != null) {
+                    if (importarGui.getSelectorArchivos().getSelectedFile().getName().contains(".xls") || importarGui.getSelectorArchivos().getSelectedFile().getName().contains(".xlsx")) {
+                        try {
+                            importarCompra();
+                        } catch (FileNotFoundException ex) {
+                            Logger.getLogger(controladorImportarGui.class.getName()).log(Level.SEVERE, null, ex);
+                            JOptionPane.showMessageDialog(importarGui, "Archivo no encontrado", "Error!", JOptionPane.ERROR_MESSAGE);
+                        } catch (IOException ex) {
+                            Logger.getLogger(controladorImportarGui.class.getName()).log(Level.SEVERE, null, ex);
+                        } catch (Exception ex) {
+                            System.out.println(ex);
                         }
                     } else {
                         JOptionPane.showMessageDialog(importarGui, "Archivo incorrecto", "Error!", JOptionPane.ERROR_MESSAGE);
@@ -554,7 +580,6 @@ public class controladorImportarGui implements ActionListener {
                         String descripcionString;
                         String marcaString;
                         String precioString;
-                        String precioVentaString;
                         String equivalenciaString;
                         double precioFloat;
                         BigDecimal precioCompraBig;
@@ -676,11 +701,11 @@ public class controladorImportarGui implements ActionListener {
                         XSSFCell celdaPrecio;
                         Date fechaDate = Calendar.getInstance().getTime();
                         String siPago;
-                        int siPagoInt = 1;
+                        boolean siPagoBool = true;
                         String codigoString;
-                        Double cantidadDouble = 0.0;
+                        BigDecimal cantidadBigDecimal;
                         double pagoDouble;
-                        double monto = 0.0;
+                        BigDecimal monto = new BigDecimal(0);
                         BigDecimal pagoBig;
                         pagoBig = new BigDecimal(0);
                         abrirBase();
@@ -711,21 +736,22 @@ public class controladorImportarGui implements ActionListener {
                                     siPago = celdaSiPago.getStringCellValue();
                                     siPago = siPago.toLowerCase();
                                     if (siPago.compareTo("si") == 0) {
-                                        siPagoInt = 1;
+                                        siPagoBool = true;
                                     } else {
-                                        siPagoInt = 0;
+                                        siPagoBool = false;
+                                        monto = null;
                                     }
                                 }
                                 iterarFilas.next();
                                 abrirBase();
                                 System.out.println(7 + nombre);
                                 LinkedList<Pair> parDeProductos = new LinkedList();
+                                LinkedList<BigDecimal> preciosFinales = new LinkedList();
                                 cliente = Cliente.findFirst("nombre = ?", nombre);
                                 System.out.println(8 + nombre + " " + fechaDate);
                                 venta.set("cliente_id", cliente.getId());
                                 cerrarBase();
                                 while (iterarFilas.hasNext() && importando) {
-                                    pagoBig = new BigDecimal(0);
                                     XSSFRow row = (XSSFRow) iterarFilas.next();
                                     celdaCodigo = (XSSFCell) row.getCell(0);
                                     celdaCantidad = (XSSFCell) row.getCell(1);
@@ -735,118 +761,503 @@ public class controladorImportarGui implements ActionListener {
                                             celdaCodigo.setCellType(Cell.CELL_TYPE_STRING);
                                             codigoString = celdaCodigo.toString();
                                             System.out.println("cod " + codigoString);
-                                            cantidadDouble = 0.0;
-                                            if (celdaCantidad != null) {
-                                                celdaCantidad.setCellType(Cell.CELL_TYPE_NUMERIC);
-                                                cantidadDouble = celdaCantidad.getNumericCellValue();
-                                                System.out.println("cant " + cantidadDouble);
-                                            }
-                                            pagoDouble = 0.0;
-                                            if (celdaPrecio != null) {
-                                                celdaPrecio.setCellType(Cell.CELL_TYPE_NUMERIC);
-                                                pagoDouble = celdaPrecio.getNumericCellValue();
-                                                pagoBig = BigDecimal.valueOf(pagoDouble).setScale(2, RoundingMode.UNNECESSARY);
-                                                System.out.println("sale " + pagoBig);
-                                            }
                                             articulo.set("codigo", codigoString);
-                                            monto = monto + pagoDouble * cantidadDouble;
-                                            System.out.println("monto " + monto);
                                             abrirBase();
                                             if (abmArticulo.findArticulo(articulo)) {
+                                                System.out.println("encontre el articulo");
                                                 articulo = abmArticulo.getProducto(articulo);
-                                                System.out.println(articulo.getId());
-                                                Base.openTransaction();
 
-                                               /* if (siPagoInt == 1) {
-                                                    articulo.set("precio_compra", pagoBig);
-                                                }*/
-                                                //articulo.saveIt();
-                                                Pair par = new Pair(articulo, cantidadDouble); //creo el par
+                                            }
+                                            cerrarBase();
+                                            cantidadBigDecimal = new BigDecimal(0);
+                                            if (celdaCantidad != null) {
+                                                celdaCantidad.setCellType(Cell.CELL_TYPE_NUMERIC);
+                                                cantidadBigDecimal = BigDecimal.valueOf(celdaCantidad.getNumericCellValue());
+                                                System.out.println("cant " + cantidadBigDecimal);
+                                            }
+                                            if (siPagoBool) {
+                                                if (celdaPrecio != null) {
+                                                    celdaPrecio.setCellType(Cell.CELL_TYPE_NUMERIC);
+                                                    pagoDouble = celdaPrecio.getNumericCellValue();
+                                                    System.out.println("sale " + pagoDouble);
+                                                    preciosFinales.add(BigDecimal.valueOf(pagoDouble).setScale(2));
+                                                    Pair par = new Pair(articulo, cantidadBigDecimal); //creo el par
+                                                    parDeProductos.add(par); //meto el par a la lista
+                                                    monto = monto.add(cantidadBigDecimal.multiply(BigDecimal.valueOf(pagoDouble).setScale(2)));
+                                                }
+                                            } else {
+                                                Pair par = new Pair(articulo, cantidadBigDecimal); //creo el par
                                                 parDeProductos.add(par); //meto el par a la lista
                                             }
-                                            venta.set("fecha", fechaDate);
-                                            venta.setProductos(parDeProductos);
-                                            Base.commitTransaction();
-                                            cerrarBase();
                                         }
-
                                     }
-
-
                                 }
-                                if (siPagoInt == 1) {
+                                java.sql.Date sqlFecha = new java.sql.Date(fechaDate.getTime());
+                                venta.set("fecha", sqlFecha);
+
+                                if (siPagoBool) {
+                                    venta.setPreciosFinales(preciosFinales);
+                                    Iterator<BigDecimal> it = preciosFinales.iterator();
+                                    while (it.hasNext()) {
+                                        System.out.println((BigDecimal) it.next());
+                                    }
+                                    Iterator<Pair> ita = parDeProductos.iterator();
+                                    while (ita.hasNext()) {
+                                        Pair par = ita.next();
+                                        System.out.println(par.second());
+                                        Articulo ar = (Articulo) par.first();
+                                        System.out.println(ar.getString("codigo"));
+                                    }
+                                    venta.setProductos(parDeProductos);
                                     venta.set("pago", true);
-                                    BigDecimal bd = new BigDecimal(10);
-                                    venta.set("monto", bd);
+                                    venta.set("monto", monto);
                                 } else {
                                     venta.set("pago", false);
+                                    venta.setProductos(parDeProductos);
                                 }
                                 abrirBase();
-                                if (abmVenta.alta(venta)) {
-                                }
-                                abrirBase();
-                                Base.openTransaction();
-                                venta.set("monto", monto);
-                                Base.commitTransaction();
+                                System.out.println(sqlFecha);
+
+                                System.out.println(abmVenta.alta(venta));
                                 cerrarBase();
 
                             }
                         }
                     }
+                } else if (importarGui.getSelectorArchivos().getSelectedFile().getName().contains("xls")) {
+                    importando = true;
+                    workbook = new HSSFWorkbook(new FileInputStream(importarGui.getSelectorArchivos().getSelectedFile().getAbsolutePath()));
+                    sheet = workbook.getSheet("IMPORTARHOJA");
+                    if (sheet == null) {
+                        JOptionPane.showMessageDialog(null, "No se encontró la hoja IMPORTARHOJA, renombrela e intente nuevamente");
+                    } else {
+                        Iterator<Row> iterarFilas = sheet.iterator();
+                        Cell celdaCliente;
+                        Cell celdaFecha;
+                        Cell celdaSiPago;
+                        Cell celdaCodigo;
+                        Cell celdaCantidad;
+                        Cell celdaPrecio;
+                        Date fechaDate = Calendar.getInstance().getTime();
+                        String siPago;
+                        boolean siPagoBool = true;
+                        String codigoString;
+                        BigDecimal cantidadBigDecimal;
+                        double pagoDouble;
+                        BigDecimal monto = new BigDecimal(0);
+                        BigDecimal pagoBig;
+                        pagoBig = new BigDecimal(0);
+                        abrirBase();
+                        agregados = 0;
+                        modificados = 0;
+                        System.out.println(1);
+                        Row primerFila = iterarFilas.next();
+                        celdaCliente = primerFila.getCell(1);
+                        celdaFecha = primerFila.getCell(3);
+                        venta = new Venta();
+                        articulo = new Articulo();
+                        cliente = new Cliente();
+                        if (celdaCliente != null) {
+                            System.out.println(3);
+                            if (!celdaCliente.toString().isEmpty()) {
+                                System.out.println(4);
+                                celdaCliente.setCellType(Cell.CELL_TYPE_STRING);
+                                String nombre = celdaCliente.getStringCellValue();
+                                if (celdaFecha != null) {
+                                    System.out.println(5);
+                                    fechaDate = celdaFecha.getDateCellValue();
+                                }
+                                Row segundaFila = iterarFilas.next();
+                                celdaSiPago = segundaFila.getCell(1);
+                                if (celdaSiPago != null) {
+                                    System.out.println(6);
+                                    celdaSiPago.setCellType(Cell.CELL_TYPE_STRING);
+                                    siPago = celdaSiPago.getStringCellValue();
+                                    siPago = siPago.toLowerCase();
+                                    if (siPago.compareTo("si") == 0) {
+                                        siPagoBool = true;
+                                    } else {
+                                        siPagoBool = false;
+                                        monto = null;
+                                    }
+                                }
+                                iterarFilas.next();
+                                abrirBase();
+                                System.out.println(7 + nombre);
+                                LinkedList<Pair> parDeProductos = new LinkedList();
+                                LinkedList<BigDecimal> preciosFinales = new LinkedList();
+                                cliente = Cliente.findFirst("nombre = ?", nombre);
+                                System.out.println(8 + nombre + " " + fechaDate);
+                                venta.set("cliente_id", cliente.getId());
+                                cerrarBase();
+                                while (iterarFilas.hasNext() && importando) {
+                                    Row row = iterarFilas.next();
+                                    celdaCodigo = row.getCell(0);
+                                    celdaCantidad = row.getCell(1);
+                                    celdaPrecio = row.getCell(2);
+                                    if (celdaCodigo != null) {
+                                        if (!celdaCodigo.toString().isEmpty()) {
+                                            celdaCodigo.setCellType(Cell.CELL_TYPE_STRING);
+                                            codigoString = celdaCodigo.toString();
+                                            System.out.println("cod " + codigoString);
+                                            articulo.set("codigo", codigoString);
+                                            abrirBase();
+                                            if (abmArticulo.findArticulo(articulo)) {
+                                                System.out.println("encontre el articulo");
+                                                articulo = abmArticulo.getProducto(articulo);
 
+                                            }
+                                            cerrarBase();
+                                            cantidadBigDecimal = new BigDecimal(0);
+                                            if (celdaCantidad != null) {
+                                                celdaCantidad.setCellType(Cell.CELL_TYPE_NUMERIC);
+                                                cantidadBigDecimal = BigDecimal.valueOf(celdaCantidad.getNumericCellValue());
+                                                System.out.println("cant " + cantidadBigDecimal);
+                                            }
+                                            if (siPagoBool) {
+                                                if (celdaPrecio != null) {
+                                                    celdaPrecio.setCellType(Cell.CELL_TYPE_NUMERIC);
+                                                    pagoDouble = celdaPrecio.getNumericCellValue();
+                                                    System.out.println("sale " + pagoDouble);
+                                                    preciosFinales.add(BigDecimal.valueOf(pagoDouble).setScale(2));
+                                                    Pair par = new Pair(articulo, cantidadBigDecimal); //creo el par
+                                                    parDeProductos.add(par); //meto el par a la lista
+                                                    monto = monto.add(cantidadBigDecimal.multiply(BigDecimal.valueOf(pagoDouble).setScale(2)));
+                                                }
+                                            } else {
+                                                Pair par = new Pair(articulo, cantidadBigDecimal); //creo el par
+                                                parDeProductos.add(par); //meto el par a la lista
+                                            }
+                                        }
+                                    }
+                                }
+                                java.sql.Date sqlFecha = new java.sql.Date(fechaDate.getTime());
+                                venta.set("fecha", sqlFecha);
 
+                                if (siPagoBool) {
+                                    venta.setPreciosFinales(preciosFinales);
+                                    Iterator<BigDecimal> it = preciosFinales.iterator();
+                                    while (it.hasNext()) {
+                                        System.out.println((BigDecimal) it.next());
+                                    }
+                                    Iterator<Pair> ita = parDeProductos.iterator();
+                                    while (ita.hasNext()) {
+                                        Pair par = ita.next();
+                                        System.out.println(par.second());
+                                        Articulo ar = (Articulo) par.first();
+                                        System.out.println(ar.getString("codigo"));
+                                    }
+                                    venta.setProductos(parDeProductos);
+                                    venta.set("pago", true);
+                                    venta.set("monto", monto);
+                                } else {
+                                    venta.set("pago", false);
+                                    venta.setProductos(parDeProductos);
+                                }
+                                abrirBase();
+                                System.out.println(sqlFecha);
 
-
-
-                    /*    } else if (importarGui.getSelectorArchivos().getSelectedFile().getName().contains("xls")) {
-                     importando = true;
-                     workbook = new HSSFWorkbook(new FileInputStream(importarGui.getSelectorArchivos().getSelectedFile().getAbsolutePath()));
-                     sheet = workbook.getSheet("IMPORTARHOJA");
-                     if (sheet == null) {
-                     JOptionPane.showMessageDialog(null, "No se encontró la hoja IMPORTARHOJA, renombrela e intente nuevamente");
-                     } else {
-                     Iterator<Row> iterarFilas = sheet.iterator();
-                     Cell celdaNombre;
-                     Cell celdaTelefono;
-                     String telefonoString;
-                     abrirBase();
-                     agregados = 0;
-                     modificados = 0;
-                     iterarFilas.next();
-                     while (iterarFilas.hasNext() && importando) {
-                     Row row = iterarFilas.next();
-                     celdaNombre = row.getCell(0);
-                     celdaTelefono = row.getCell(1);
-                     telefonoString = "";
-                     if (celdaNombre != null) {
-                     if (!celdaNombre.toString().isEmpty()) {
-                     celdaNombre.setCellType(Cell.CELL_TYPE_STRING);
-                     String nombre = celdaNombre.getStringCellValue();
-                     if (celdaTelefono != null) {
-                     celdaTelefono.setCellType(Cell.CELL_TYPE_STRING);
-                     telefonoString = celdaTelefono.getStringCellValue();
-                     }
-                     prov.set("nombre", nombre, "telefono", telefonoString);
-                     if (abmProveedor.findProveedor(prov)) {
-                     abmProveedor.modificar(prov);
-                     System.out.println("modifique");
-
-                     } else {
-                     abmProveedor.alta(prov);
-                     agregados++;
-                     }
-                     }
-                     }
-                     }
-                     cerrarBase();
-                     }*/
+                                System.out.println(abmVenta.alta(venta));
+                                cerrarBase();
+                            }
+                        }
+                    }
                 }
+
                 return null;
             }
 
             protected void done() {
                 setProgress(100);
                 JOptionPane.showMessageDialog(importarGui, "Importación de venta finalizada");
+                importarGui.getProgreso().setIndeterminate(false);
+                importando = false;
+            }
+        };
+        worker.execute();
+    }
+
+    ;
+    
+    
+    
+    
+    private void importarCompra() throws FileNotFoundException, IOException {
+        importarGui.getProgreso().setIndeterminate(true);
+        final javax.swing.SwingWorker worker = new javax.swing.SwingWorker() {
+            @Override
+            protected Void doInBackground() throws Exception {
+                if (importarGui.getSelectorArchivos().getSelectedFile().getName().contains("xlsx")) {//Archivos con extensión xlsx
+                    importando = true;
+                    XSSFWorkbook Libro_trabajo = new XSSFWorkbook(importarGui.getSelectorArchivos().getSelectedFile().getAbsolutePath());
+                    XSSFSheet hoja = Libro_trabajo.getSheet("IMPORTARHOJA");
+                    if (hoja == null) {
+                        JOptionPane.showMessageDialog(null, "No se encontró la hoja IMPORTARHOJA, renombrela e intente nuevamente");
+                    } else {
+                        Iterator iterarFilas = hoja.rowIterator();
+                        XSSFCell celdaProveedor;
+                        XSSFCell celdaFecha;
+                        XSSFCell celdaSiPago;
+                        XSSFCell celdaCodigo;
+                        XSSFCell celdaCantidad;
+                        XSSFCell celdaPrecio;
+                        Date fechaDate = Calendar.getInstance().getTime();
+                        String siPago;
+                        boolean siPagoBool = true;
+                        String codigoString;
+                        BigDecimal cantidadBigDecimal;
+                        double pagoDouble;
+                        BigDecimal monto = new BigDecimal(0);
+                        BigDecimal pagoBig;
+                        pagoBig = new BigDecimal(0);
+                        abrirBase();
+                        agregados = 0;
+                        modificados = 0;
+                        System.out.println(1);
+                        XSSFRow primerFila = (XSSFRow) iterarFilas.next();
+                        celdaProveedor = (XSSFCell) primerFila.getCell(1);
+                        celdaFecha = (XSSFCell) primerFila.getCell(3);
+                        compra = new Compra();
+                        articulo = new Articulo();
+                        prov = new Proveedor();
+                        if (celdaProveedor != null) {
+                            System.out.println(3);
+                            if (!celdaProveedor.toString().isEmpty()) {
+                                System.out.println(4);
+                                celdaProveedor.setCellType(Cell.CELL_TYPE_STRING);
+                                String nombre = celdaProveedor.getStringCellValue();
+                                if (celdaFecha != null) {
+                                    System.out.println(5);
+                                    fechaDate = celdaFecha.getDateCellValue();
+                                }
+                                XSSFRow segundaFila = (XSSFRow) iterarFilas.next();
+                                celdaSiPago = (XSSFCell) segundaFila.getCell(1);
+                                if (celdaSiPago != null) {
+                                    System.out.println(6);
+                                    celdaSiPago.setCellType(Cell.CELL_TYPE_STRING);
+                                    siPago = celdaSiPago.getStringCellValue();
+                                    siPago = siPago.toLowerCase();
+                                    if (siPago.compareTo("si") == 0) {
+                                        siPagoBool = true;
+                                    } else {
+                                        siPagoBool = false;
+                                    }
+                                }
+                                iterarFilas.next();
+                                abrirBase();
+                                System.out.println(7 + nombre);
+                                LinkedList<Pair> parDeProductos = new LinkedList();
+                                prov = Proveedor.findFirst("nombre = ?", nombre);
+                                System.out.println(8 + nombre + " " + fechaDate);
+                                compra.set("proveedor_id", prov.getId());
+                                cerrarBase();
+                                while (iterarFilas.hasNext() && importando) {
+                                    XSSFRow row = (XSSFRow) iterarFilas.next();
+                                    celdaCodigo = (XSSFCell) row.getCell(0);
+                                    celdaCantidad = (XSSFCell) row.getCell(1);
+                                    celdaPrecio = (XSSFCell) row.getCell(2);
+                                    if (celdaCodigo != null) {
+                                        if (!celdaCodigo.toString().isEmpty()) {
+                                            celdaCodigo.setCellType(Cell.CELL_TYPE_STRING);
+                                            codigoString = celdaCodigo.toString();
+                                            System.out.println("cod " + codigoString);
+                                            articulo.set("codigo", codigoString);
+                                            abrirBase();
+                                            if (abmArticulo.findArticulo(articulo)) {
+                                                System.out.println("encontre el articulo");
+                                                articulo = abmArticulo.getProducto(articulo);
+
+                                            }
+                                            cerrarBase();
+                                            cantidadBigDecimal = new BigDecimal(0);
+                                            if (celdaCantidad != null) {
+                                                celdaCantidad.setCellType(Cell.CELL_TYPE_NUMERIC);
+                                                cantidadBigDecimal = BigDecimal.valueOf(celdaCantidad.getNumericCellValue());
+                                                System.out.println("cant " + cantidadBigDecimal);
+                                            }
+
+                                            if (celdaPrecio != null) {
+                                                celdaPrecio.setCellType(Cell.CELL_TYPE_NUMERIC);
+                                                pagoDouble = celdaPrecio.getNumericCellValue();
+                                                articulo.set("precio_compra", BigDecimal.valueOf(pagoDouble));
+                                                Pair par = new Pair(articulo, cantidadBigDecimal); //creo el par
+                                                parDeProductos.add(par); //meto el par a la lista
+                                                System.out.println(cantidadBigDecimal + " " + pagoDouble + "monto " + monto);
+                                                monto = monto.add(cantidadBigDecimal.multiply(BigDecimal.valueOf(pagoDouble).setScale(2)));
+                                                System.out.println("monto " + monto);
+                                            }
+
+                                        }
+                                    }
+                                }
+                                java.sql.Date sqlFecha = new java.sql.Date(fechaDate.getTime());
+                                compra.set("fecha", sqlFecha);
+                                compra.setProductos(parDeProductos);
+                                if (siPagoBool) {
+                                    compra.set("pago", true);
+                                } else {
+                                    compra.set("pago", false);
+                                }
+                                abrirBase();
+                                compra.set("monto", monto);
+                                if (abmCompra.alta(compra)) {
+                                    System.out.println("se compró");
+                                    abrirBase();
+                                    if (siPagoBool) {
+                                        Pago pago = Pago.create("fecha", sqlFecha, "monto", monto);
+                                        pago.saveIt();
+                                        prov.add(pago);
+                                    } else {
+                                        BigDecimal cuentaCorriente = prov.getBigDecimal("cuenta_corriente").subtract(compra.getBigDecimal("monto"));
+                                        prov.set("cuenta_corriente", cuentaCorriente);
+                                    }
+
+                                }
+                                cerrarBase();
+
+                            }
+                        }
+                    }
+                } else if (importarGui.getSelectorArchivos().getSelectedFile().getName().contains("xls")) {
+                    importando = true;
+                    workbook = new HSSFWorkbook(new FileInputStream(importarGui.getSelectorArchivos().getSelectedFile().getAbsolutePath()));
+                    sheet = workbook.getSheet("IMPORTARHOJA");
+                    if (sheet == null) {
+                        JOptionPane.showMessageDialog(null, "No se encontró la hoja IMPORTARHOJA, renombrela e intente nuevamente");
+                    } else {
+                        Iterator<Row> iterarFilas = sheet.rowIterator();
+                        Cell celdaProveedor;
+                        Cell celdaFecha;
+                        Cell celdaSiPago;
+                        Cell celdaCodigo;
+                        Cell celdaCantidad;
+                        Cell celdaPrecio;
+                        Date fechaDate = Calendar.getInstance().getTime();
+                        String siPago;
+                        boolean siPagoBool = true;
+                        String codigoString;
+                        BigDecimal cantidadBigDecimal;
+                        double pagoDouble;
+                        BigDecimal monto = new BigDecimal(0);
+                        abrirBase();
+                        agregados = 0;
+                        modificados = 0;
+                        System.out.println(1);
+                        Row primerFila = iterarFilas.next();
+                        celdaProveedor = primerFila.getCell(1);
+                        celdaFecha = primerFila.getCell(3);
+                        compra = new Compra();
+                        articulo = new Articulo();
+                        prov = new Proveedor();
+                        if (celdaProveedor != null) {
+                            System.out.println(3);
+                            if (!celdaProveedor.toString().isEmpty()) {
+                                System.out.println(4);
+                                celdaProveedor.setCellType(Cell.CELL_TYPE_STRING);
+                                String nombre = celdaProveedor.getStringCellValue();
+                                if (celdaFecha != null) {
+                                    System.out.println(5);
+                                    fechaDate = celdaFecha.getDateCellValue();
+                                }
+                                Row segundaFila = iterarFilas.next();
+                                celdaSiPago = segundaFila.getCell(1);
+                                if (celdaSiPago != null) {
+                                    System.out.println(6);
+                                    celdaSiPago.setCellType(Cell.CELL_TYPE_STRING);
+                                    siPago = celdaSiPago.getStringCellValue();
+                                    siPago = siPago.toLowerCase();
+                                    if (siPago.compareTo("si") == 0) {
+                                        siPagoBool = true;
+                                    } else {
+                                        siPagoBool = false;
+                                    }
+                                }
+                                iterarFilas.next();
+                                abrirBase();
+                                System.out.println(7 + nombre);
+                                LinkedList<Pair> parDeProductos = new LinkedList();
+                                prov = Proveedor.findFirst("nombre = ?", nombre);
+                                System.out.println(8 + nombre + " " + fechaDate);
+                                compra.set("proveedor_id", prov.getId());
+                                cerrarBase();
+                                while (iterarFilas.hasNext() && importando) {
+                                    Row row = iterarFilas.next();
+                                    celdaCodigo = row.getCell(0);
+                                    celdaCantidad = row.getCell(1);
+                                    celdaPrecio = row.getCell(2);
+                                    if (celdaCodigo != null) {
+                                        if (!celdaCodigo.toString().isEmpty()) {
+                                            celdaCodigo.setCellType(Cell.CELL_TYPE_STRING);
+                                            codigoString = celdaCodigo.toString();
+                                            System.out.println("cod " + codigoString);
+                                            articulo.set("codigo", codigoString);
+                                            abrirBase();
+                                            if (abmArticulo.findArticulo(articulo)) {
+                                                System.out.println("encontre el articulo");
+                                                articulo = abmArticulo.getProducto(articulo);
+
+                                            }
+                                            cerrarBase();
+                                            cantidadBigDecimal = new BigDecimal(0);
+                                            if (celdaCantidad != null) {
+                                                celdaCantidad.setCellType(Cell.CELL_TYPE_NUMERIC);
+                                                cantidadBigDecimal = BigDecimal.valueOf(celdaCantidad.getNumericCellValue());
+                                                System.out.println("cant " + cantidadBigDecimal);
+                                            }
+
+                                            if (celdaPrecio != null) {
+                                                celdaPrecio.setCellType(Cell.CELL_TYPE_NUMERIC);
+                                                pagoDouble = celdaPrecio.getNumericCellValue();
+                                                articulo.set("precio_compra", BigDecimal.valueOf(pagoDouble));
+                                                Pair par = new Pair(articulo, cantidadBigDecimal); //creo el par
+                                                parDeProductos.add(par); //meto el par a la lista
+                                                System.out.println(cantidadBigDecimal + " " + pagoDouble + "monto " + monto);
+                                                monto = monto.add(cantidadBigDecimal.multiply(BigDecimal.valueOf(pagoDouble).setScale(2)));
+                                                System.out.println("monto " + monto);
+                                            }
+
+                                        }
+                                    }
+                                }
+                                java.sql.Date sqlFecha = new java.sql.Date(fechaDate.getTime());
+                                compra.set("fecha", sqlFecha);
+                                compra.setProductos(parDeProductos);
+                                if (siPagoBool) {
+                                    compra.set("pago", true);
+                                } else {
+                                    compra.set("pago", false);
+                                }
+                                abrirBase();
+                                compra.set("monto", monto);
+                                if (abmCompra.alta(compra)) {
+                                    System.out.println("se compró");
+                                    abrirBase();
+                                    if (siPagoBool) {
+                                        Pago pago = Pago.create("fecha", sqlFecha, "monto", monto);
+                                        pago.saveIt();
+                                        prov.add(pago);
+                                    } else {
+                                        BigDecimal cuentaCorriente = prov.getBigDecimal("cuenta_corriente").subtract(compra.getBigDecimal("monto"));
+                                        prov.set("cuenta_corriente", cuentaCorriente);
+                                    }
+
+                                }
+                                cerrarBase();
+
+                            }
+                        }
+                    }
+                }
+
+
+
+
+                return null;
+            }
+
+            protected void done() {
+                setProgress(100);
+                JOptionPane.showMessageDialog(importarGui, "Importación de compra finalizada");
                 importarGui.getProgreso().setIndeterminate(false);
                 importando = false;
             }

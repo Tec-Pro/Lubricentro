@@ -428,6 +428,7 @@ public class ClienteGui extends javax.swing.JInternalFrame {
         nombre.setText("");
         telefono.setText("");
         celular.setText("");
+        ventasDefault.setRowCount(0);
         }
         
         public void CargarCampos(Cliente cliente) {

@@ -9,33 +9,25 @@ import interfaz.AplicacionGui;
 import interfaz.LoginGui;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.mail.MessagingException;
 import javax.swing.JOptionPane;
-import modelos.Envio;
 import org.javalite.activejdbc.Base;
-import org.javalite.activejdbc.LazyList;
 
 /**
  *
  * @author nico
  */
 public class ControladorLogin extends Thread {
-
+    
     private String user;
     private char[] pass;
     private ManejoUsuario mu;
     private AplicacionGui app;
     private LoginGui log;
-
+    
     public ControladorLogin(AplicacionGui app) {
         this.app = app;
     }
-
+    
     public void run() {
         mu = new ManejoUsuario();
         abrirBase();
@@ -58,33 +50,32 @@ public class ControladorLogin extends Thread {
                     if (mu.login(user, pass)) {
                         log.dispose();
                         app.setVisible(true);
-                        EmailThread emailThread= new EmailThread();
+                        EmailThread emailThread = new EmailThread();
                         emailThread.run();
                     } else {
+                        log.getPass().setText("");
                         JOptionPane.showMessageDialog(app, "INTENTE NUEVAMENTE", "¡DATOS INCORRECTOS!", JOptionPane.ERROR_MESSAGE);
                     }
                     cerrarBase();
-
+                    
                 }
             }
         });
     }
-
+    
     public LoginGui getLog() {
         return log;
     }
-
+    
     private void abrirBase() {
         if (!Base.hasConnection()) {
             Base.open("com.mysql.jdbc.Driver", "jdbc:mysql://localhost/lubricentro", "root", "root");
         }
     }
-
+    
     private void cerrarBase() {
         if (Base.hasConnection()) {
             Base.close();
         }
     }
-
-    
 }
