@@ -110,7 +110,7 @@ public class ControladorVenta implements ActionListener, CellEditorListener {
         actualizarListaCliente();
         actualizarListaProd();
         reporteFactura = new ControladorJReport(("factura.jasper"));
-//        reporteFacturaSinPagar = new ControladorJReport(("facturaSinPago.jasper"));
+        reporteFacturaSinPagar = new ControladorJReport(("facturaSinPago.jasper"));
 
     }
 
@@ -131,7 +131,6 @@ public class ControladorVenta implements ActionListener, CellEditorListener {
                 if (!existeProdFacc(Integer.valueOf((String) tablap.getValueAt(rows[i], 0)))) {
                     Articulo p = Articulo.findFirst("id = ?", (tablap.getValueAt(rows[i], 0)));
                     Object cols[] = new Object[5];
-                    BigDecimal bd = new BigDecimal(1);
                     cols[0] = p.get("id");
                     cols[1] = BigDecimal.valueOf(1).setScale(2, RoundingMode.CEILING);
                     cols[2] = p.get("codigo");
@@ -156,7 +155,6 @@ public class ControladorVenta implements ActionListener, CellEditorListener {
             String id = (String) tablac.getValueAt(row, 0);
             String nom = (String) tablac.getValueAt(row, 1);
             ventaGui.getClienteFactura().setText(id + " " + nom);
-            ventaGui.getTablaFacturaDefault().setRowCount(0);
         }
     }
 
@@ -189,8 +187,8 @@ public class ControladorVenta implements ActionListener, CellEditorListener {
             ventaGui.getRealizarVenta().setEnabled(true);
         }
         if (e.getSource() == ventaGui.getRealizarVenta()) {//Boton realizar venta
-            if (ventaGui.getClienteFactura().getText().equals("") || ventaGui.getCalenFacturaText().getText().equals("")) {
-                JOptionPane.showMessageDialog(ventaGui, "Fecha o cliente vacio", "Error!", JOptionPane.ERROR_MESSAGE);
+            if (ventaGui.getClienteFactura().getText().equals("") || ventaGui.getCalenFacturaText().getText().equals("")|| ventaGui.getTablaFactura().getRowCount()==0) {
+                JOptionPane.showMessageDialog(ventaGui, "Fecha, cliente vacio o no hay productos cargados", "Error!", JOptionPane.ERROR_MESSAGE);
             } else {
                 Venta v = new Venta();
                 LinkedList<Pair> parDeProductos = new LinkedList();
@@ -251,6 +249,11 @@ public class ControladorVenta implements ActionListener, CellEditorListener {
                 }
             }
         }
+    }
+    
+    public void cargarTodos(){
+        actualizarListaCliente();
+        actualizarListaProd();
     }
 
     private void actualizarListaCliente() {

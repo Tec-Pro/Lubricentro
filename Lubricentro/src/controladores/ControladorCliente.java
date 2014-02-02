@@ -52,9 +52,10 @@ public class ControladorCliente implements ActionListener {
     Busqueda busqueda;
     VentaGui ventaGui;
 
-    public ControladorCliente(ClienteGui clienteGui, AplicacionGui aplicacionGui) {
+    public ControladorCliente(ClienteGui clienteGui, AplicacionGui aplicacionGui,VentaGui ventaGui) {
         this.aplicacionGui = aplicacionGui;
         this.clienteGui = clienteGui;
+        this.ventaGui= ventaGui;
         this.clienteGui.setActionListener(this);
         isNuevo = true;
         editandoInfo = false;
@@ -94,10 +95,10 @@ public class ControladorCliente implements ActionListener {
     public void cargarTodos() {
         abrirBase();
         listClientes = Cliente.findAll();
-        cerrarBase();
-        if (listClientes.size() > 0) {
-            actualizarLista();
+        if (!listClientes.isEmpty()) {
+            realizarBusqueda();
         }
+        cerrarBase();
     }
 
     private void tablaClienteMouseClicked(MouseEvent evt) {
@@ -225,7 +226,6 @@ public class ControladorCliente implements ActionListener {
             if (row > -1) {
                 abrirBase();
                 String id = (String) tablaVentas.getValueAt(row, 0);
-                BigDecimal monto = new BigDecimal((String) tablaVentas.getValueAt(row, 2));
                 Venta v = Venta.findById(id);
                 ABMVenta abmV = new ABMVenta();
                 if (abmV.baja(v)) {
@@ -245,29 +245,33 @@ public class ControladorCliente implements ActionListener {
         }
          if ((e.getSource() == clienteGui.getVerFactura())) {
             System.out.println("entre");
-            ventaGui = new VentaGui();
             Integer idFac = Integer.valueOf((String) clienteGui.getVentasRealizadas().getValueAt(clienteGui.getVentasRealizadas().getSelectedRow(), 0));
             System.out.println("factura:" + idFac);
             abrirBase();
             Venta factura = Venta.findById(idFac);
+            System.out.println(factura.getId());
             Object idCliente = factura.get("cliente_id");
             DefaultTableModel tablita = ventaGui.getTablaFacturaDefault();
             tablita.setRowCount(0);
-            Cliente cliente = Cliente.findById(idCliente);
-            if (cliente != null) {
-                String nombre = idCliente + " " + cliente.getString("nombre");
+            Cliente cli = Cliente.findById(idCliente);
+            System.out.println(cli.getId());
+            if (cli != null) {
+                String nombre = idCliente + " " + cli.getString("nombre");
+                System.out.println(nombre);
                 ventaGui.getClienteFactura().setText(nombre);
                 LazyList<ArticulosVentas> pr = ArticulosVentas.find("venta_id = ?", idFac);
                 Iterator<ArticulosVentas> it = pr.iterator();
+                System.out.println("antes del while");
                 while (it.hasNext()) {
                     ArticulosVentas prod = it.next();
                     Articulo producto = Articulo.findFirst("id = ?", prod.get("articulo_id"));
                     if (producto != null) {
+                        System.out.println("entre");
                         BigDecimal precio;
                         if (factura.getBoolean("pago")) {
                             precio = prod.getBigDecimal("precio_final").setScale(2, RoundingMode.CEILING);
                         } else {
-                            precio = prod.getBigDecimal("precio_venta").setScale(2, RoundingMode.CEILING);
+                            precio = producto.getBigDecimal("precio_venta").setScale(2, RoundingMode.CEILING);
                         }
                         BigDecimal cantidad = prod.getBigDecimal("cantidad").setScale(2, RoundingMode.CEILING);
                         Object cols[] = new Object[5];
@@ -275,12 +279,17 @@ public class ControladorCliente implements ActionListener {
                         cols[1] = cantidad;
                         cols[2] = producto.get("codigo");
                         cols[3] = precio;
-                        cols[4] = precio.multiply(cantidad);
+                        cols[4] = precio.multiply(cantidad).setScale(2);
                         ventaGui.getTablaFacturaDefault().addRow(cols);
                     }
                 }
-                ventaGui.getTotalFactura().setText(String.valueOf(factura.getFloat("monto")));
+                if (factura.getBoolean("pago")) {
+                    ventaGui.getTotalFactura().setText(String.valueOf(factura.getFloat("monto")));
+                }
+                else
+                    actualizarPrecio();
                 Base.close();
+                System.out.println("sali");
                 ventaGui.getRealizarVenta().setEnabled(false);
                 ventaGui.getFacturaNueva().setEnabled(false);
                 ventaGui.getBusquedaCodigoArticulo().setEnabled(false);
@@ -292,13 +301,27 @@ public class ControladorCliente implements ActionListener {
                 ventaGui.getAbona().setEnabled(false);
                 ventaGui.setVisible(true);
                 ventaGui.toFront();
+                System.out.println("termine");
             } else {
                 JOptionPane.showMessageDialog(aplicacionGui, "El cliente asociado a esta factura ya no existe", "CLIENTE INEXISTENTE", JOptionPane.ERROR_MESSAGE);
             }
 
         }
     }
-
+    
+    private void actualizarPrecio() {
+        BigDecimal importe;
+        BigDecimal total = new BigDecimal(0);
+        for (int i = 0; i < ventaGui.getTablaFactura().getRowCount(); i++) {
+            importe = ((BigDecimal) ventaGui.getTablaFactura().getValueAt(i, 1)).multiply((BigDecimal) ventaGui.getTablaFactura().getValueAt(i, 3)).setScale(2, RoundingMode.CEILING);
+            ventaGui.getTablaFactura().setValueAt(importe, i, 4);
+        }
+        for (int i = 0; i < ventaGui.getTablaFactura().getRowCount(); i++) {
+            total = total.add((BigDecimal) ventaGui.getTablaFactura().getValueAt(i, 4)).setScale(2, RoundingMode.CEILING);;
+        }
+        ventaGui.getTotalFactura().setText(total.toString());
+    }
+    
     private void abrirBase() {
         if (!Base.hasConnection()) {
             Base.open("com.mysql.jdbc.Driver", "jdbc:mysql://localhost/lubricentro", "root", "root");

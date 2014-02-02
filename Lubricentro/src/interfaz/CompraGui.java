@@ -208,6 +208,7 @@ public class CompraGui extends javax.swing.JInternalFrame {
         int mes=miCalendario.get(Calendar.MONTH);
         int anio =miCalendario.get(Calendar.YEAR);
         calendarioCompra.setDate(Date.valueOf(anio+"-"+(mes+1)+"-"+diaHoy));
+        totalCompra.setText("");
 
     }
     /**

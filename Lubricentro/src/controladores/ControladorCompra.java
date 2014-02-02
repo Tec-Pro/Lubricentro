@@ -131,7 +131,6 @@ public class ControladorCompra implements ActionListener, CellEditorListener {
             String id = (String) tablaprov.getValueAt(row, 0);
             String nom = (String) tablaprov.getValueAt(row, 1);
             compraGui.getProveedorCompra().setText(id + " " + nom);
-            compraGui.getTablaCompraDefault().setRowCount(0);
         }
     }
 
@@ -161,6 +160,11 @@ public class ControladorCompra implements ActionListener, CellEditorListener {
                 }
             }
         }
+    }
+    
+    public void cargarTodos(){
+        actualizarListaProd();
+        actualizarListaProveedor();
     }
 
     public void actualizarListaProveedor() {
@@ -251,8 +255,8 @@ public class ControladorCompra implements ActionListener, CellEditorListener {
         }
 
         if (e.getSource() == compraGui.getRealizarCompra()) {//Boton realizar compra
-            if (compraGui.getCalendarioFacturaText().getText().equals("")) {
-                JOptionPane.showMessageDialog(compraGui, "Falta la fecha", "Error!", JOptionPane.ERROR_MESSAGE);
+            if (compraGui.getCalendarioFacturaText().getText().equals("") || compraGui.getTablaCompra().getRowCount()==0) {
+                JOptionPane.showMessageDialog(compraGui, "Falta la fecha o no hay productos cargados", "Error!", JOptionPane.ERROR_MESSAGE);
             } else {
                 Compra v = new Compra();
                 LinkedList<Pair> parDeProductos = new LinkedList();

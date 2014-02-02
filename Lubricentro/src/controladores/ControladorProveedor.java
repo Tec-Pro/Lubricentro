@@ -4,6 +4,7 @@
  */
 package controladores;
 
+import abm.ABMCompra;
 import abm.ABMProveedor;
 import interfaz.AplicacionGui;
 import interfaz.ArticuloGui;
@@ -124,10 +125,11 @@ public class ControladorProveedor implements ActionListener {
     public void cargarTodos() {
         abrirBase();
         listProveedores = Proveedor.findAll();
-        cerrarBase();
-        if (listProveedores.size() > 0) {
-            actualizarLista();
+        if (!listProveedores.isEmpty() ) {
+        realizarBusqueda();
         }
+        cerrarBase();
+
     }
 
     private void tablaArticulosClicked(java.awt.event.MouseEvent evt) {
@@ -149,6 +151,7 @@ public class ControladorProveedor implements ActionListener {
     }
 
     private void tablaComprasClicked(java.awt.event.MouseEvent evt) {
+        proveedorGui.getBorrarCompra().setEnabled(true);
         if (evt.getClickCount() == 2) {
             abrirBase();
             compraGui.limpiarVentana();
@@ -211,6 +214,7 @@ public class ControladorProveedor implements ActionListener {
             proveedorGui.getNuevo().setEnabled(true);
             proveedorGui.getRealizarPago().setEnabled(true);
             proveedorGui.getBorrarPago().setEnabled(false);
+            proveedorGui.getBorrarCompra().setEnabled(false);
             System.out.println("hice doble click en un proveedor");
             proveedorGui.limpiarCampos();
             abrirBase();
@@ -359,6 +363,23 @@ public class ControladorProveedor implements ActionListener {
                 cerrarBase();
                 cargarPagos();
 
+            }
+        }
+        if(e.getSource()==proveedorGui.getBorrarCompra()){
+                        int row = tablaCompras.getSelectedRow();
+            if (row > -1) {
+                abrirBase();
+               Object id =  tablaCompras.getValueAt(row, 0);
+                Compra comp = Compra.findById(id);
+                ABMCompra abmC = new ABMCompra();
+                if (abmC.baja(comp)) {
+                    JOptionPane.showMessageDialog(proveedorGui, "¡Compra eliminada exitosamente!");
+                    cargarCompras();
+                } else {
+                    JOptionPane.showMessageDialog(proveedorGui, "Ocurrió un error, la compra no ha sido eliminada", "Error!", JOptionPane.ERROR_MESSAGE);
+
+                }
+                cerrarBase();
             }
         }
         if (e.getSource() == proveedorGui.getExportar()) {

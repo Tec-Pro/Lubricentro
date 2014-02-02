@@ -95,10 +95,11 @@ public class ControladorArticulo implements ActionListener, FocusListener {
     public void cargarTodos() {
         abrirBase();
         listArticulos = Articulo.findAll();
-        cerrarBase();
-        if (listArticulos.size() > 0) {
-            actualizarLista();
+        if (!listArticulos.isEmpty()) {
+            realizarBusqueda();
+            System.out.println("cargue todo");
         }
+        cerrarBase();
     }
 
     public void tablaMouseClicked(java.awt.event.MouseEvent evt) {
@@ -144,32 +145,7 @@ public class ControladorArticulo implements ActionListener, FocusListener {
             cerrarBase();
         }
         articuloGui.getCantidadArticulos().setText(String.valueOf(tablaArticulos.getRowCount()));
-        if (tablaArticulos.getRowCount() == 1 && filtroEquiv.isSelected()==true) {
-            String id = (String) tablaArticulos.getValueAt(0, 0);
-            Articulo a = Articulo.findById(id);
-            String fram = a.getString("equivalencia_fram");
-            if (!(fram.equals(""))) {
-                Busqueda busqueda = new Busqueda();
-                listArticulos = busqueda.filtroProducto2(fram);
-                it = listArticulos.iterator();
-                while (it.hasNext()) {
-                    Articulo b = it.next();
-                    if (!(b.getInteger("id").equals(a.getInteger("id")))) {
-                        String row[] = new String[6];
-                        row[0] = b.getString("codigo");
-                        row[1] = b.getString("descripcion");
-                        row[2] = b.getString("marca");
-                        row[3] = b.getBigDecimal("precio_compra").setScale(2, RoundingMode.CEILING).toString();
-                        row[4] = b.getBigDecimal("precio_venta").setScale(2, RoundingMode.CEILING).toString();
-                        row[5] = b.getString("equivalencia_fram");
-                        tablaArtDefault.addRow(row);
-                        {
-                        }
-                    }
-                }
 
-            }
-        }
     }
 
     @Override
@@ -294,13 +270,36 @@ public class ControladorArticulo implements ActionListener, FocusListener {
             }
         }
         if (e.getSource() == articuloGui.getFiltroEquiv()) {
-            if (articuloGui.getFiltroEquiv().isSelected()) {
-                //ACA VA EL FILTRO 
+            if (tablaArticulos.getRowCount() == 1 && articuloGui.getFiltroEquiv().isSelected()) {
+
+                String id = (String) tablaArticulos.getValueAt(0, 0);
+                Articulo a = Articulo.findById(id);
+                String fram = a.getString("equivalencia_fram");
+                if (!(fram.equals(""))) {
+                    Busqueda busqueda = new Busqueda();
+                    listArticulos = busqueda.filtroProducto2(fram);
+                    Iterator<Articulo> it = listArticulos.iterator();
+                    while (it.hasNext()) {
+                        Articulo b = it.next();
+                        if (!(b.getInteger("id").equals(a.getInteger("id")))) {
+                            String row[] = new String[6];
+                            row[0] = b.getString("codigo");
+                            row[1] = b.getString("descripcion");
+                            row[2] = b.getString("marca");
+                            row[3] = b.getBigDecimal("precio_compra").setScale(2, RoundingMode.CEILING).toString();
+                            row[4] = b.getBigDecimal("precio_venta").setScale(2, RoundingMode.CEILING).toString();
+                            row[5] = b.getString("equivalencia_fram");
+                            tablaArtDefault.addRow(row);
+                            {
+                            }
+                        }
+                    }
+
+                }
             } else {
                 realizarBusqueda();
             }
         }
-
     }
 
     /*private void actualizarPrecioVenta() {
