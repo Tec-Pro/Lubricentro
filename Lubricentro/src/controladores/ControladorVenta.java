@@ -20,6 +20,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -109,7 +110,7 @@ public class ControladorVenta implements ActionListener, CellEditorListener {
         actualizarListaCliente();
         actualizarListaProd();
         reporteFactura = new ControladorJReport(("factura.jasper"));
-        reporteFacturaSinPagar = new ControladorJReport(("facturaSinPago.jasper"));
+//        reporteFacturaSinPagar = new ControladorJReport(("facturaSinPago.jasper"));
 
     }
 
@@ -290,18 +291,23 @@ public class ControladorVenta implements ActionListener, CellEditorListener {
                 prodlista = busqueda.filtroProducto2(fram);
                 it = prodlista.iterator();
                 while (it.hasNext()) {
-                    a = it.next();
-                    String rowArray[] = new String[3];
-                    rowArray[0] = a.getId().toString();
-                    rowArray[1] = a.getString("codigo");
-                    rowArray[2] = a.getString("marca");
-                    tablaProd.addRow(rowArray);
+                    Articulo b = it.next();
+                    if (!(b.getInteger("id").equals(a.getInteger("id")))) {
+                        String rowArray[] = new String[3];
+                        rowArray[0] = b.getId().toString();
+                        rowArray[1] = b.getString("codigo");
+                        rowArray[2] = b.getString("marca");
+                        tablaProd.addRow(rowArray);
+                        {
+                        }
+                    }
                 }
+               
             }
         }
-        if (Base.hasConnection()) {
-            Base.close();
-        }
+         if (Base.hasConnection()) {
+                    Base.close();
+                }
     }
 
     private void abrirBase() {
@@ -318,13 +324,6 @@ public class ControladorVenta implements ActionListener, CellEditorListener {
         return ret;
     }
 
-    private boolean existeProdList(int id) {
-        boolean ret = false;
-        for (int i = 0; i < tablaProd.getRowCount() && !ret; i++) {
-            ret = (Integer) tablaProd.getValueAt(i, 0) == id;
-        }
-        return ret;
-    }
 
     public void setCellEditor() {
         for (int i = 0; i < tablafac.getRowCount(); i++) {

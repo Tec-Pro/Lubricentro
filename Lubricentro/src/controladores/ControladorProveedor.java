@@ -125,7 +125,9 @@ public class ControladorProveedor implements ActionListener {
         abrirBase();
         listProveedores = Proveedor.findAll();
         cerrarBase();
-        actualizarLista();
+        if (listProveedores.size() > 0) {
+            actualizarLista();
+        }
     }
 
     private void tablaArticulosClicked(java.awt.event.MouseEvent evt) {

@@ -98,22 +98,22 @@ public class ControladorApliacion implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent ae) {
         if (ae.getSource() == aplicacionGui.getArticulos()) {
-            controladorArticulo.cargarTodos();
+            //      controladorArticulo.cargarTodos();
             articuloGui.setVisible(true);
             articuloGui.toFront();
         }
         if (ae.getSource() == aplicacionGui.getProveedores()) {
-            controladorProveedor.cargarTodos();
+            //        controladorProveedor.cargarTodos();
             proveedorGui.setVisible(true);
             proveedorGui.toFront();
         }
         if (ae.getSource() == aplicacionGui.getImportar()) {
-            controladorImportarGui.cargarProveedores();
+            //         controladorImportarGui.cargarProveedores();
             importarGui.setVisible(true);
             importarGui.toFront();
         }
         if (ae.getSource() == aplicacionGui.getClientes()) {
-            controladorCliente.cargarTodos();
+            //      controladorCliente.cargarTodos();
             clienteGui.setVisible(true);
             clienteGui.toFront();
         }
@@ -190,64 +190,7 @@ public class ControladorApliacion implements ActionListener {
         if (ae.getSource() == aplicacionGui.getRegistrarVenta()) {
             ventaGui.setVisible(true);
             ventaGui.toFront();
-        } //ESTO NO FUNCIONA MAÑANA LO VEO.
-//        if ((ae.getSource() == clienteGui.getVerFactura())) {
-//            System.out.println("entre");
-//            VentaGui v = ventaGui;
-//            ClienteGui cGui = clienteGui;
-//            Integer idFac = Integer.valueOf((String) cGui.getVentasRealizadas().getValueAt(cGui.getVentasRealizadas().getSelectedRow(), 0));
-//            System.out.println("factura:" + idFac);
-//            abrirBase();
-//            Venta factura = Venta.findById(idFac);
-//            Object idCliente = factura.get("cliente_id");
-//            DefaultTableModel tablita = v.getTablaFacturaDefault();
-//            tablita.setRowCount>(0);
-//            Cliente cliente = Cliente.findById(idCliente);
-//            if (cliente != null) {
-//                String nombre = idCliente + " " + cliente.getString("nombre");
-//                v.getClienteFactura().setText(nombre);
-//                LazyList<ArticulosVentas> pr = ArticulosVentas.find("venta_id = ?", idFac);
-//                Iterator<ArticulosVentas> it = pr.iterator();
-//                while (it.hasNext()) {
-//                    ArticulosVentas prod = it.next();
-//                    Articulo producto = Articulo.findFirst("id = ?", prod.get("producto_id"));
-//                    if (producto != null) {
-//                        BigDecimal precio;
-//                        if (factura.getBoolean("pago")) {
-//                            precio = prod.getBigDecimal("precio_final").setScale(2, RoundingMode.CEILING);
-//                        } else {
-//                            precio = prod.getBigDecimal("precio_venta").setScale(2, RoundingMode.CEILING);
-//                        }
-//                        BigDecimal cantidad = prod.getBigDecimal("cantidad").setScale(2, RoundingMode.CEILING);
-//                        Object cols[] = new Object[5];
-//                        cols[0] = producto.get("id");
-//                        cols[1] = cantidad;
-//                        cols[2] = producto.get("codigo");
-//                        cols[3] = precio;
-//                        cols[4] = precio.multiply(cantidad);
-//                        v.getTablaFacturaDefault().addRow(cols);
-//                    }
-//                }
-//                v.getTotalFactura().setText(String.valueOf(factura.getFloat("monto")));
-//                Base.close();
-//                v.getRealizarVenta().setEnabled(false);
-//                v.getFacturaNueva().setEnabled(false);
-//                v.getBusquedaCodigoArticulo().setEnabled(false);
-//                v.getBusquedaFram().setEnabled(false);
-//                v.getBusquedaNombre().setEnabled(false);
-//                v.getClienteFactura().setEnabled(false);
-//                v.getCalendarioFactura().setEnabled(false);
-//                v.getBorrarArticulosSeleccionados().setEnabled(false);
-//                v.getAbona().setEnabled(false);
-//                controladorVenta.setCellEditor();
-//                controladorVenta.actualizarPrecio();
-//                compraGui.setVisible(true);
-//                compraGui.toFront();
-//            } else {
-//                JOptionPane.showMessageDialog(aplicacionGui, "El cliente asociado a esta factura ya no existe", "CLIENTE INEXISTENTE", JOptionPane.ERROR_MESSAGE);
-//            }
-//
-//        }
+        }
     }
 
     private static class SQLFilter extends javax.swing.filechooser.FileFilter {

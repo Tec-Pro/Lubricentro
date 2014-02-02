@@ -5,6 +5,7 @@
 package controladores;
 
 import abm.ABMArticulo;
+import busqueda.Busqueda;
 import interfaz.AplicacionGui;
 import interfaz.ArticuloGui;
 import java.awt.event.ActionEvent;
@@ -18,6 +19,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
@@ -42,6 +44,7 @@ public class ControladorArticulo implements ActionListener, FocusListener {
     private Boolean editandoInfo;
     private Articulo articulo;
     private ControladorJReport reporteArticulos;
+    private JCheckBox filtroEquiv;
 
     public ControladorArticulo(ArticuloGui articuloGui) throws JRException, ClassNotFoundException, SQLException {
         isNuevo = true;
@@ -72,6 +75,7 @@ public class ControladorArticulo implements ActionListener, FocusListener {
                 tablaMouseClicked(evt);
             }
         });
+        filtroEquiv = articuloGui.getFiltroEquiv();
 
     }
 
@@ -92,7 +96,9 @@ public class ControladorArticulo implements ActionListener, FocusListener {
         abrirBase();
         listArticulos = Articulo.findAll();
         cerrarBase();
-        actualizarLista();
+        if (listArticulos.size() > 0) {
+            actualizarLista();
+        }
     }
 
     public void tablaMouseClicked(java.awt.event.MouseEvent evt) {
@@ -138,6 +144,32 @@ public class ControladorArticulo implements ActionListener, FocusListener {
             cerrarBase();
         }
         articuloGui.getCantidadArticulos().setText(String.valueOf(tablaArticulos.getRowCount()));
+        if (tablaArticulos.getRowCount() == 1 && filtroEquiv.isSelected()==true) {
+            String id = (String) tablaArticulos.getValueAt(0, 0);
+            Articulo a = Articulo.findById(id);
+            String fram = a.getString("equivalencia_fram");
+            if (!(fram.equals(""))) {
+                Busqueda busqueda = new Busqueda();
+                listArticulos = busqueda.filtroProducto2(fram);
+                it = listArticulos.iterator();
+                while (it.hasNext()) {
+                    Articulo b = it.next();
+                    if (!(b.getInteger("id").equals(a.getInteger("id")))) {
+                        String row[] = new String[6];
+                        row[0] = b.getString("codigo");
+                        row[1] = b.getString("descripcion");
+                        row[2] = b.getString("marca");
+                        row[3] = b.getBigDecimal("precio_compra").setScale(2, RoundingMode.CEILING).toString();
+                        row[4] = b.getBigDecimal("precio_venta").setScale(2, RoundingMode.CEILING).toString();
+                        row[5] = b.getString("equivalencia_fram");
+                        tablaArtDefault.addRow(row);
+                        {
+                        }
+                    }
+                }
+
+            }
+        }
     }
 
     @Override
@@ -153,6 +185,9 @@ public class ControladorArticulo implements ActionListener, FocusListener {
             articuloGui.getGuardar().setEnabled(true);
             cargarProveedores();
             articuloGui.getProveedores().setSelectedItem("");
+        }
+        if (e.getSource() == articuloGui.getFiltroEquiv()) {
+            actualizarLista();
         }
         if (e.getSource() == articuloGui.getGuardar() && editandoInfo && isNuevo) {
             System.out.println("Boton guardar pulsado");

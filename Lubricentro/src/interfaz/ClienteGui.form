@@ -15,7 +15,6 @@
   </Properties>
   <SyntheticProperties>
     <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
-    <SyntheticProperty name="generateCenter" type="boolean" value="false"/>
   </SyntheticProperties>
   <AuxValues>
     <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>
@@ -61,7 +60,7 @@
                           <Component id="jPanel2" alignment="0" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace min="-2" max="-2" attributes="0"/>
-                      <Component id="jPanel6" pref="289" max="32767" attributes="0"/>
+                      <Component id="jPanel6" pref="298" max="32767" attributes="0"/>
                       <EmptySpace min="-2" pref="0" max="-2" attributes="0"/>
                   </Group>
               </Group>
@@ -70,7 +69,7 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="1" attributes="0">
                       <Group type="103" groupAlignment="1" attributes="0">
-                          <Component id="jPanel6" alignment="0" pref="350" max="32767" attributes="0"/>
+                          <Component id="jPanel6" alignment="0" pref="353" max="32767" attributes="0"/>
                           <Group type="102" attributes="0">
                               <Component id="panelClientes" max="32767" attributes="0"/>
                               <EmptySpace min="-2" max="-2" attributes="0"/>
@@ -99,7 +98,7 @@
               <Layout>
                 <DimensionLayout dim="0">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="jScrollPane2" pref="0" max="32767" attributes="0"/>
+                      <Component id="jScrollPane2" pref="354" max="32767" attributes="0"/>
                       <Component id="busqueda" alignment="0" min="-2" pref="289" max="-2" attributes="0"/>
                   </Group>
                 </DimensionLayout>
@@ -109,7 +108,7 @@
                           <EmptySpace min="-2" pref="2" max="-2" attributes="0"/>
                           <Component id="busqueda" min="-2" max="-2" attributes="0"/>
                           <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
-                          <Component id="jScrollPane2" pref="76" max="32767" attributes="0"/>
+                          <Component id="jScrollPane2" pref="114" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -241,6 +240,9 @@
               </Layout>
               <SubComponents>
                 <Component class="javax.swing.JTextField" name="nombre">
+                  <Properties>
+                    <Property name="enabled" type="boolean" value="false"/>
+                  </Properties>
                 </Component>
                 <Component class="javax.swing.JLabel" name="jLabel1">
                   <Properties>
@@ -253,6 +255,9 @@
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JTextField" name="telefono">
+                  <Properties>
+                    <Property name="enabled" type="boolean" value="false"/>
+                  </Properties>
                   <Events>
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="telefonoActionPerformed"/>
                   </Events>
@@ -273,6 +278,9 @@
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JTextField" name="celular">
+                  <Properties>
+                    <Property name="enabled" type="boolean" value="false"/>
+                  </Properties>
                   <Events>
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="celularActionPerformed"/>
                   </Events>
@@ -376,11 +384,11 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Component id="jScrollPane5" pref="0" max="32767" attributes="0"/>
                       <Group type="102" attributes="0">
-                          <Component id="eliminarVenta" pref="90" max="32767" attributes="0"/>
+                          <Component id="eliminarVenta" pref="93" max="32767" attributes="0"/>
                           <EmptySpace min="-2" pref="0" max="-2" attributes="0"/>
-                          <Component id="verFactura" pref="94" max="32767" attributes="0"/>
+                          <Component id="verFactura" pref="97" max="32767" attributes="0"/>
                           <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
-                          <Component id="realizarCobro" pref="93" max="32767" attributes="0"/>
+                          <Component id="realizarCobro" pref="96" max="32767" attributes="0"/>
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
@@ -518,6 +526,7 @@
                         <StringItem index="2" value="Pagas"/>
                       </StringArray>
                     </Property>
+                    <Property name="enabled" type="boolean" value="false"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JLabel" name="jLabel5">

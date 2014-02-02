@@ -193,7 +193,7 @@ public class ControladorCompra implements ActionListener, CellEditorListener {
             rowArray[2] = a.getString("marca");
             tablaProd.addRow(rowArray);
         }
-        if (tablaProd.getRowCount() == 1) {
+         if (tablaProd.getRowCount() == 1) {
             String id = (String) tablaProd.getValueAt(0, 0);
             Articulo a = Articulo.findById(id);
             String fram = a.getString("equivalencia_fram");
@@ -201,13 +201,18 @@ public class ControladorCompra implements ActionListener, CellEditorListener {
                 prodlista = busqueda.filtroProducto2(fram);
                 it = prodlista.iterator();
                 while (it.hasNext()) {
-                    a = it.next();
-                    String rowArray[] = new String[3];
-                    rowArray[0] = a.getId().toString();
-                    rowArray[1] = a.getString("codigo");
-                    rowArray[2] = a.getString("marca");
-                    tablaProd.addRow(rowArray);
+                    Articulo b = it.next();
+                    if (!(b.getInteger("id").equals(a.getInteger("id")))) {
+                        String rowArray[] = new String[3];
+                        rowArray[0] = b.getId().toString();
+                        rowArray[1] = b.getString("codigo");
+                        rowArray[2] = b.getString("marca");
+                        tablaProd.addRow(rowArray);
+                        {
+                        }
+                    }
                 }
+               
             }
         }
         if (Base.hasConnection()) {
@@ -346,13 +351,6 @@ public class ControladorCompra implements ActionListener, CellEditorListener {
         compraGui.getTotalCompra().setText(total.toString());
     }
 
-    private boolean existeProdList(int id) {
-        boolean ret = false;
-        for (int i = 0; i < tablaProd.getRowCount() && !ret; i++) {
-            ret = (Integer) tablaProd.getValueAt(i, 0) == id;
-        }
-        return ret;
-    }
 
     @Override
     public void editingStopped(ChangeEvent e) {
