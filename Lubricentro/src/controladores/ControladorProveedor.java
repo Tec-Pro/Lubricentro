@@ -155,6 +155,7 @@ public class ControladorProveedor implements ActionListener {
         if (evt.getClickCount() == 2) {
             abrirBase();
             compraGui.limpiarVentana();
+            compraGui.paraVerCompra(true);
             Compra compra = Compra.findById(tablaCompras.getValueAt(tablaCompras.getSelectedRow(), 0));
             cerrarBase();
             //PODRÍA HACERSE UNA FUNCION EN COMPRAGUI PARA CARGAR LA COMPRA
@@ -348,6 +349,11 @@ public class ControladorProveedor implements ActionListener {
             realizarPagoGui.setLocationRelativeTo(proveedorGui);
             realizarPagoGui.setVisible(true);
             cargarPagos();
+            abrirBase();
+            proveedor= abmProveedor.getProveedor(proveedor);
+            proveedorGui.CargarCampos(proveedor);
+            cerrarBase();
+            
         }
         if (e.getSource() == proveedorGui.getBorrarPago()) {
             System.out.println("Borrar pago pulsado");

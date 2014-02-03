@@ -209,8 +209,22 @@ public class CompraGui extends javax.swing.JInternalFrame {
         int anio =miCalendario.get(Calendar.YEAR);
         calendarioCompra.setDate(Date.valueOf(anio+"-"+(mes+1)+"-"+diaHoy));
         totalCompra.setText("");
+        proveedorCompra.setText("");
 
     }
+     public void paraVerCompra(boolean si){
+         tablaArticulos.setEnabled(!si);
+         tablaCompra.setEnabled(!si);
+         tablaProveedores.setEnabled(!si);
+         busquedaNombreProveedor.setEnabled(!si);
+         fram.setEnabled(!si);
+         codigo.setEnabled(!si);
+         calendarioCompra.setEnabled(!si);
+         borrarArticulosSeleccionados.setEnabled(!si);
+         abona.setEnabled(!si);
+         realizarCompra.setEnabled(!si);
+     }
+     
     /**
      * Retorno el campo totalCompra contiene el resultado final de
      * la compra
@@ -240,6 +254,8 @@ public class CompraGui extends javax.swing.JInternalFrame {
     public JTextField getFram() {
         return fram;
     }
+
+ 
     
     
     

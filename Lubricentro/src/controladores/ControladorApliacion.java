@@ -77,7 +77,7 @@ public class ControladorApliacion implements ActionListener {
         controladorVenta = new ControladorVenta(ventaGui, aplicacionGui);
         controladorProveedor = new ControladorProveedor(proveedorGui, aplicacionGui, articuloGui, compraGui);
         controladorArticulo = new ControladorArticulo(articuloGui);
-        controladorCliente = new ControladorCliente(clienteGui, aplicacionGui,ventaGui);
+        controladorCliente = new ControladorCliente(clienteGui, aplicacionGui, ventaGui);
         importarGui = new ImportarExcelGui();
         controladorImportarGui = new controladorImportarGui(importarGui);
         aplicacionGui.getContenedor().add(proveedorGui);
@@ -98,22 +98,22 @@ public class ControladorApliacion implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent ae) {
         if (ae.getSource() == aplicacionGui.getArticulos()) {
-                  controladorArticulo.cargarTodos();
+            controladorArticulo.cargarTodos();
             articuloGui.setVisible(true);
             articuloGui.toFront();
         }
         if (ae.getSource() == aplicacionGui.getProveedores()) {
-                    controladorProveedor.cargarTodos();
+            controladorProveedor.cargarTodos();
             proveedorGui.setVisible(true);
             proveedorGui.toFront();
         }
         if (ae.getSource() == aplicacionGui.getImportar()) {
-                     controladorImportarGui.cargarProveedores();
+            controladorImportarGui.cargarProveedores();
             importarGui.setVisible(true);
             importarGui.toFront();
         }
         if (ae.getSource() == aplicacionGui.getClientes()) {
-                  controladorCliente.cargarTodos();
+            controladorCliente.cargarTodos();
             clienteGui.setVisible(true);
             clienteGui.toFront();
         }

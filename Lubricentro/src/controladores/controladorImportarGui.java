@@ -64,7 +64,6 @@ public class controladorImportarGui implements ActionListener {
     private Boolean importando;
     private Venta venta;
     private Compra compra;
-    private ArticulosVentas ventaArticulos;
     private ABMVenta abmVenta;
     private ABMCompra abmCompra;
 

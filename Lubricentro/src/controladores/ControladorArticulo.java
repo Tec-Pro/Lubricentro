@@ -44,7 +44,6 @@ public class ControladorArticulo implements ActionListener, FocusListener {
     private Boolean editandoInfo;
     private Articulo articulo;
     private ControladorJReport reporteArticulos;
-    private JCheckBox filtroEquiv;
 
     public ControladorArticulo(ArticuloGui articuloGui) throws JRException, ClassNotFoundException, SQLException {
         isNuevo = true;
@@ -75,7 +74,6 @@ public class ControladorArticulo implements ActionListener, FocusListener {
                 tablaMouseClicked(evt);
             }
         });
-        filtroEquiv = articuloGui.getFiltroEquiv();
 
     }
 

@@ -16,7 +16,7 @@ public class ManejoUsuario {
 
     public void crearUsuario() {
         if (Usuario.findAll().isEmpty()) {
-            Usuario nuevo = Usuario.createIt();
+            Usuario.createIt();
         }
     }
 

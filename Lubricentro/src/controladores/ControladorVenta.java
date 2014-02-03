@@ -20,7 +20,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -55,7 +54,6 @@ public class ControladorVenta implements ActionListener, CellEditorListener {
     private JTable tablafac;
     private ControladorJReport reporteFactura;
     private ControladorJReport reporteFacturaSinPagar;
-    private Integer idFacturaAModificar;
     private AplicacionGui apgui;
 
     public ControladorVenta(VentaGui ventaGui, AplicacionGui apgui) throws JRException, ClassNotFoundException, SQLException {
@@ -184,6 +182,7 @@ public class ControladorVenta implements ActionListener, CellEditorListener {
         }
         if (e.getSource() == ventaGui.getFacturaNueva()) {
             ventaGui.limpiarVentana();
+            ventaGui.paraVerVenta(false);
             ventaGui.getRealizarVenta().setEnabled(true);
         }
         if (e.getSource() == ventaGui.getRealizarVenta()) {//Boton realizar venta
@@ -249,6 +248,7 @@ public class ControladorVenta implements ActionListener, CellEditorListener {
                 }
             }
         }
+
     }
     
     public void cargarTodos(){

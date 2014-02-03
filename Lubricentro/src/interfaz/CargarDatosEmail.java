@@ -18,13 +18,14 @@ import javax.swing.JOptionPane;
 public class CargarDatosEmail extends javax.swing.JDialog {
 
     private EnvioEmailControlador envio;
+
     /**
      * Creates new form CargarDatosEmail
      */
     public CargarDatosEmail(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
-        envio= new EnvioEmailControlador();
+        envio = new EnvioEmailControlador();
     }
 
     /**
@@ -110,12 +111,13 @@ public class CargarDatosEmail extends javax.swing.JDialog {
     private void probarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_probarActionPerformed
 
         try {
-            boolean res= envio.enviarMail(email.getText(),contrasenia.getText(),false);
-            
-            if(res)
+            boolean res = envio.enviarMail(email.getText(), contrasenia.getText(), false);
+
+            if (res) {
                 JOptionPane.showMessageDialog(this, "Conexión realizada con éxito", "Datos correctos", JOptionPane.INFORMATION_MESSAGE);
-            else
-                                JOptionPane.showMessageDialog(this, "Falló la autentificación, revise la conexión", "Autentificacion fallida", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(this, "Falló la autentificación, revise la conexión", "Autentificacion fallida", JOptionPane.INFORMATION_MESSAGE);
+            }
         } catch (MessagingException ex) {
             Logger.getLogger(CargarDatosEmail.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -123,14 +125,18 @@ public class CargarDatosEmail extends javax.swing.JDialog {
 
     private void guardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_guardarActionPerformed
         try {
-            boolean guardado=envio.guardarDatos(email.getText(),contrasenia.getText());
-            if(guardado){
+            char arrayContra[] = contrasenia.getPassword();
+            for (int i = 0; i < arrayContra.length; i++) {
+                arrayContra[i] = (char) (arrayContra[i] + (char) 5);
+            }
+            boolean guardado = envio.guardarDatos(email.getText(), String.valueOf(arrayContra));
+            if (guardado) {
                 this.dispose();
             }
         } catch (SQLException ex) {
             Logger.getLogger(CargarDatosEmail.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
     }//GEN-LAST:event_guardarActionPerformed
 
     /**

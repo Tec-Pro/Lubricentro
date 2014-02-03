@@ -7,9 +7,7 @@ package controladores;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Calendar;
 import java.util.Properties;
 import javax.activation.DataHandler;
@@ -60,20 +58,6 @@ public class EnvioEmailControlador {
         }
     }
 
-    public void consultaDatos() throws ClassNotFoundException, SQLException {
-
-        conectarMySQL();
-        Statement consulta = conn.createStatement();
-
-        ResultSet rs = consulta.executeQuery("select * from email");
-        while (rs.next()) {
-            mail = rs.getString("email");
-            passwo = rs.getString("password");
-        }
-        conn.close();
-
-    }
-
     public boolean guardarDatos(String email, String pass) throws SQLException {
         emailModel = new Email();
         abrirBase();
@@ -106,7 +90,12 @@ public class EnvioEmailControlador {
                 abrirBase();
                 emailModel = emailsModel.get(0);
                 this.mail = emailModel.getString("email");
-                this.passwo = emailModel.getString("password");
+                String contraEncrip = emailModel.getString("password");
+                char arrayD[] = contraEncrip.toCharArray();
+                for (int i = 0; i < arrayD.length; i++) {
+                    arrayD[i] = (char) (arrayD[i] - (char) 5);
+                }
+                this.passwo = String.valueOf(arrayD);
                 cerrarBase();
             } else {
                 this.mail = email;

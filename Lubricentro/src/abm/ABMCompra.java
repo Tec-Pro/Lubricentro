@@ -11,7 +11,6 @@ import java.util.LinkedList;
 import modelos.Articulo;
 import modelos.ArticulosCompras;
 import modelos.Compra;
-import modelos.Proveedor;
 import net.sf.jasperreports.engine.util.Pair;
 import org.javalite.activejdbc.Base;
 import org.javalite.activejdbc.LazyList;
@@ -80,7 +79,6 @@ public class ABMCompra {
 //        }
 //        return resultOp;
 //    }
-
     //fUNCIONA CORRECTAMENTE
     /*Elimino una compra y los productos ligados a ella, sin hacer devolucion de stock,
      * ni actualizacion de tablas de productos_comprados
@@ -113,16 +111,15 @@ public class ABMCompra {
         } else {
             Integer idCompra = c.getInteger("id");
             Integer idProveedorNuevo = c.getInteger("proveedor_id");
-           // c.set("monto", calcularMonto(c.getProductos()));//calculo nuevo monto
+            // c.set("monto", calcularMonto(c.getProductos()));//calculo nuevo monto
             Compra compra = Compra.findById(idCompra);
             compra.set("monto", c.get("monto"));
             compra.set("fecha", c.get("fecha"));
             compra.set("proveedor_id", idProveedorNuevo);
             compra.set("pago", c.get("pago"));
             compra.saveIt();
-            LinkedList<Pair> viejosProductos = buscarProductosComprass(idCompra); //saco los viejos productos de la compra y los elimino de la misma
             resultOp = resultOp && cargarProductosComprass(idCompra, c.getProductos());//guardo los productos nuevos
-       }
+        }
         Base.commitTransaction();
         return resultOp;
     }
@@ -131,7 +128,6 @@ public class ABMCompra {
     /*Retorna una lista de pares producto-cantidad de una compra(la busca en
      * productos_comprados
      */
-
     private LinkedList<Pair> buscarProductosComprass(int idCompra) {
         BigDecimal cant;
         ArticulosCompras prodComprado;
@@ -148,27 +144,26 @@ public class ABMCompra {
         }
         return listaDePares;
     }
-
     //FUNCIONA CORRECTAMENTE
     /*Recibe lista de pares <Producto,cantidad> retorna precio total de la venta de todos
      los productos de la lista, multiplicados por su cantidad correspondiente*/
-    private BigDecimal calcularMonto(LinkedList<Pair> productos) {
-        BigDecimal acumMonto = new BigDecimal(0);
-        if (productos.isEmpty()) {
-            return acumMonto;
-        } else {
-            Iterator itr = productos.iterator();
-            Pair par;
-            Articulo prod;
-            BigDecimal cant;
-            while (itr.hasNext()) {
-                par = (Pair) itr.next(); //saco el par de la lista
-                prod = (Articulo) par.first(); //saco el producto del par
-                cant = ((BigDecimal) par.second()).setScale(2, RoundingMode.CEILING);;//saco la cantidad del par
-                acumMonto.add(cant.multiply((BigDecimal)prod.get("precio_compra"))); //multiplico el precio del producto por la cantidad del mismo
-            }
-            acumMonto = acumMonto.setScale(2, RoundingMode.CEILING);
-            return acumMonto;
-        }
-    }
+    /*private BigDecimal calcularMonto(LinkedList<Pair> productos) {
+     BigDecimal acumMonto = new BigDecimal(0);
+     if (productos.isEmpty()) {
+     return acumMonto;
+     } else {
+     Iterator itr = productos.iterator();
+     Pair par;
+     Articulo prod;
+     BigDecimal cant;
+     while (itr.hasNext()) {
+     par = (Pair) itr.next(); //saco el par de la lista
+     prod = (Articulo) par.first(); //saco el producto del par
+     cant = ((BigDecimal) par.second()).setScale(2, RoundingMode.CEILING);;//saco la cantidad del par
+     acumMonto.add(cant.multiply((BigDecimal)prod.get("precio_compra"))); //multiplico el precio del producto por la cantidad del mismo
+     }
+     acumMonto = acumMonto.setScale(2, RoundingMode.CEILING);
+     return acumMonto;
+     }
+     }*/
 }

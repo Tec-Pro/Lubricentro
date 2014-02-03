@@ -316,9 +316,9 @@ public class ControladorCompra implements ActionListener, CellEditorListener {
 
         if (e.getSource() == compraGui.getCompraNueva()) {
             compraGui.limpiarVentana();
+            compraGui.paraVerCompra(false);
             compraGui.getRealizarCompra().setEnabled(true);
         }
-
     }
 
     private void abrirBase() {

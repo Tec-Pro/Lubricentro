@@ -63,6 +63,19 @@ public class VentaGui extends javax.swing.JInternalFrame {
         return busquedaNombre;
     }
  
+     public void paraVerVenta(boolean si){
+         tablaArticulos.setEnabled(!si);
+         tablaFactura.setEnabled(!si);
+         tablaClientes.setEnabled(!si);
+         busquedaNombre.setEnabled(!si);
+         busquedaFram.setEnabled(!si);
+         busquedaCodigoArticulo.setEnabled(!si);
+         calendarioFactura.setEnabled(!si);
+         borrarArticulosSeleccionados.setEnabled(!si);
+         abona.setEnabled(!si);
+         realizarVenta.setEnabled(!si);
+     }
+
 
     
     /**

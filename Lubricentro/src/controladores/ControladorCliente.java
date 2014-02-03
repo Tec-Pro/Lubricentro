@@ -52,10 +52,10 @@ public class ControladorCliente implements ActionListener {
     Busqueda busqueda;
     VentaGui ventaGui;
 
-    public ControladorCliente(ClienteGui clienteGui, AplicacionGui aplicacionGui,VentaGui ventaGui) {
+    public ControladorCliente(ClienteGui clienteGui, AplicacionGui aplicacionGui, VentaGui ventaGui) {
         this.aplicacionGui = aplicacionGui;
         this.clienteGui = clienteGui;
-        this.ventaGui= ventaGui;
+        this.ventaGui = ventaGui;
         this.clienteGui.setActionListener(this);
         isNuevo = true;
         editandoInfo = false;
@@ -243,7 +243,7 @@ public class ControladorCliente implements ActionListener {
         if (e.getSource() == clienteGui.getVer()) {
             cargarVentas();
         }
-         if ((e.getSource() == clienteGui.getVerFactura())) {
+        if ((e.getSource() == clienteGui.getVerFactura())) {
             System.out.println("entre");
             Integer idFac = Integer.valueOf((String) clienteGui.getVentasRealizadas().getValueAt(clienteGui.getVentasRealizadas().getSelectedRow(), 0));
             System.out.println("factura:" + idFac);
@@ -285,20 +285,12 @@ public class ControladorCliente implements ActionListener {
                 }
                 if (factura.getBoolean("pago")) {
                     ventaGui.getTotalFactura().setText(String.valueOf(factura.getFloat("monto")));
-                }
-                else
+                } else {
                     actualizarPrecio();
+                }
                 Base.close();
                 System.out.println("sali");
-                ventaGui.getRealizarVenta().setEnabled(false);
-                ventaGui.getFacturaNueva().setEnabled(false);
-                ventaGui.getBusquedaCodigoArticulo().setEnabled(false);
-                ventaGui.getBusquedaFram().setEnabled(false);
-                ventaGui.getBusquedaNombre().setEnabled(false);
-                ventaGui.getClienteFactura().setEnabled(false);
-                ventaGui.getCalendarioFactura().setEnabled(false);
-                ventaGui.getBorrarArticulosSeleccionados().setEnabled(false);
-                ventaGui.getAbona().setEnabled(false);
+                ventaGui.paraVerVenta(true);
                 ventaGui.setVisible(true);
                 ventaGui.toFront();
                 System.out.println("termine");
@@ -308,7 +300,7 @@ public class ControladorCliente implements ActionListener {
 
         }
     }
-    
+
     private void actualizarPrecio() {
         BigDecimal importe;
         BigDecimal total = new BigDecimal(0);
@@ -321,7 +313,7 @@ public class ControladorCliente implements ActionListener {
         }
         ventaGui.getTotalFactura().setText(total.toString());
     }
-    
+
     private void abrirBase() {
         if (!Base.hasConnection()) {
             Base.open("com.mysql.jdbc.Driver", "jdbc:mysql://localhost/lubricentro", "root", "root");

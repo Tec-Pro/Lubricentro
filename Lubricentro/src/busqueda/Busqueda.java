@@ -4,7 +4,6 @@
  */
 package busqueda;
 
-import java.sql.Array;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -16,7 +15,6 @@ import modelos.ClientesArticulos;
 import modelos.Compra;
 import modelos.Proveedor;
 import modelos.Venta;
-import org.javalite.activejdbc.Base;
 
 /**
  *
@@ -123,7 +121,6 @@ public class Busqueda {
         return result;
     }
 
-    
     /**
      * @param idcliente,
      * @param idproducto. Filtra los productos adquiridos por idcliente o los

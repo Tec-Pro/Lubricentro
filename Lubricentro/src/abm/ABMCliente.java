@@ -4,7 +4,6 @@
  */
 package abm;
 
-
 import modelos.Cliente;
 import org.javalite.activejdbc.Base;
 
@@ -13,32 +12,30 @@ import org.javalite.activejdbc.Base;
  * @author jacinto
  */
 public class ABMCliente {
-  
-    public Cliente getCliente(Cliente c){
+
+    public Cliente getCliente(Cliente c) {
         return Cliente.first("nombre = ?", c.get("nombre"));
     }
-    
-    public boolean findCliente(Cliente c){
-        return (Cliente.first("nombre = ?", c.get("nombre"))!= null);
+
+    public boolean findCliente(Cliente c) {
+        return (Cliente.first("nombre = ?", c.get("nombre")) != null);
     }
-    
-     public boolean alta(Cliente c) {
-        if (!findCliente(c)){
+
+    public boolean alta(Cliente c) {
+        if (!findCliente(c)) {
             Base.openTransaction();
-            Cliente nuevo = Cliente.create("nombre" ,c.get("nombre"),"telefono",c.get("telefono"),"celular",c.get("celular"));
+            Cliente nuevo = Cliente.create("nombre", c.get("nombre"), "telefono", c.get("telefono"), "celular", c.get("celular"));
             nuevo.saveIt();
             Base.commitTransaction();
             return true;
-        } else{
+        } else {
             return false;
         }
-    }   
-    
+    }
 
-   
-    public boolean baja(Cliente c) {       
+    public boolean baja(Cliente c) {
         Cliente viejo = Cliente.findById(c.getId());
-        if (viejo!=null){
+        if (viejo != null) {
             Base.openTransaction();
             viejo.delete();
             Base.commitTransaction();
@@ -47,17 +44,14 @@ public class ABMCliente {
         return false;
     }
 
-   
     public boolean modificar(Cliente c) {
-       Cliente viejo = Cliente.findById(c.getId());
-       if (viejo!=null){
+        Cliente viejo = Cliente.findById(c.getId());
+        if (viejo != null) {
             Base.openTransaction();
-            viejo.set("nombre",c.get("nombre"),"telefono",c.get("telefono"),"celular",c.get("celular")).saveIt();
+            viejo.set("nombre", c.get("nombre"), "telefono", c.get("telefono"), "celular", c.get("celular")).saveIt();
             Base.commitTransaction();
             return true;
-       }
-       return false;
+        }
+        return false;
     }
-    
-    
 }

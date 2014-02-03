@@ -4,7 +4,6 @@
  */
 package abm;
 
-import busqueda.Busqueda;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Iterator;
@@ -137,7 +136,7 @@ public class ABMVenta {
                 cant = ((BigDecimal) (((Pair) par.second()).first())).setScale(2, RoundingMode.CEILING);//saco la cantidad del par
                 precioFinal = ((BigDecimal) prod.get("precio_venta")).setScale(2, RoundingMode.CEILING);
                 acumMonto.add(precioFinal.multiply(cant)).setScale(2, RoundingMode.CEILING); //multiplico el precio del producto por la cantidad del mismo     
-                }
+            }
             return acumMonto;
         }
     }
