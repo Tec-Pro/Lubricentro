@@ -51,6 +51,7 @@ public class ControladorCompra implements ActionListener, CellEditorListener {
     private JTable tablaprod;
     private JTextField textCodProd;
     private JTextField textFram;
+    private JTextField textProvCompra;
     private List prodlista;
     private List provlista;
 
@@ -109,6 +110,13 @@ public class ControladorCompra implements ActionListener, CellEditorListener {
                 busquedaProductoKeyReleased(evt);
             }
         });
+        textProvCompra = compraGui.getProveedorCompra();
+        textProvCompra.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                provFacMouseClicked(evt);
+            }
+        });
         tablaProveedores = compraGui.getTablaProveedoresDefault();
         tablaProd = compraGui.getTablaArticulosDefault();
         provlista = busqueda.filtroProveedor("", "");
@@ -161,10 +169,16 @@ public class ControladorCompra implements ActionListener, CellEditorListener {
             }
         }
     }
-    
-    public void cargarTodos(){
+
+    public void cargarTodos() {
         actualizarListaProd();
         actualizarListaProveedor();
+    }
+
+    private void provFacMouseClicked(MouseEvent evt) {
+        if (evt.getClickCount() == 2) {
+            compraGui.getProveedorCompra().setText("");
+        }
     }
 
     public void actualizarListaProveedor() {
@@ -197,9 +211,8 @@ public class ControladorCompra implements ActionListener, CellEditorListener {
             rowArray[2] = a.getString("marca");
             tablaProd.addRow(rowArray);
         }
-         if (tablaProd.getRowCount() == 1) {
-            String id = (String) tablaProd.getValueAt(0, 0);
-            Articulo a = Articulo.findById(id);
+        Articulo a = Articulo.findFirst("codigo = ?", textCodProd.getText());
+        if (a != null) {
             String fram = a.getString("equivalencia_fram");
             if (!(fram.equals(""))) {
                 prodlista = busqueda.filtroProducto2(fram);
@@ -216,7 +229,7 @@ public class ControladorCompra implements ActionListener, CellEditorListener {
                         }
                     }
                 }
-               
+
             }
         }
         if (Base.hasConnection()) {
@@ -255,7 +268,7 @@ public class ControladorCompra implements ActionListener, CellEditorListener {
         }
 
         if (e.getSource() == compraGui.getRealizarCompra()) {//Boton realizar compra
-            if (compraGui.getCalendarioFacturaText().getText().equals("") || compraGui.getTablaCompra().getRowCount()==0) {
+            if (compraGui.getCalendarioFacturaText().getText().equals("") || compraGui.getTablaCompra().getRowCount() == 0) {
                 JOptionPane.showMessageDialog(compraGui, "Falta la fecha o no hay productos cargados", "Error!", JOptionPane.ERROR_MESSAGE);
             } else {
                 Compra v = new Compra();
@@ -354,7 +367,6 @@ public class ControladorCompra implements ActionListener, CellEditorListener {
         }
         compraGui.getTotalCompra().setText(total.toString());
     }
-
 
     @Override
     public void editingStopped(ChangeEvent e) {

@@ -286,9 +286,8 @@ public class ControladorVenta implements ActionListener, CellEditorListener {
             rowArray[2] = a.getString("marca");
             tablaProd.addRow(rowArray);
         }
-        if (tablaProd.getRowCount() == 1) {
-            String id = (String) tablaProd.getValueAt(0, 0);
-            Articulo a = Articulo.findById(id);
+        Articulo a = Articulo.findFirst("codigo = ?", textcodprod.getText());
+        if (a != null) {
             String fram = a.getString("equivalencia_fram");
             if (!(fram.equals(""))) {
                 prodlista = busqueda.filtroProducto2(fram);
