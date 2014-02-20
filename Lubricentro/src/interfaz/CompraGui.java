@@ -9,6 +9,7 @@ import java.awt.event.ActionListener;
 import java.sql.Date;
 import java.util.Calendar;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.JTable;
@@ -53,7 +54,8 @@ public class CompraGui extends javax.swing.JInternalFrame {
         this.compraNueva.addActionListener(lis);
         this.realizarCompra.addActionListener(lis);
         this.borrarArticulosSeleccionados.addActionListener(lis);
-        this.abona.addActionListener(lis);
+          this.abonaNo.addActionListener(lis);
+        this.abonaSi.addActionListener(lis);
     }
 
     /**
@@ -67,12 +69,6 @@ public class CompraGui extends javax.swing.JInternalFrame {
     public DefaultTableModel getTablaArticulosDefault() {
         return tablaArticulosDefault;
     }
-
-    public JComboBox getAbona() {
-        return abona;
-    }
-
-    
     
     /**
      * Retorno la tabla compra con tipo TableModelDefault para pdoer realizar
@@ -221,7 +217,8 @@ public class CompraGui extends javax.swing.JInternalFrame {
          codigo.setEnabled(!si);
          calendarioCompra.setEnabled(!si);
          borrarArticulosSeleccionados.setEnabled(!si);
-         abona.setEnabled(!si);
+         abonaNo.setEnabled(!si);
+        abonaSi.setEnabled(!si);
          realizarCompra.setEnabled(!si);
      }
      
@@ -256,7 +253,15 @@ public class CompraGui extends javax.swing.JInternalFrame {
     }
 
  
-    
+        public JCheckBox getAbonaNo() {
+        return abonaNo;
+    }
+
+    public JCheckBox getAbonaSi() {
+        return abonaSi;
+    }
+
+ 
     
     
     /**
@@ -297,7 +302,8 @@ public class CompraGui extends javax.swing.JInternalFrame {
         borrarArticulosSeleccionados = new javax.swing.JButton();
         calendarioCompra = new com.toedter.calendar.JDateChooser();
         jLabel5 = new javax.swing.JLabel();
-        abona = new javax.swing.JComboBox();
+        abonaSi = new javax.swing.JCheckBox();
+        abonaNo = new javax.swing.JCheckBox();
         panelControlFactura = new javax.swing.JPanel();
         compraNueva = new javax.swing.JButton();
         realizarCompra = new javax.swing.JButton();
@@ -511,13 +517,25 @@ public class CompraGui extends javax.swing.JInternalFrame {
         jLabel5.setFont(new java.awt.Font("Century Schoolbook L", 0, 14)); // NOI18N
         jLabel5.setText("Abona");
 
-        abona.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Si", "No" }));
+        abonaSi.setText("Si");
+        abonaSi.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                abonaSiActionPerformed(evt);
+            }
+        });
+
+        abonaNo.setText("No");
+        abonaNo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                abonaNoActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout panelCompraLayout = new javax.swing.GroupLayout(panelCompra);
         panelCompra.setLayout(panelCompraLayout);
         panelCompraLayout.setHorizontalGroup(
             panelCompraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane8, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 576, Short.MAX_VALUE)
+            .addComponent(jScrollPane8, javax.swing.GroupLayout.Alignment.TRAILING)
             .addGroup(panelCompraLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(labelCliente)
@@ -529,10 +547,12 @@ public class CompraGui extends javax.swing.JInternalFrame {
                 .addComponent(calendarioCompra, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelCompraLayout.createSequentialGroup()
                 .addComponent(borrarArticulosSeleccionados)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(57, 57, 57)
                 .addComponent(jLabel5)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(abona, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(abonaSi)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(abonaNo)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(labelTotal)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -548,19 +568,17 @@ public class CompraGui extends javax.swing.JInternalFrame {
                         .addComponent(jLabel3))
                     .addComponent(calendarioCompra, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane8, javax.swing.GroupLayout.DEFAULT_SIZE, 169, Short.MAX_VALUE)
+                .addComponent(jScrollPane8, javax.swing.GroupLayout.DEFAULT_SIZE, 171, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelCompraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(panelCompraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(borrarArticulosSeleccionados, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(borrarArticulosSeleccionados, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(panelCompraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(totalCompra, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(labelTotal)
                         .addGroup(panelCompraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(totalCompra, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(labelTotal)))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelCompraLayout.createSequentialGroup()
-                        .addGroup(panelCompraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel5)
-                            .addComponent(abona, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addContainerGap())))
+                            .addComponent(abonaSi)
+                            .addComponent(abonaNo)
+                            .addComponent(jLabel5)))))
         );
 
         panelControlFactura.setLayout(new java.awt.GridLayout(1, 0));
@@ -622,8 +640,18 @@ public class CompraGui extends javax.swing.JInternalFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void abonaSiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_abonaSiActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_abonaSiActionPerformed
+
+    private void abonaNoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_abonaNoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_abonaNoActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JComboBox abona;
+    private javax.swing.JCheckBox abonaNo;
+    private javax.swing.JCheckBox abonaSi;
     private javax.swing.JButton borrarArticulosSeleccionados;
     private javax.swing.JTextField busquedaNombreProveedor;
     private com.toedter.calendar.JDateChooser calendarioCompra;

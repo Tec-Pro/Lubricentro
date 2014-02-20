@@ -271,60 +271,66 @@ public class ControladorCompra implements ActionListener, CellEditorListener {
             if (compraGui.getCalendarioFacturaText().getText().equals("") || compraGui.getTablaCompra().getRowCount() == 0) {
                 JOptionPane.showMessageDialog(compraGui, "Falta la fecha o no hay productos cargados", "Error!", JOptionPane.ERROR_MESSAGE);
             } else {
-                Compra v = new Compra();
-                LinkedList<Pair> parDeProductos = new LinkedList();
-                String laFecha = compraGui.getCalendarioFacturaText().getText(); //saco la fecha
-                String cliente = compraGui.getProveedorCompra().getText();
-                if (!cliente.equals("")) {
-                    Integer idCliente = Integer.valueOf(cliente.split(" ")[0]); //saco el id prov
-                    v.set("proveedor_id", idCliente);
-                }
-                for (int i = 0; i < compraGui.getTablaCompra().getRowCount(); i++) {
-                    abrirBase();
-                    Articulo producto = Articulo.findFirst("id = ?", tablafac.getValueAt(i, 0));
-                    BigDecimal cantidad = ((BigDecimal) tablafac.getValueAt(i, 1)).setScale(2, RoundingMode.CEILING); //saco la cantidad
-                    BigDecimal precioFinal = ((BigDecimal) tablafac.getValueAt(i, 3)).setScale(2, RoundingMode.CEILING);
-                    producto.set("precio_compra", precioFinal);
-                    producto.saveIt();
-                    Pair par = new Pair(producto, cantidad); //creo el par
-                    parDeProductos.add(par); //meto el par a la lista
-                }
-                v.set("fecha", laFecha);
-                v.setProductos(parDeProductos);
-                if (compraGui.getAbona().getSelectedIndex() == 0) {
-                    v.set("pago", true);
+                if ((compraGui.getAbonaNo().isSelected() && compraGui.getAbonaSi().isSelected()) || (!compraGui.getAbonaNo().isSelected() && !compraGui.getAbonaSi().isSelected())) {
+                    JOptionPane.showMessageDialog(apgui, "Olvido marcar si la compra se abona o no, o ambas opciones se encuentran marcadas");
                 } else {
-                    v.set("pago", false);
-                }
-                BigDecimal bd = new BigDecimal(compraGui.getTotalCompra().getText());
-                v.set("monto", bd);
-                abrirBase();
-                if (abmCompra.alta(v)) {
-                    JOptionPane.showMessageDialog(apgui, "Compra realizada con exito.");
-                    compraGui.limpiarVentana();
-                    Proveedor prov = Proveedor.findById(v.get("proveedor_id"));
-                    if (!(prov == null) && (compraGui.getAbona().getSelectedIndex() == 0)) {
-                        BigDecimal cuentaCorriente = prov.getBigDecimal("cuenta_corriente").subtract(v.getBigDecimal("monto"));
-                        prov.set("cuenta_corriente", cuentaCorriente);
-                        realizarPagoGui = new RealizarPagoGui(apgui, true, prov);
-                        realizarPagoGui.setLocationRelativeTo(compraGui);
-                        realizarPagoGui.setVisible(true);
-                    } else if ((!(prov == null) && compraGui.getAbona().getSelectedIndex() == 1)) {
-                        BigDecimal cuentaCorriente = prov.getBigDecimal("cuenta_corriente").subtract(v.getBigDecimal("monto"));
-                        Base.openTransaction();
-                        prov.set("cuenta_corriente", cuentaCorriente);
-                        Base.commitTransaction();
+                    Compra v = new Compra();
+                    LinkedList<Pair> parDeProductos = new LinkedList();
+                    String laFecha = compraGui.getCalendarioFacturaText().getText(); //saco la fecha
+                    String cliente = compraGui.getProveedorCompra().getText();
+                    if (!cliente.equals("")) {
+                        Integer idCliente = Integer.valueOf(cliente.split(" ")[0]); //saco el id prov
+                        v.set("proveedor_id", idCliente);
                     }
+                    for (int i = 0; i < compraGui.getTablaCompra().getRowCount(); i++) {
+                        abrirBase();
+                        Articulo producto = Articulo.findFirst("id = ?", tablafac.getValueAt(i, 0));
+                        BigDecimal cantidad = ((BigDecimal) tablafac.getValueAt(i, 1)).setScale(2, RoundingMode.CEILING); //saco la cantidad
+                        BigDecimal precioFinal = ((BigDecimal) tablafac.getValueAt(i, 3)).setScale(2, RoundingMode.CEILING);
+                        producto.set("precio_compra", precioFinal);
+                        producto.saveIt();
+                        Pair par = new Pair(producto, cantidad); //creo el par
+                        parDeProductos.add(par); //meto el par a la lista
+                    }
+                    v.set("fecha", laFecha);
+                    v.setProductos(parDeProductos);
+                    if (compraGui.getAbonaSi().isSelected()) {
+                        v.set("pago", true);
+                    } else {
+                        if (compraGui.getAbonaNo().isSelected()) {
+                            v.set("pago", false);
+                        } else {
+                            JOptionPane.showMessageDialog(apgui, "Olvido marcar si la compra se abona o no");
+                        }
+                    }
+                    BigDecimal bd = new BigDecimal(compraGui.getTotalCompra().getText());
+                    v.set("monto", bd);
+                    abrirBase();
+                    if (abmCompra.alta(v)) {
+                        JOptionPane.showMessageDialog(apgui, "Compra realizada con exito.");
+                        compraGui.limpiarVentana();
+                        Proveedor prov = Proveedor.findById(v.get("proveedor_id"));
+                        if (!(prov == null) && (compraGui.getAbonaSi().isSelected())) {
+                            BigDecimal cuentaCorriente = prov.getBigDecimal("cuenta_corriente").subtract(v.getBigDecimal("monto"));
+                            prov.set("cuenta_corriente", cuentaCorriente);
+                            realizarPagoGui = new RealizarPagoGui(apgui, true, prov);
+                            realizarPagoGui.setLocationRelativeTo(compraGui);
+                            realizarPagoGui.setVisible(true);
+                        } else if ((!(prov == null) && compraGui.getAbonaNo().isSelected())) {
+                            BigDecimal cuentaCorriente = prov.getBigDecimal("cuenta_corriente").subtract(v.getBigDecimal("monto"));
+                            Base.openTransaction();
+                            prov.set("cuenta_corriente", cuentaCorriente);
+                            Base.commitTransaction();
+                        }
 
-                } else {
-                    JOptionPane.showMessageDialog(apgui, "Ocurrió un error inesperado, compra no realizada");
-                }
-                if (Base.hasConnection()) {
-                    Base.close();
+                    } else {
+                        JOptionPane.showMessageDialog(apgui, "Ocurrió un error inesperado, compra no realizada");
+                    }
+                    if (Base.hasConnection()) {
+                        Base.close();
+                    }
                 }
             }
-
-
         }
 
         if (e.getSource() == compraGui.getCompraNueva()) {

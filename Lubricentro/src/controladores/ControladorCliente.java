@@ -116,6 +116,7 @@ public class ControladorCliente implements ActionListener {
             clienteGui.CargarCampos(cliente);
             cargarVentas();
             clienteGui.habilitarCamposVentas(true);
+            deudaTotal();
         }
     }
 
@@ -279,7 +280,7 @@ public class ControladorCliente implements ActionListener {
                         cols[1] = cantidad;
                         cols[2] = producto.get("codigo");
                         cols[3] = precio;
-                        cols[4] = precio.multiply(cantidad).setScale(2);
+                        cols[4] = precio.multiply(cantidad).setScale(2, RoundingMode.CEILING);
                         ventaGui.getTablaFacturaDefault().addRow(cols);
                     }
                 }
@@ -342,6 +343,18 @@ public class ControladorCliente implements ActionListener {
         }
     }
 
+    private void deudaTotal() {
+        BigDecimal aux;
+        BigDecimal total = new BigDecimal(0);
+        for (int i = 0; i < tablaVentas.getRowCount(); i++) {
+            if (!(((String) tablaVentas.getValueAt(i, 3)).equals("Si"))) {
+                aux = new BigDecimal((String) tablaVentas.getValueAt(i, 2));
+                total = total.add(aux);;
+            }
+        }
+        clienteGui.getAdeuda().setText((total.setScale(2, RoundingMode.CEILING)).toString());
+    }
+
     private void realizarBusqueda() {
         abrirBase();
         listClientes = busqueda.buscarCliente(nomcli.getText());
@@ -400,8 +413,9 @@ public class ControladorCliente implements ActionListener {
                     cuenta = (art.getBigDecimal("precio_venta")).multiply(arvs.getBigDecimal("cantidad")).setScale(2, RoundingMode.CEILING);
                     if (montox == null) {
                         montox = new BigDecimal(String.valueOf((cuenta).setScale(2, RoundingMode.CEILING)));
+                    } else {
+                        montox = new BigDecimal(String.valueOf(montox.add(cuenta).setScale(2, RoundingMode.CEILING)));
                     }
-                    montox = new BigDecimal(String.valueOf(montox.add(cuenta).setScale(2, RoundingMode.CEILING)));
                 }
                 montox.setScale(2, RoundingMode.CEILING);
                 row[2] = montox.toString();

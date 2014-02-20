@@ -194,7 +194,7 @@
                                   </Group>
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="busquedaCodigoArticulo" alignment="0" pref="202" max="32767" attributes="0"/>
+                                      <Component id="busquedaCodigoArticulo" alignment="0" pref="237" max="32767" attributes="0"/>
                                       <Component id="busquedaFram" alignment="0" max="32767" attributes="0"/>
                                   </Group>
                               </Group>
@@ -308,7 +308,7 @@
                               <Group type="102" alignment="0" attributes="0">
                                   <Component id="labelApellido" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace min="-2" pref="17" max="-2" attributes="0"/>
-                                  <Component id="busquedaNombre" pref="203" max="32767" attributes="0"/>
+                                  <Component id="busquedaNombre" pref="235" max="32767" attributes="0"/>
                               </Group>
                               <Component id="jScrollPane7" alignment="0" pref="0" max="32767" attributes="0"/>
                           </Group>
@@ -395,7 +395,7 @@
                   <Layout>
                     <DimensionLayout dim="0">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="jScrollPane8" alignment="1" pref="524" max="32767" attributes="0"/>
+                          <Component id="jScrollPane8" alignment="1" max="32767" attributes="0"/>
                           <Group type="102" alignment="0" attributes="0">
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="labelCliente" min="-2" max="-2" attributes="0"/>
@@ -408,13 +408,15 @@
                           </Group>
                           <Group type="102" alignment="1" attributes="0">
                               <Component id="borrarArticulosSeleccionados" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace max="32767" attributes="0"/>
+                              <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
                               <Component id="jLabel4" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="3" max="-2" attributes="0"/>
+                              <Component id="abonaSi" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="32767" attributes="0"/>
+                              <Component id="abonaNo" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="abona" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace min="-2" pref="6" max="-2" attributes="0"/>
                               <Component id="labelTotal" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
+                              <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
                               <Component id="totalFactura" min="-2" pref="106" max="-2" attributes="0"/>
                           </Group>
                       </Group>
@@ -437,8 +439,14 @@
                                   <Group type="103" alignment="0" groupAlignment="3" attributes="0">
                                       <Component id="totalFactura" alignment="3" min="-2" max="-2" attributes="0"/>
                                       <Component id="labelTotal" alignment="3" min="-2" max="-2" attributes="0"/>
-                                      <Component id="abona" alignment="3" min="-2" pref="26" max="-2" attributes="0"/>
-                                      <Component id="jLabel4" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                                  <Group type="102" alignment="1" attributes="0">
+                                      <Group type="103" groupAlignment="3" attributes="0">
+                                          <Component id="jLabel4" alignment="3" min="-2" max="-2" attributes="0"/>
+                                          <Component id="abonaSi" alignment="3" min="-2" max="-2" attributes="0"/>
+                                          <Component id="abonaNo" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                      <EmptySpace max="-2" attributes="0"/>
                                   </Group>
                               </Group>
                           </Group>
@@ -469,7 +477,7 @@
                         <Component class="javax.swing.JTable" name="tablaFactura">
                           <Properties>
                             <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                              <Connection code="new javax.swing.table.DefaultTableModel(&#xa;    new Object [][] {&#xa;&#xa;    },&#xa;    new String [] {&#xa;        &quot;ID&quot;, &quot;Cantidad&quot;, &quot;Articulo&quot;, &quot;Precio&quot;, &quot;importe&quot;&#xa;    }&#xa;) {&#xa;    Class[] types = new Class [] {&#xa;        java.lang.Integer.class, java.math.BigDecimal.class, java.lang.String.class, java.math.BigDecimal.class, java.math.BigDecimal.class&#xa;    };&#xa;    boolean[] canEdit = new boolean [] {&#xa;        false, true, false, true, false&#xa;    };&#xa;&#xa;    public Class getColumnClass(int columnIndex) {&#xa;        return types [columnIndex];&#xa;    }&#xa;&#xa;    public boolean isCellEditable(int rowIndex, int columnIndex) {&#xa;        return canEdit [columnIndex];&#xa;    }&#xa;}" type="code"/>
+                              <Connection code="new javax.swing.table.DefaultTableModel(&#xa;    new Object [][] {&#xa;&#xa;    },&#xa;    new String [] {&#xa;        &quot;ID&quot;, &quot;Cantidad&quot;, &quot;Articulo&quot;, &quot;Precio&quot;,&quot;Sin IVA&quot; ,&quot;Importe&quot;&#xa;    }&#xa;) {&#xa;    Class[] types = new Class [] {&#xa;        java.lang.Integer.class, java.math.BigDecimal.class, java.lang.String.class, java.math.BigDecimal.class,java.math.BigDecimal.class, java.math.BigDecimal.class&#xa;    };&#xa;    boolean[] canEdit = new boolean [] {&#xa;        false, true, false, true, false&#xa;    };&#xa;&#xa;    public Class getColumnClass(int columnIndex) {&#xa;        return types [columnIndex];&#xa;    }&#xa;&#xa;    public boolean isCellEditable(int rowIndex, int columnIndex) {&#xa;        return canEdit [columnIndex];&#xa;    }&#xa;}" type="code"/>
                             </Property>
                             <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
                               <TableColumnModel selectionModel="0"/>
@@ -522,15 +530,21 @@
                         <Property name="text" type="java.lang.String" value="Abona"/>
                       </Properties>
                     </Component>
-                    <Component class="javax.swing.JComboBox" name="abona">
+                    <Component class="javax.swing.JCheckBox" name="abonaSi">
                       <Properties>
-                        <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                          <StringArray count="2">
-                            <StringItem index="0" value="Si"/>
-                            <StringItem index="1" value="No"/>
-                          </StringArray>
-                        </Property>
+                        <Property name="text" type="java.lang.String" value="Si"/>
                       </Properties>
+                      <Events>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="abonaSiActionPerformed"/>
+                      </Events>
+                    </Component>
+                    <Component class="javax.swing.JCheckBox" name="abonaNo">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="No"/>
+                      </Properties>
+                      <Events>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="abonaNoActionPerformed"/>
+                      </Events>
                     </Component>
                   </SubComponents>
                 </Container>

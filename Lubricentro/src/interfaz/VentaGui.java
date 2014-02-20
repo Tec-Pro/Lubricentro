@@ -9,6 +9,7 @@ import java.awt.event.ActionListener;
 import java.sql.Date;
 import java.util.Calendar;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -53,6 +54,8 @@ public class VentaGui extends javax.swing.JInternalFrame {
         this.facturaNueva.addActionListener(lis);
         this.realizarVenta.addActionListener(lis);
         this.borrarArticulosSeleccionados.addActionListener(lis);
+        this.abonaNo.addActionListener(lis);
+        this.abonaSi.addActionListener(lis);
     }
 
     public JTextField getBusquedaFram() {
@@ -72,7 +75,8 @@ public class VentaGui extends javax.swing.JInternalFrame {
          busquedaCodigoArticulo.setEnabled(!si);
          calendarioFactura.setEnabled(!si);
          borrarArticulosSeleccionados.setEnabled(!si);
-         abona.setEnabled(!si);
+         abonaNo.setEnabled(!si);
+         abonaSi.setEnabled(!si);
          realizarVenta.setEnabled(!si);
      }
 
@@ -267,10 +271,16 @@ public class VentaGui extends javax.swing.JInternalFrame {
         return ((JTextField) calendarioFactura.getDateEditor().getUiComponent());
     }
 
-    public JComboBox getAbona() {
-        return abona;
+    public JCheckBox getAbonaNo() {
+        return abonaNo;
     }
 
+    public JCheckBox getAbonaSi() {
+        return abonaSi;
+    }
+
+ 
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -309,7 +319,8 @@ public class VentaGui extends javax.swing.JInternalFrame {
         borrarArticulosSeleccionados = new javax.swing.JButton();
         calendarioFactura = new com.toedter.calendar.JDateChooser();
         jLabel4 = new javax.swing.JLabel();
-        abona = new javax.swing.JComboBox();
+        abonaSi = new javax.swing.JCheckBox();
+        abonaNo = new javax.swing.JCheckBox();
         panelControlFactura = new javax.swing.JPanel();
         facturaNueva = new javax.swing.JButton();
         realizarVenta = new javax.swing.JButton();
@@ -386,7 +397,7 @@ public class VentaGui extends javax.swing.JInternalFrame {
                     .addComponent(labelBusquedaCodigo))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelArticulosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(busquedaCodigoArticulo, javax.swing.GroupLayout.DEFAULT_SIZE, 202, Short.MAX_VALUE)
+                    .addComponent(busquedaCodigoArticulo, javax.swing.GroupLayout.DEFAULT_SIZE, 237, Short.MAX_VALUE)
                     .addComponent(busquedaFram)))
             .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
         );
@@ -444,7 +455,7 @@ public class VentaGui extends javax.swing.JInternalFrame {
             .addGroup(panelClientesLayout.createSequentialGroup()
                 .addComponent(labelApellido)
                 .addGap(17, 17, 17)
-                .addComponent(busquedaNombre, javax.swing.GroupLayout.DEFAULT_SIZE, 203, Short.MAX_VALUE))
+                .addComponent(busquedaNombre, javax.swing.GroupLayout.DEFAULT_SIZE, 235, Short.MAX_VALUE))
             .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
         );
         panelClientesLayout.setVerticalGroup(
@@ -487,11 +498,11 @@ public class VentaGui extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "ID", "Cantidad", "Articulo", "Precio", "importe"
+                "ID", "Cantidad", "Articulo", "Precio","Sin IVA" ,"Importe"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.math.BigDecimal.class, java.lang.String.class, java.math.BigDecimal.class, java.math.BigDecimal.class
+                java.lang.Integer.class, java.math.BigDecimal.class, java.lang.String.class, java.math.BigDecimal.class,java.math.BigDecimal.class, java.math.BigDecimal.class
             };
             boolean[] canEdit = new boolean [] {
                 false, true, false, true, false
@@ -524,13 +535,25 @@ public class VentaGui extends javax.swing.JInternalFrame {
         jLabel4.setFont(new java.awt.Font("Century Schoolbook L", 0, 14)); // NOI18N
         jLabel4.setText("Abona");
 
-        abona.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Si", "No" }));
+        abonaSi.setText("Si");
+        abonaSi.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                abonaSiActionPerformed(evt);
+            }
+        });
+
+        abonaNo.setText("No");
+        abonaNo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                abonaNoActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout panelFacturaLayout = new javax.swing.GroupLayout(panelFactura);
         panelFactura.setLayout(panelFacturaLayout);
         panelFacturaLayout.setHorizontalGroup(
             panelFacturaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane8, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 524, Short.MAX_VALUE)
+            .addComponent(jScrollPane8, javax.swing.GroupLayout.Alignment.TRAILING)
             .addGroup(panelFacturaLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(labelCliente)
@@ -542,13 +565,15 @@ public class VentaGui extends javax.swing.JInternalFrame {
                 .addComponent(calendarioFactura, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelFacturaLayout.createSequentialGroup()
                 .addComponent(borrarArticulosSeleccionados)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(0, 0, 0)
                 .addComponent(jLabel4)
+                .addGap(3, 3, 3)
+                .addComponent(abonaSi)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(abonaNo)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(abona, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(6, 6, 6)
                 .addComponent(labelTotal)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(0, 0, 0)
                 .addComponent(totalFactura, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         panelFacturaLayout.setVerticalGroup(
@@ -566,9 +591,13 @@ public class VentaGui extends javax.swing.JInternalFrame {
                     .addComponent(borrarArticulosSeleccionados, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(panelFacturaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(totalFactura, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(labelTotal)
-                        .addComponent(abona, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel4))))
+                        .addComponent(labelTotal))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelFacturaLayout.createSequentialGroup()
+                        .addGroup(panelFacturaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel4)
+                            .addComponent(abonaSi)
+                            .addComponent(abonaNo))
+                        .addContainerGap())))
         );
 
         panelControlFactura.setLayout(new java.awt.GridLayout(1, 0));
@@ -639,8 +668,18 @@ public class VentaGui extends javax.swing.JInternalFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void abonaSiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_abonaSiActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_abonaSiActionPerformed
+
+    private void abonaNoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_abonaNoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_abonaNoActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JComboBox abona;
+    private javax.swing.JCheckBox abonaNo;
+    private javax.swing.JCheckBox abonaSi;
     private javax.swing.JButton borrarArticulosSeleccionados;
     private javax.swing.JTextField busquedaCodigoArticulo;
     private javax.swing.JTextField busquedaFram;

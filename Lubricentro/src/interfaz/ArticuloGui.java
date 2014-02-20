@@ -87,9 +87,8 @@ public class ArticuloGui extends javax.swing.JInternalFrame {
         setResizable(true);
         setTitle("Gestión de Artículos");
         setPreferredSize(new java.awt.Dimension(900, 490));
-        getContentPane().setLayout(new java.awt.BorderLayout());
 
-        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Articulos", 0, 0, new java.awt.Font("Century Schoolbook L", 3, 14))); // NOI18N
+        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Articulos", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Century Schoolbook L", 3, 14))); // NOI18N
 
         articulos.setAutoCreateRowSorter(true);
         articulos.setModel(new javax.swing.table.DefaultTableModel(
@@ -122,7 +121,7 @@ public class ArticuloGui extends javax.swing.JInternalFrame {
 
         busqueda.setToolTipText("Búsqueda personalizada");
 
-        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Datos del artículo", 0, 0, new java.awt.Font("Century Schoolbook L", 3, 14))); // NOI18N
+        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Datos del artículo", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Century Schoolbook L", 3, 14))); // NOI18N
 
         jLabel1.setText("Código");
 
@@ -271,7 +270,7 @@ public class ArticuloGui extends javax.swing.JInternalFrame {
                         .addContainerGap())))
         );
 
-        jPanel4.setBorder(javax.swing.BorderFactory.createBevelBorder(0));
+        jPanel4.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
         borrar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/interfaz/Icons/borrar.png"))); // NOI18N
         borrar.setText("Borrar");
@@ -368,15 +367,15 @@ public class ArticuloGui extends javax.swing.JInternalFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(exportar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(busqueda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(exportar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(filtroEquiv)
                             .addComponent(jLabel4))
                         .addComponent(cantidadArticulos, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addComponent(separador, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 164, Short.MAX_VALUE)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 168, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)

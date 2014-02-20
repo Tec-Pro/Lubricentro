@@ -55,12 +55,12 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="jPanel4" pref="358" max="32767" attributes="0"/>
+                          <Component id="jPanel4" pref="369" max="32767" attributes="0"/>
                           <Component id="panelClientes" alignment="0" max="32767" attributes="0"/>
                           <Component id="jPanel2" alignment="0" max="32767" attributes="0"/>
                       </Group>
-                      <EmptySpace min="-2" max="-2" attributes="0"/>
-                      <Component id="jPanel6" pref="298" max="32767" attributes="0"/>
+                      <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
+                      <Component id="jPanel6" pref="301" max="32767" attributes="0"/>
                       <EmptySpace min="-2" pref="0" max="-2" attributes="0"/>
                   </Group>
               </Group>
@@ -98,7 +98,7 @@
               <Layout>
                 <DimensionLayout dim="0">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="jScrollPane2" pref="354" max="32767" attributes="0"/>
+                      <Component id="jScrollPane2" pref="357" max="32767" attributes="0"/>
                       <Component id="busqueda" alignment="0" min="-2" pref="289" max="-2" attributes="0"/>
                   </Group>
                 </DimensionLayout>
@@ -384,18 +384,20 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Component id="jScrollPane5" pref="0" max="32767" attributes="0"/>
                       <Group type="102" attributes="0">
-                          <Component id="eliminarVenta" pref="93" max="32767" attributes="0"/>
+                          <Component id="eliminarVenta" pref="94" max="32767" attributes="0"/>
                           <EmptySpace min="-2" pref="0" max="-2" attributes="0"/>
-                          <Component id="verFactura" pref="97" max="32767" attributes="0"/>
+                          <Component id="verFactura" pref="98" max="32767" attributes="0"/>
                           <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
-                          <Component id="realizarCobro" pref="96" max="32767" attributes="0"/>
+                          <Component id="realizarCobro" pref="97" max="32767" attributes="0"/>
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
-                          <EmptySpace max="-2" attributes="0"/>
                           <Component id="jLabel5" min="-2" max="-2" attributes="0"/>
                           <EmptySpace min="-2" pref="1" max="-2" attributes="0"/>
                           <Component id="ver" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="32767" attributes="0"/>
+                          <EmptySpace min="-2" pref="3" max="-2" attributes="0"/>
+                          <Component id="jLabel6" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="adeuda" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -405,6 +407,8 @@
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="ver" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="jLabel5" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="jLabel6" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="adeuda" alignment="3" min="-2" pref="26" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="jScrollPane5" pref="0" max="32767" attributes="0"/>
@@ -440,22 +444,22 @@
                         <Property name="toolTipText" type="java.lang.String" value="Realice doble click sobre la compra para verla en datalle"/>
                         <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
                           <TableColumnModel selectionModel="0">
-                            <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
+                            <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="false">
                               <Title/>
                               <Editor/>
                               <Renderer/>
                             </Column>
-                            <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
+                            <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="false">
                               <Title/>
                               <Editor/>
                               <Renderer/>
                             </Column>
-                            <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
+                            <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="false">
                               <Title/>
                               <Editor/>
                               <Renderer/>
                             </Column>
-                            <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
+                            <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="false">
                               <Title/>
                               <Editor/>
                               <Renderer/>
@@ -522,7 +526,7 @@
                     <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
                       <StringArray count="3">
                         <StringItem index="0" value="Todas"/>
-                        <StringItem index="1" value="Fiadas"/>
+                        <StringItem index="1" value="Cta. Corriente"/>
                         <StringItem index="2" value="Pagas"/>
                       </StringArray>
                     </Property>
@@ -533,6 +537,13 @@
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Ver:"/>
                   </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="jLabel6">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Adeuda:"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="adeuda">
                 </Component>
               </SubComponents>
             </Container>
