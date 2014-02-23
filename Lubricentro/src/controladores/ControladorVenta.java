@@ -5,6 +5,7 @@
 package controladores;
 
 import abm.ABMVenta;
+import abm.ManejoIp;
 import busqueda.Busqueda;
 import interfaz.AplicacionGui;
 import interfaz.VentaGui;
@@ -321,7 +322,11 @@ public class ControladorVenta implements ActionListener, CellEditorListener {
 
     private void abrirBase() {
         if (!Base.hasConnection()) {
-            Base.open("com.mysql.jdbc.Driver", "jdbc:mysql://localhost/lubricentro", "root", "root");
+            try {
+                Base.open("com.mysql.jdbc.Driver", "jdbc:mysql://" + ManejoIp.ipServer + "/lubricentro", "tecpro", "tecpro");
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "Ocurrió un error, no se realizó la conexión con el servidor, verifique la conexión \n " + e.getMessage(), null, JOptionPane.ERROR_MESSAGE);
+            }
         }
     }
 

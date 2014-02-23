@@ -4,6 +4,7 @@
  */
 package controladores;
 
+import abm.ManejoIp;
 import java.io.*;
 import java.util.Calendar;
 import javax.swing.*;
@@ -13,10 +14,10 @@ import java.sql.SQLException;
 public class Modulo {
 
     public String bd = "lubricentro";
-    public static String login = "root";
-    public static String password = "root";
-    public String url = "jdbc:mysql://localhost/" + bd;
-    public String urlcero = "jdbc:mysql://localhost/";
+    public static String login = "tecpro";
+    public static String password = "tecpro";
+    public String url = "jdbc:mysql://"+ ManejoIp.ipServer+"/" + bd;
+    public String urlcero = "jdbc:mysql://"+ ManejoIp.ipServer+"/";
     public Connection conn = null;
     public static File nombrebackup = null;
     public static File rutabackup = null;

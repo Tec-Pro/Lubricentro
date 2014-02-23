@@ -123,3 +123,20 @@ ALTER TABLE `lubricentro`.`envios` ADD COLUMN `id` INT NOT NULL AUTO_INCREMENT  
 ALTER TABLE `lubricentro`.`envios` CHANGE COLUMN `enviado` `enviado` INT NULL DEFAULT NULL  ;
 
 ALTER TABLE `lubricentro`.`proveedors` ADD COLUMN `cuenta_corriente` FLOAT NULL  AFTER `telefono` ;
+
+
+
+/*Versión 2.0 !*/
+CREATE  TABLE `lubricentro`.`ips` (
+  `id` INT NOT NULL ,
+  `remoto` VARCHAR(45) NULL ,
+  `servidor` INT(2) NULL ,
+  PRIMARY KEY (`id`) );
+ALTER TABLE `lubricentro`.`ips` CHANGE COLUMN `id` `id` INT(11) NOT NULL AUTO_INCREMENT  ;
+ALTER TABLE `lubricentro`.`ips` CHANGE COLUMN `remoto` `remoto` VARCHAR(45) NULL DEFAULT 'localhost'  , CHANGE COLUMN `servidor` `servidor` INT(2) NULL DEFAULT 0  ;
+
+
+ GRANT ALL PRIVILEGES ON *.* TO 'tecpro'@'%'  IDENTIFIED BY 'tecpro'; 
+ GRANT ALL PRIVILEGES ON *.* TO 'tecpro'@'localhost'  IDENTIFIED BY 'tecpro' WITH GRANT OPTION; 
+
+ALTER TABLE `lubricentro`.`compras` ADD COLUMN `fecha_pago` DATE NULL  AFTER `pago` , ADD COLUMN `descuento` FLOAT NULL DEFAULT 0  AFTER `fecha_pago` , CHANGE COLUMN `pago` `pago` INT(11) NULL DEFAULT 0  ;

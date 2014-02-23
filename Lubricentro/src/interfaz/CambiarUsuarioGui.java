@@ -4,6 +4,7 @@
  */
 package interfaz;
 
+import abm.ManejoIp;
 import abm.ManejoUsuario;
 import java.awt.event.KeyEvent;
 import java.util.Arrays;
@@ -24,7 +25,7 @@ public class CambiarUsuarioGui extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         if (!Base.hasConnection()) {
-            Base.open("com.mysql.jdbc.Driver", "jdbc:mysql://localhost/lubricentro", "root", "root");
+            try{             Base.open("com.mysql.jdbc.Driver", "jdbc:mysql://"+ManejoIp.ipServer+"/lubricentro", "tecpro", "tecpro");             }catch(Exception e){                 JOptionPane.showMessageDialog(null, "Ocurrió un error, no se realizó la conexión con el servidor, verifique la conexión \n "+e.getMessage(),null,JOptionPane.ERROR_MESSAGE); }
         }
         Usuario usuario = Usuario.findById(1);
         this.user.setText(usuario.getString("nombre"));
@@ -163,7 +164,8 @@ public class CambiarUsuarioGui extends javax.swing.JDialog {
             ManejoUsuario abm = new ManejoUsuario();
             if (Arrays.equals(pass.getPassword(), repetirPass.getPassword())) {
                 if (!Base.hasConnection()) {
-                    Base.open("com.mysql.jdbc.Driver", "jdbc:mysql://localhost/lubricentro", "root", "root");
+                    try{             Base.open("com.mysql.jdbc.Driver", "jdbc:mysql://"+ManejoIp.ipServer+"/lubricentro", "tecpro", "tecpro");             }catch(Exception e){                 JOptionPane.showMessageDialog(null, "Ocurrió un error, no se realizó la conexión con el servidor, verifique la conexión \n "+e.getMessage(),null,JOptionPane.ERROR_MESSAGE); }
+                    
                 }
                 boolean res=abm.modificarDatos(user.getText(),String.valueOf(pass.getPassword()));
                 if(res){

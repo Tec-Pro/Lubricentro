@@ -4,12 +4,14 @@
  */
 package controladores;
 
+import abm.ManejoIp;
 import interfaz.AplicacionGui;
 import interfaz.ArticuloGui;
 import interfaz.CambiarUsuarioGui;
 import interfaz.CargarDatosEmail;
 import interfaz.ClienteGui;
 import interfaz.CompraGui;
+import interfaz.ConfigurarServerGui;
 import interfaz.EnviarManualGui;
 import interfaz.ImportarExcelGui;
 import interfaz.ProveedorGui;
@@ -27,6 +29,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import net.sf.jasperreports.engine.JRException;
+import org.javalite.activejdbc.Base;
 
 /**
  *
@@ -55,9 +58,7 @@ public class ControladorApliacion implements ActionListener {
     private VentaGui ventaGui;
 
     public ControladorApliacion() throws JRException, ClassNotFoundException, SQLException {
-        JFrame.setDefaultLookAndFeelDecorated(true); //Le agrego un tema lindo al programa
         try {
-            JFrame.setDefaultLookAndFeelDecorated(true);
             UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
         } catch (Exception e) {
             e.printStackTrace();
@@ -91,7 +92,29 @@ public class ControladorApliacion implements ActionListener {
     }
 
     public static void main(String[] args) throws InterruptedException, ClassNotFoundException, SQLException, JRException {
-        ControladorApliacion controladorAplicacion = new ControladorApliacion();
+        ManejoIp manejoIp=new ManejoIp();
+        if (!Base.hasConnection()) {
+            Base.open("com.mysql.jdbc.Driver", "jdbc:mysql://localhost/lubricentro", "tecpro", "tecpro");
+        }
+        manejoIp.crearIp();
+        manejoIp.conseguirDatos();
+        System.out.println("consegui todo wacho");
+                if (Base.hasConnection()) {
+            Base.close();
+        }
+                
+                    if (!Base.hasConnection()) {
+                        try{
+            Base.open("com.mysql.jdbc.Driver", "jdbc:mysql://"+ManejoIp.ipServer+"/lubricentro", "tecpro", "tecpro");
+            }catch(Exception e){
+                JOptionPane.showMessageDialog(null, "Ocurrió un error, no se realizó la conexión con el servidor, verifique la conexión \n "+e.getMessage(),null,JOptionPane.ERROR_MESSAGE);
+                new ConfigurarServerGui(null, true).setVisible(true);
+                JOptionPane.showMessageDialog(null,"Se cerrará el programa",null,JOptionPane.ERROR_MESSAGE);
+                System.exit(1);
+                    
+                }
+        }
+                    ControladorApliacion controladorAplicacion = new ControladorApliacion();
 
     }
 
@@ -192,6 +215,9 @@ public class ControladorApliacion implements ActionListener {
             controladorVenta.cargarTodos();
             ventaGui.setVisible(true);
             ventaGui.toFront();
+        }
+        if(ae.getSource()== aplicacionGui.getConfigServer()){
+            new ConfigurarServerGui(aplicacionGui, true).setVisible(true);
         }
     }
 

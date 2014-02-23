@@ -6,6 +6,7 @@ package controladores;
 
 import abm.ABMCompra;
 import abm.ABMProveedor;
+import abm.ManejoIp;
 import interfaz.AplicacionGui;
 import interfaz.ArticuloGui;
 import interfaz.CompraGui;
@@ -152,6 +153,12 @@ public class ControladorProveedor implements ActionListener {
 
     private void tablaComprasClicked(java.awt.event.MouseEvent evt) {
         proveedorGui.getBorrarCompra().setEnabled(true);
+        if((boolean)tablaCompras.getValueAt(tablaCompras.getSelectedRow(),3)){
+            proveedorGui.getPagarFac().setEnabled(false);
+        }
+        else{
+            proveedorGui.getPagarFac().setEnabled(true);
+        }
         if (evt.getClickCount() == 2) {
             abrirBase();
             compraGui.limpiarVentana();
@@ -181,6 +188,9 @@ public class ControladorProveedor implements ActionListener {
                 }
             }
             compraGui.getTotalCompra().setText(String.valueOf(compra.getFloat("monto")));
+            compraGui.getDescuento().setVisible(true);
+            compraGui.getLabelTotalConDes().setVisible(true);
+            compraGui.getDescuento().setText(new DecimalFormat("#########.##").format(compra.getFloat("monto") - (compra.getFloat("descuento") * compra.getFloat("monto") / 100))+" ("+compra.getString("descuento")+" %)");
             Base.close();
             compraGui.setVisible(true);
             compraGui.toFront();
@@ -216,6 +226,7 @@ public class ControladorProveedor implements ActionListener {
             proveedorGui.getRealizarPago().setEnabled(true);
             proveedorGui.getBorrarPago().setEnabled(false);
             proveedorGui.getBorrarCompra().setEnabled(false);
+            proveedorGui.getPagarFac().setEnabled(false);
             System.out.println("hice doble click en un proveedor");
             proveedorGui.limpiarCampos();
             abrirBase();
@@ -409,11 +420,25 @@ public class ControladorProveedor implements ActionListener {
 
             }
         }
+        if(e.getSource()==proveedorGui.getPagarFac()){
+            System.out.println("realizar pago pulsado");
+            abrirBase();
+            realizarPagoGui = new RealizarPagoGui(aplicacionGui, true, proveedor, (Compra)Compra.findById(tablaCompras.getValueAt(tablaCompras.getSelectedRow(), 0)));
+            realizarPagoGui.setLocationRelativeTo(proveedorGui);
+            realizarPagoGui.setVisible(true);
+            cargarPagos();
+            
+            proveedor= abmProveedor.getProveedor(proveedor);
+            proveedorGui.CargarCampos(proveedor);
+            cargarCompras();
+            proveedorGui.getPagarFac().setEnabled(false);
+            cerrarBase();
+        }
     }
 
     private void abrirBase() {
         if (!Base.hasConnection()) {
-            Base.open("com.mysql.jdbc.Driver", "jdbc:mysql://localhost/lubricentro", "root", "root");
+            try{             Base.open("com.mysql.jdbc.Driver", "jdbc:mysql://"+ManejoIp.ipServer+"/lubricentro", "tecpro", "tecpro");             }catch(Exception e){                 JOptionPane.showMessageDialog(null, "Ocurrió un error, no se realizó la conexión con el servidor, verifique la conexión \n "+e.getMessage(),null,JOptionPane.ERROR_MESSAGE); }
         }
     }
 
@@ -476,12 +501,15 @@ public class ControladorProveedor implements ActionListener {
         Iterator<Compra> it = listCompras.iterator();
         while (it.hasNext()) {
             Compra compra = it.next();
-            Object row[] = new Object[3];
+            Object row[] = new Object[6];
             Date sqlFecha = compra.getDate("fecha");
             SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd/MM/yyyy");
             row[0] = compra.getId();
             row[1] = sdf.format(sqlFecha);
             row[2] = formateador.format(compra.getFloat("monto"));
+            row[3] = compra.getBoolean("pago");
+            row[4]= new DecimalFormat("#########.##").format(compra.getFloat("monto") - (compra.getFloat("descuento") * compra.getFloat("monto") / 100));
+            row[5]= compra.get("fecha_pago");
             tablaComprasDefault.addRow(row);
             cerrarBase();
         }

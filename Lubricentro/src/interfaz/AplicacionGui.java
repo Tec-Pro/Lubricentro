@@ -45,6 +45,7 @@ public class AplicacionGui extends javax.swing.JFrame {
         this.enviar.addActionListener(lis);
         this.registrarCompra.addActionListener(lis);
         this.registrarVenta.addActionListener(lis);
+        this.configServer.addActionListener(lis);
     }
 
     public JMenuItem getCerrarSesion() {
@@ -91,6 +92,10 @@ public class AplicacionGui extends javax.swing.JFrame {
     public JButton getRegistrarVenta() {
         return registrarVenta;
     }
+
+    public JMenuItem getConfigServer() {
+        return configServer;
+    }
     
     
 
@@ -117,6 +122,7 @@ public class AplicacionGui extends javax.swing.JFrame {
         modificarUsuario = new javax.swing.JMenuItem();
         cerrarSesion = new javax.swing.JMenuItem();
         salir = new javax.swing.JMenuItem();
+        configServer = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
         crearBackup = new javax.swing.JMenuItem();
         cargarBackup = new javax.swing.JMenuItem();
@@ -200,6 +206,10 @@ public class AplicacionGui extends javax.swing.JFrame {
         });
         jMenu1.add(salir);
 
+        configServer.setIcon(new javax.swing.ImageIcon(getClass().getResource("/interfaz/Icons/server.png"))); // NOI18N
+        configServer.setText("Configurar servidor");
+        jMenu1.add(configServer);
+
         jMenuBar1.add(jMenu1);
 
         jMenu2.setText("Backup");
@@ -270,6 +280,7 @@ public class AplicacionGui extends javax.swing.JFrame {
     private javax.swing.JMenuItem cargarBackup;
     private javax.swing.JMenuItem cerrarSesion;
     private javax.swing.JButton clientes;
+    private javax.swing.JMenuItem configServer;
     private javax.swing.JDesktopPane contenedor;
     private javax.swing.JMenuItem crearBackup;
     private javax.swing.JMenuItem enviar;

@@ -5,6 +5,7 @@
 package controladores;
 
 import abm.ABMCompra;
+import abm.ManejoIp;
 import busqueda.Busqueda;
 import interfaz.AplicacionGui;
 import interfaz.CompraGui;
@@ -313,13 +314,15 @@ public class ControladorCompra implements ActionListener, CellEditorListener {
                         if (!(prov == null) && (compraGui.getAbonaSi().isSelected())) {
                             BigDecimal cuentaCorriente = prov.getBigDecimal("cuenta_corriente").subtract(v.getBigDecimal("monto"));
                             prov.set("cuenta_corriente", cuentaCorriente);
-                            realizarPagoGui = new RealizarPagoGui(apgui, true, prov);
+                            
+                            realizarPagoGui = new RealizarPagoGui(apgui, true, prov,v);
                             realizarPagoGui.setLocationRelativeTo(compraGui);
                             realizarPagoGui.setVisible(true);
                         } else if ((!(prov == null) && compraGui.getAbonaNo().isSelected())) {
                             BigDecimal cuentaCorriente = prov.getBigDecimal("cuenta_corriente").subtract(v.getBigDecimal("monto"));
                             Base.openTransaction();
                             prov.set("cuenta_corriente", cuentaCorriente);
+                            prov.saveIt();
                             Base.commitTransaction();
                         }
 
@@ -340,9 +343,9 @@ public class ControladorCompra implements ActionListener, CellEditorListener {
         }
     }
 
-    private void abrirBase() {
+ private void abrirBase() {
         if (!Base.hasConnection()) {
-            Base.open("com.mysql.jdbc.Driver", "jdbc:mysql://localhost/lubricentro", "root", "root");
+            try{             Base.open("com.mysql.jdbc.Driver", "jdbc:mysql://"+ManejoIp.ipServer+"/lubricentro", "tecpro", "tecpro");             }catch(Exception e){                 JOptionPane.showMessageDialog(null, "Ocurrió un error, no se realizó la conexión con el servidor, verifique la conexión \n "+e.getMessage(),null,JOptionPane.ERROR_MESSAGE); }
         }
     }
 

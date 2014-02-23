@@ -4,6 +4,7 @@
  */
 package controladores;
 
+import abm.ManejoIp;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -34,8 +35,8 @@ import org.javalite.activejdbc.LazyList;
 public class EnvioEmailControlador {
 
     public String bd = "lubricentro";
-    public static String login = "root";
-    public static String password = "root";
+    public static String login = "tecpro";
+    public static String password = "tecpro";
     public String url = "jdbc:mysql://localhost/" + bd;
     public String urlcero = "jdbc:mysql://localhost/";
     public Connection conn = null;
@@ -177,7 +178,7 @@ public class EnvioEmailControlador {
 
     private void abrirBase() {
         if (!Base.hasConnection()) {
-            Base.open("com.mysql.jdbc.Driver", "jdbc:mysql://localhost/lubricentro", "root", "root");
+            try{             Base.open("com.mysql.jdbc.Driver", "jdbc:mysql://"+ManejoIp.ipServer+"/lubricentro", "tecpro", "tecpro");             }catch(Exception e){                 JOptionPane.showMessageDialog(null, "Ocurrió un error, no se realizó la conexión con el servidor, verifique la conexión \n "+e.getMessage(),null,JOptionPane.ERROR_MESSAGE); }
         }
     }
 

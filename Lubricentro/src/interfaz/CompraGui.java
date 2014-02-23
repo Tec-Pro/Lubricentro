@@ -11,6 +11,7 @@ import java.util.Calendar;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -40,6 +41,8 @@ public class CompraGui extends javax.swing.JInternalFrame {
         int mes=miCalendario.get(Calendar.MONTH);
         int anio =miCalendario.get(Calendar.YEAR);
         calendarioCompra.setDate(Date.valueOf(anio+"-"+(mes+1)+"-"+diaHoy));
+        descuento.setVisible(false);
+        labelTotalConDes.setVisible(false);
     }
      /**
      * Seteo el actionListener para los botones articulosALaCompra,
@@ -68,6 +71,14 @@ public class CompraGui extends javax.swing.JInternalFrame {
      */
     public DefaultTableModel getTablaArticulosDefault() {
         return tablaArticulosDefault;
+    }
+
+    public JLabel getDescuento() {
+        return descuento;
+    }
+
+    public JLabel getLabelTotalConDes() {
+        return labelTotalConDes;
     }
     
     /**
@@ -206,6 +217,8 @@ public class CompraGui extends javax.swing.JInternalFrame {
         calendarioCompra.setDate(Date.valueOf(anio+"-"+(mes+1)+"-"+diaHoy));
         totalCompra.setText("");
         proveedorCompra.setText("");
+        labelTotalConDes.setVisible(false);
+        descuento.setVisible(false);
 
     }
      public void paraVerCompra(boolean si){
@@ -304,6 +317,8 @@ public class CompraGui extends javax.swing.JInternalFrame {
         jLabel5 = new javax.swing.JLabel();
         abonaSi = new javax.swing.JCheckBox();
         abonaNo = new javax.swing.JCheckBox();
+        labelTotalConDes = new javax.swing.JLabel();
+        descuento = new javax.swing.JLabel();
         panelControlFactura = new javax.swing.JPanel();
         compraNueva = new javax.swing.JButton();
         realizarCompra = new javax.swing.JButton();
@@ -314,7 +329,7 @@ public class CompraGui extends javax.swing.JInternalFrame {
         setMaximizable(true);
         setResizable(true);
         setTitle("Registrar Compra");
-        setPreferredSize(new java.awt.Dimension(841, 439));
+        setPreferredSize(new java.awt.Dimension(846, 460));
 
         jPanel1.setPreferredSize(new java.awt.Dimension(825, 448));
 
@@ -437,7 +452,7 @@ public class CompraGui extends javax.swing.JInternalFrame {
             .addGroup(panelProveedoresLayout.createSequentialGroup()
                 .addComponent(labelNombre)
                 .addGap(17, 17, 17)
-                .addComponent(busquedaNombreProveedor, javax.swing.GroupLayout.DEFAULT_SIZE, 152, Short.MAX_VALUE))
+                .addComponent(busquedaNombreProveedor, javax.swing.GroupLayout.DEFAULT_SIZE, 153, Short.MAX_VALUE))
             .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
         );
         panelProveedoresLayout.setVerticalGroup(
@@ -531,6 +546,12 @@ public class CompraGui extends javax.swing.JInternalFrame {
             }
         });
 
+        labelTotalConDes.setText("Total con descuento:");
+
+        descuento.setFont(new java.awt.Font("Cantarell", 1, 15)); // NOI18N
+        descuento.setForeground(new java.awt.Color(8, 152, 33));
+        descuento.setText("jLabel2");
+
         javax.swing.GroupLayout panelCompraLayout = new javax.swing.GroupLayout(panelCompra);
         panelCompra.setLayout(panelCompraLayout);
         panelCompraLayout.setHorizontalGroup(
@@ -551,12 +572,18 @@ public class CompraGui extends javax.swing.JInternalFrame {
                 .addComponent(jLabel5)
                 .addGap(18, 18, 18)
                 .addComponent(abonaSi)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(abonaNo)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(abonaNo)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(labelTotal)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(totalCompra, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(panelCompraLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(labelTotalConDes, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(descuento, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         panelCompraLayout.setVerticalGroup(
             panelCompraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -567,18 +594,21 @@ public class CompraGui extends javax.swing.JInternalFrame {
                         .addComponent(proveedorCompra, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jLabel3))
                     .addComponent(calendarioCompra, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane8, javax.swing.GroupLayout.DEFAULT_SIZE, 171, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane8, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelCompraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(borrarArticulosSeleccionados, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(panelCompraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(totalCompra, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(labelTotal)
-                        .addGroup(panelCompraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(abonaSi)
-                            .addComponent(abonaNo)
-                            .addComponent(jLabel5)))))
+                        .addComponent(abonaNo)
+                        .addComponent(abonaSi)
+                        .addComponent(jLabel5)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(panelCompraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(labelTotalConDes)
+                    .addComponent(descuento)))
         );
 
         panelControlFactura.setLayout(new java.awt.GridLayout(1, 0));
@@ -633,7 +663,7 @@ public class CompraGui extends javax.swing.JInternalFrame {
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 411, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 410, Short.MAX_VALUE)
         );
 
         getContentPane().add(jPanel1, java.awt.BorderLayout.CENTER);
@@ -657,6 +687,7 @@ public class CompraGui extends javax.swing.JInternalFrame {
     private com.toedter.calendar.JDateChooser calendarioCompra;
     private javax.swing.JTextField codigo;
     private javax.swing.JButton compraNueva;
+    private javax.swing.JLabel descuento;
     private javax.swing.JPanel fondoImagen;
     private javax.swing.JTextField fram;
     private javax.swing.JLabel jLabel3;
@@ -671,6 +702,7 @@ public class CompraGui extends javax.swing.JInternalFrame {
     private javax.swing.JLabel labelNombre1;
     private javax.swing.JLabel labelNombre2;
     private javax.swing.JLabel labelTotal;
+    private javax.swing.JLabel labelTotalConDes;
     private javax.swing.JPanel panelArticulos;
     private javax.swing.JPanel panelClientesAarticulos;
     private javax.swing.JPanel panelCompra;
