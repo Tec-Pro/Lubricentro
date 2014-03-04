@@ -10,6 +10,7 @@ import abm.ManejoIp;
 import busqueda.Busqueda;
 import interfaz.AplicacionGui;
 import interfaz.ClienteGui;
+import interfaz.HistorialComprasGui;
 import interfaz.PagoFacturaGui;
 import interfaz.VentaGui;
 import java.awt.Color;
@@ -278,7 +279,7 @@ public class ControladorCliente implements ActionListener {
         }
         if (e.getSource() == clienteGui.getRealizarEntrega()) {
             PagoFacturaGui pagoFacturaGui = new PagoFacturaGui();
-            RealizarPagoVentaControlador rpvc = new RealizarPagoVentaControlador(pagoFacturaGui,cliente, calcularCtaCte(),aplicacionGui);
+            RealizarPagoVentaControlador rpvc = new RealizarPagoVentaControlador(pagoFacturaGui, cliente, calcularCtaCte(), aplicacionGui);
             aplicacionGui.getContenedor().add(pagoFacturaGui);
             pagoFacturaGui.setVisible(true);
             pagoFacturaGui.toFront();
@@ -305,7 +306,11 @@ public class ControladorCliente implements ActionListener {
             cargarVentas();
         }
         if ((e.getSource() == clienteGui.getVerHistorial())) {
-            //AGREGARFUNCIONAMIENTO      
+            HistorialComprasGui hcg = new HistorialComprasGui();
+            HistorialComprasControlador hcc = new HistorialComprasControlador(aplicacionGui, hcg, clienteGui ,cliente, calcularCtaCte());
+            aplicacionGui.getContenedor().add(hcg);
+            hcg.setVisible(true);
+            hcg.toFront();
         }
         if (e.getSource() == clienteGui.getCobrarFactura()) {
             int row = tablaVentas.getSelectedRow();
