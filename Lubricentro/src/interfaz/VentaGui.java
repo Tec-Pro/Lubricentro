@@ -54,7 +54,6 @@ public class VentaGui extends javax.swing.JInternalFrame {
         this.facturaNueva.addActionListener(lis);
         this.realizarVenta.addActionListener(lis);
         this.borrarArticulosSeleccionados.addActionListener(lis);
-        this.abonaNo.addActionListener(lis);
         this.abonaSi.addActionListener(lis);
     }
 
@@ -75,7 +74,6 @@ public class VentaGui extends javax.swing.JInternalFrame {
          busquedaCodigoArticulo.setEnabled(!si);
          calendarioFactura.setEnabled(!si);
          borrarArticulosSeleccionados.setEnabled(!si);
-         abonaNo.setEnabled(!si);
          abonaSi.setEnabled(!si);
          realizarVenta.setEnabled(!si);
      }
@@ -271,10 +269,7 @@ public class VentaGui extends javax.swing.JInternalFrame {
         return ((JTextField) calendarioFactura.getDateEditor().getUiComponent());
     }
 
-    public JCheckBox getAbonaNo() {
-        return abonaNo;
-    }
-
+   
     public JCheckBox getAbonaSi() {
         return abonaSi;
     }
@@ -320,7 +315,6 @@ public class VentaGui extends javax.swing.JInternalFrame {
         calendarioFactura = new com.toedter.calendar.JDateChooser();
         jLabel4 = new javax.swing.JLabel();
         abonaSi = new javax.swing.JCheckBox();
-        abonaNo = new javax.swing.JCheckBox();
         panelControlFactura = new javax.swing.JPanel();
         facturaNueva = new javax.swing.JButton();
         realizarVenta = new javax.swing.JButton();
@@ -356,14 +350,14 @@ public class VentaGui extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "Id", "Codigo", "Marca"
+                "Id", "Codigo", "Marca", "Descripcion"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.String.class
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false
+                false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -412,7 +406,7 @@ public class VentaGui extends javax.swing.JInternalFrame {
                     .addComponent(labelBusquedaNombre)
                     .addComponent(busquedaFram, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE))
+                .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 113, Short.MAX_VALUE))
         );
 
         panelClientes.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Clientes", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Century Schoolbook L", 3, 18))); // NOI18N
@@ -465,7 +459,7 @@ public class VentaGui extends javax.swing.JInternalFrame {
                     .addComponent(busquedaNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(labelApellido))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 67, Short.MAX_VALUE))
+                .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 81, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout panelClientesAarticulosLayout = new javax.swing.GroupLayout(panelClientesAarticulos);
@@ -498,11 +492,11 @@ public class VentaGui extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "ID", "Cantidad", "Articulo", "Precio","Sin IVA" ,"Importe"
+                "ID", "Cantidad", "Articulo","Descripcion", "Precio","Sin IVA" ,"Importe"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.math.BigDecimal.class, java.lang.String.class, java.math.BigDecimal.class,java.math.BigDecimal.class, java.math.BigDecimal.class
+                java.lang.Integer.class, java.math.BigDecimal.class, java.lang.String.class, java.lang.String.class,java.math.BigDecimal.class,java.math.BigDecimal.class, java.math.BigDecimal.class
             };
             boolean[] canEdit = new boolean [] {
                 false, true, false, true, false
@@ -535,17 +529,9 @@ public class VentaGui extends javax.swing.JInternalFrame {
         jLabel4.setFont(new java.awt.Font("Century Schoolbook L", 0, 14)); // NOI18N
         jLabel4.setText("Abona");
 
-        abonaSi.setText("Si");
         abonaSi.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 abonaSiActionPerformed(evt);
-            }
-        });
-
-        abonaNo.setText("No");
-        abonaNo.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                abonaNoActionPerformed(evt);
             }
         });
 
@@ -553,7 +539,7 @@ public class VentaGui extends javax.swing.JInternalFrame {
         panelFactura.setLayout(panelFacturaLayout);
         panelFacturaLayout.setHorizontalGroup(
             panelFacturaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane8, javax.swing.GroupLayout.Alignment.TRAILING)
+            .addComponent(jScrollPane8, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 492, Short.MAX_VALUE)
             .addGroup(panelFacturaLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(labelCliente)
@@ -565,13 +551,11 @@ public class VentaGui extends javax.swing.JInternalFrame {
                 .addComponent(calendarioFactura, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelFacturaLayout.createSequentialGroup()
                 .addComponent(borrarArticulosSeleccionados)
-                .addGap(0, 0, 0)
+                .addGap(23, 23, 23)
                 .addComponent(jLabel4)
-                .addGap(3, 3, 3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(abonaSi)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(abonaNo)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(labelTotal)
                 .addGap(0, 0, 0)
                 .addComponent(totalFactura, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -588,16 +572,16 @@ public class VentaGui extends javax.swing.JInternalFrame {
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane8, javax.swing.GroupLayout.DEFAULT_SIZE, 185, Short.MAX_VALUE)
                 .addGroup(panelFacturaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(borrarArticulosSeleccionados, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(panelFacturaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(totalFactura, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(labelTotal))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelFacturaLayout.createSequentialGroup()
-                        .addGroup(panelFacturaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel4)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelFacturaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(borrarArticulosSeleccionados, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel4))
+                    .addGroup(panelFacturaLayout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(panelFacturaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(abonaSi)
-                            .addComponent(abonaNo))
-                        .addContainerGap())))
+                            .addGroup(panelFacturaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(totalFactura, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(labelTotal))))))
         );
 
         panelControlFactura.setLayout(new java.awt.GridLayout(1, 0));
@@ -614,7 +598,7 @@ public class VentaGui extends javax.swing.JInternalFrame {
         fondoImagen.setLayout(fondoImagenLayout);
         fondoImagenLayout.setHorizontalGroup(
             fondoImagenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(panelTitulo, javax.swing.GroupLayout.DEFAULT_SIZE, 822, Short.MAX_VALUE)
+            .addComponent(panelTitulo, javax.swing.GroupLayout.DEFAULT_SIZE, 825, Short.MAX_VALUE)
             .addGroup(fondoImagenLayout.createSequentialGroup()
                 .addComponent(panelClientesAarticulos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -673,12 +657,7 @@ public class VentaGui extends javax.swing.JInternalFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_abonaSiActionPerformed
 
-    private void abonaNoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_abonaNoActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_abonaNoActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JCheckBox abonaNo;
     private javax.swing.JCheckBox abonaSi;
     private javax.swing.JButton borrarArticulosSeleccionados;
     private javax.swing.JTextField busquedaCodigoArticulo;

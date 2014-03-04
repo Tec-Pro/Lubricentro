@@ -195,4 +195,6 @@ public class Busqueda {
     public List<Articulo> filtroProducto2(String fram) {
         return Articulo.where("equivalencia_fram like ?", "%" + fram + "%");
     }
+       
 }
+

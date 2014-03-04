@@ -363,6 +363,21 @@
                     </Property>
                   </Properties>
                 </Component>
+                <Component class="javax.swing.JButton" name="realizarEntrega">
+                  <Properties>
+                    <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                      <Font name="Cantarell" size="12" style="0"/>
+                    </Property>
+                    <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                      <Image iconType="3" name="/interfaz/Icons/pagar.png"/>
+                    </Property>
+                    <Property name="toolTipText" type="java.lang.String" value="Realizar pago a proveedor"/>
+                    <Property name="enabled" type="boolean" value="false"/>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[55, 33]"/>
+                    </Property>
+                  </Properties>
+                </Component>
               </SubComponents>
             </Container>
             <Container class="javax.swing.JPanel" name="jPanel6">
@@ -386,9 +401,9 @@
                       <Group type="102" attributes="0">
                           <Component id="eliminarVenta" pref="94" max="32767" attributes="0"/>
                           <EmptySpace min="-2" pref="0" max="-2" attributes="0"/>
-                          <Component id="verFactura" pref="98" max="32767" attributes="0"/>
+                          <Component id="verHistorial" pref="98" max="32767" attributes="0"/>
                           <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
-                          <Component id="realizarCobro" pref="97" max="32767" attributes="0"/>
+                          <Component id="cobrarFactura" pref="97" max="32767" attributes="0"/>
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="jLabel5" min="-2" max="-2" attributes="0"/>
@@ -415,8 +430,8 @@
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" max="-2" attributes="0">
                               <Component id="eliminarVenta" linkSize="2" max="32767" attributes="0"/>
-                              <Component id="realizarCobro" linkSize="2" max="32767" attributes="0"/>
-                              <Component id="verFactura" linkSize="2" alignment="1" pref="38" max="32767" attributes="0"/>
+                              <Component id="cobrarFactura" linkSize="2" max="32767" attributes="0"/>
+                              <Component id="verHistorial" linkSize="2" alignment="1" pref="38" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                   </Group>
@@ -491,7 +506,7 @@
                     </Property>
                   </Properties>
                 </Component>
-                <Component class="javax.swing.JButton" name="realizarCobro">
+                <Component class="javax.swing.JButton" name="cobrarFactura">
                   <Properties>
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                       <Font name="Cantarell" size="12" style="0"/>
@@ -506,7 +521,7 @@
                     </Property>
                   </Properties>
                 </Component>
-                <Component class="javax.swing.JButton" name="verFactura">
+                <Component class="javax.swing.JButton" name="verHistorial">
                   <Properties>
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                       <Font name="Cantarell" size="12" style="0"/>
@@ -520,6 +535,9 @@
                       <Dimension value="[55, 33]"/>
                     </Property>
                   </Properties>
+                  <AccessibilityProperties>
+                    <Property name="AccessibleContext.accessibleDescription" type="java.lang.String" value="Ver historial de compra"/>
+                  </AccessibilityProperties>
                 </Component>
                 <Component class="javax.swing.JComboBox" name="ver">
                   <Properties>
@@ -540,7 +558,7 @@
                 </Component>
                 <Component class="javax.swing.JLabel" name="jLabel6">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Adeuda:"/>
+                    <Property name="text" type="java.lang.String" value="Cta.cte:"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JLabel" name="adeuda">

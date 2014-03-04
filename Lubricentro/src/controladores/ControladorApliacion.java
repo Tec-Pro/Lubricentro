@@ -14,6 +14,7 @@ import interfaz.CompraGui;
 import interfaz.ConfigurarServerGui;
 import interfaz.EnviarManualGui;
 import interfaz.ImportarExcelGui;
+import interfaz.PagoFacturaGui;
 import interfaz.ProveedorGui;
 import interfaz.VentaGui;
 import java.awt.Cursor;
@@ -56,7 +57,6 @@ public class ControladorApliacion implements ActionListener {
     private ControladorVenta controladorVenta;
     private CompraGui compraGui;
     private VentaGui ventaGui;
-
     public ControladorApliacion() throws JRException, ClassNotFoundException, SQLException {
         try {
             UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
@@ -73,7 +73,7 @@ public class ControladorApliacion implements ActionListener {
         proveedorGui = new ProveedorGui();
         clienteGui = new ClienteGui();
         compraGui = new CompraGui();
-        ventaGui = new VentaGui();
+        ventaGui = new VentaGui();        
         controladorCompra = new ControladorCompra(compraGui, aplicacionGui);
         controladorVenta = new ControladorVenta(ventaGui, aplicacionGui);
         controladorProveedor = new ControladorProveedor(proveedorGui, aplicacionGui, articuloGui, compraGui);
@@ -121,22 +121,22 @@ public class ControladorApliacion implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent ae) {
         if (ae.getSource() == aplicacionGui.getArticulos()) {
-            controladorArticulo.cargarTodos();
+        //    controladorArticulo.cargarTodos();
             articuloGui.setVisible(true);
             articuloGui.toFront();
         }
         if (ae.getSource() == aplicacionGui.getProveedores()) {
-            controladorProveedor.cargarTodos();
+        //    controladorProveedor.cargarTodos();
             proveedorGui.setVisible(true);
             proveedorGui.toFront();
         }
         if (ae.getSource() == aplicacionGui.getImportar()) {
-            controladorImportarGui.cargarProveedores();
+        //    controladorImportarGui.cargarProveedores();
             importarGui.setVisible(true);
             importarGui.toFront();
         }
         if (ae.getSource() == aplicacionGui.getClientes()) {
-            controladorCliente.cargarTodos();
+          //  controladorCliente.cargarTodos();
             clienteGui.setVisible(true);
             clienteGui.toFront();
         }
@@ -207,12 +207,12 @@ public class ControladorApliacion implements ActionListener {
 
         }
         if (ae.getSource() == aplicacionGui.getRegistrarCompra()) {
-            controladorCompra.cargarTodos();
+          //  controladorCompra.cargarTodos();
             compraGui.setVisible(true);
             compraGui.toFront();
         }
         if (ae.getSource() == aplicacionGui.getRegistrarVenta()) {
-            controladorVenta.cargarTodos();
+         //   controladorVenta.cargarTodos();
             ventaGui.setVisible(true);
             ventaGui.toFront();
         }

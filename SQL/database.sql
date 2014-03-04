@@ -140,3 +140,25 @@ ALTER TABLE `lubricentro`.`ips` CHANGE COLUMN `remoto` `remoto` VARCHAR(45) NULL
  GRANT ALL PRIVILEGES ON *.* TO 'tecpro'@'localhost'  IDENTIFIED BY 'tecpro' WITH GRANT OPTION; 
 
 ALTER TABLE `lubricentro`.`compras` ADD COLUMN `fecha_pago` DATE NULL  AFTER `pago` , ADD COLUMN `descuento` FLOAT NULL DEFAULT 0  AFTER `fecha_pago` , CHANGE COLUMN `pago` `pago` INT(11) NULL DEFAULT 0  ;
+
+ALTER TABLE `lubricentro`.`pagos` ADD COLUMN `cliente_id` INT NULL DEFAULT NULL  AFTER `proveedor_id` ;
+
+ALTER TABLE `lubricentro`.`ventas` ADD COLUMN `pago_id` INT NULL DEFAULT NULL  AFTER `pago` ;
+
+ALTER TABLE `lubricentro`.`clientes` ADD COLUMN `cuenta` FLOAT NULL DEFAULT 0  AFTER `celular` ;
+
+/* constraints de calve foraneas.
+ALTER TABLE `lubricentro`.`ventas` ADD constraint fkventapago foreign key(pago_id) references pagos(id) on delete set null;
+ALTER TABLE `lubricentro`.`articulos_ventas` ADD constraint fkartvent foreign key (venta_id) references ventas(id) on delete cascade;
+ALTER TABLE `lubricentro`.`articulos_compras` ADD constraint fkartcom foreign key (compra_id) references compras(id) on delete cascade;
+ALTER TABLE `lubricentro`.`pagos` ADD constraint fkpagosprov foreign key(proveedor_id) references proveedors(id) on delete cascade;
+ALTER TABLE `lubricentro`.`clientes_articulos` ADD constraint fkadquiriocliente foreign key(cliente_id) references clientes(id) on delete cascade;
+ALTER TABLE `lubricentro`.`clientes_articulos` ADD constraint fkadquirioproducto foreign key(articulo_id) references articulo(codigo) on delete cascade;
+ALTER TABLE `lubricentro`.`articulos_ventas` ADD constraint fkartvent foreign key (venta_id) references ventas(id) on delete cascade;
+ALTER TABLE `lubricentro`.`articulos_ventas` ADD constraint fkarticuloventa foreign key(articulo_id) references articulos(codigo) on delete cascade;
+ALTER TABLE `lubricentro`.`articulos_compras` ADD constraint fkartcompra foreign key(articulo_id) references articulos(codigo) on delete cascade;
+ALTER TABLE `lubricentro`.`pagos` ADD constraint fkpagoscliente foreign key(cliente_id) references clientes(id) on delete cascade;
+ALTER TABLE `lubricentro`.`pagos` ADD constraint fkpagosprov foreign key(proveedor_id) references proveedors(id) on delete cascade;
+ALTER TABLE `lubricentro`.`ventas` ADD constraint fkventacliente foreign key (cliente_id) references clientes(id) on delete cascade;
+*/
+

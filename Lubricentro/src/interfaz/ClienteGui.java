@@ -63,12 +63,13 @@ public class ClienteGui extends javax.swing.JInternalFrame {
         nuevo = new javax.swing.JButton();
         modificar = new javax.swing.JButton();
         guardar = new javax.swing.JButton();
+        realizarEntrega = new javax.swing.JButton();
         jPanel6 = new javax.swing.JPanel();
         jScrollPane5 = new javax.swing.JScrollPane();
         ventasRealizadas = new javax.swing.JTable();
         eliminarVenta = new javax.swing.JButton();
-        realizarCobro = new javax.swing.JButton();
-        verFactura = new javax.swing.JButton();
+        cobrarFactura = new javax.swing.JButton();
+        verHistorial = new javax.swing.JButton();
         ver = new javax.swing.JComboBox();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
@@ -241,6 +242,13 @@ public class ClienteGui extends javax.swing.JInternalFrame {
         guardar.setPreferredSize(new java.awt.Dimension(55, 33));
         jPanel4.add(guardar);
 
+        realizarEntrega.setFont(new java.awt.Font("Cantarell", 0, 12)); // NOI18N
+        realizarEntrega.setIcon(new javax.swing.ImageIcon(getClass().getResource("/interfaz/Icons/pagar.png"))); // NOI18N
+        realizarEntrega.setToolTipText("Realizar pago a proveedor");
+        realizarEntrega.setEnabled(false);
+        realizarEntrega.setPreferredSize(new java.awt.Dimension(55, 33));
+        jPanel4.add(realizarEntrega);
+
         jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Ventas realizadas", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Century Schoolbook L", 3, 14))); // NOI18N
         jPanel6.setPreferredSize(new java.awt.Dimension(327, 409));
 
@@ -282,24 +290,24 @@ public class ClienteGui extends javax.swing.JInternalFrame {
         eliminarVenta.setEnabled(false);
         eliminarVenta.setPreferredSize(new java.awt.Dimension(55, 33));
 
-        realizarCobro.setFont(new java.awt.Font("Cantarell", 0, 12)); // NOI18N
-        realizarCobro.setIcon(new javax.swing.ImageIcon(getClass().getResource("/interfaz/Icons/pagar.png"))); // NOI18N
-        realizarCobro.setToolTipText("Realizar Cobro");
-        realizarCobro.setEnabled(false);
-        realizarCobro.setPreferredSize(new java.awt.Dimension(55, 33));
+        cobrarFactura.setFont(new java.awt.Font("Cantarell", 0, 12)); // NOI18N
+        cobrarFactura.setIcon(new javax.swing.ImageIcon(getClass().getResource("/interfaz/Icons/pagar.png"))); // NOI18N
+        cobrarFactura.setToolTipText("Realizar Cobro");
+        cobrarFactura.setEnabled(false);
+        cobrarFactura.setPreferredSize(new java.awt.Dimension(55, 33));
 
-        verFactura.setFont(new java.awt.Font("Cantarell", 0, 12)); // NOI18N
-        verFactura.setIcon(new javax.swing.ImageIcon(getClass().getResource("/interfaz/Icons/Details.png"))); // NOI18N
-        verFactura.setToolTipText("Detalles de la Factura");
-        verFactura.setEnabled(false);
-        verFactura.setPreferredSize(new java.awt.Dimension(55, 33));
+        verHistorial.setFont(new java.awt.Font("Cantarell", 0, 12)); // NOI18N
+        verHistorial.setIcon(new javax.swing.ImageIcon(getClass().getResource("/interfaz/Icons/Details.png"))); // NOI18N
+        verHistorial.setToolTipText("Detalles de la Factura");
+        verHistorial.setEnabled(false);
+        verHistorial.setPreferredSize(new java.awt.Dimension(55, 33));
 
         ver.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Todas", "Cta. Corriente", "Pagas" }));
         ver.setEnabled(false);
 
         jLabel5.setText("Ver:");
 
-        jLabel6.setText("Adeuda:");
+        jLabel6.setText("Cta.cte:");
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
@@ -309,9 +317,9 @@ public class ClienteGui extends javax.swing.JInternalFrame {
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addComponent(eliminarVenta, javax.swing.GroupLayout.DEFAULT_SIZE, 94, Short.MAX_VALUE)
                 .addGap(0, 0, 0)
-                .addComponent(verFactura, javax.swing.GroupLayout.DEFAULT_SIZE, 98, Short.MAX_VALUE)
+                .addComponent(verHistorial, javax.swing.GroupLayout.DEFAULT_SIZE, 98, Short.MAX_VALUE)
                 .addGap(0, 0, 0)
-                .addComponent(realizarCobro, javax.swing.GroupLayout.DEFAULT_SIZE, 97, Short.MAX_VALUE))
+                .addComponent(cobrarFactura, javax.swing.GroupLayout.DEFAULT_SIZE, 97, Short.MAX_VALUE))
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addComponent(jLabel5)
                 .addGap(1, 1, 1)
@@ -334,11 +342,13 @@ public class ClienteGui extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(eliminarVenta, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(realizarCobro, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(verFactura, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 38, Short.MAX_VALUE)))
+                    .addComponent(cobrarFactura, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(verHistorial, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 38, Short.MAX_VALUE)))
         );
 
-        jPanel6Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {eliminarVenta, realizarCobro, verFactura});
+        jPanel6Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {cobrarFactura, eliminarVenta, verHistorial});
+
+        verHistorial.getAccessibleContext().setAccessibleDescription("Ver historial de compra");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -391,6 +401,7 @@ public class ClienteGui extends javax.swing.JInternalFrame {
     private javax.swing.JButton borrar;
     private javax.swing.JTextField busqueda;
     private javax.swing.JTextField celular;
+    private javax.swing.JButton cobrarFactura;
     private javax.swing.JButton eliminarVenta;
     private javax.swing.JButton guardar;
     private javax.swing.JTextField id;
@@ -411,12 +422,12 @@ public class ClienteGui extends javax.swing.JInternalFrame {
     private javax.swing.JTextField nombre;
     private javax.swing.JButton nuevo;
     private javax.swing.JPanel panelClientes;
-    private javax.swing.JButton realizarCobro;
+    private javax.swing.JButton realizarEntrega;
     private javax.swing.JTable tablaClientes;
     private javax.swing.JTextField telefono;
     private javax.swing.JTable ventasRealizadas;
     private javax.swing.JComboBox ver;
-    private javax.swing.JButton verFactura;
+    private javax.swing.JButton verHistorial;
     // End of variables declaration//GEN-END:variables
 
     public void setActionListener(ActionListener lis) {
@@ -424,16 +435,17 @@ public class ClienteGui extends javax.swing.JInternalFrame {
         this.borrar.addActionListener(lis);
         this.nuevo.addActionListener(lis);
         this.modificar.addActionListener(lis);
-        this.realizarCobro.addActionListener(lis);
+        this.cobrarFactura.addActionListener(lis);
         this.eliminarVenta.addActionListener(lis);
-        this.verFactura.addActionListener(lis);
+        this.verHistorial.addActionListener(lis);
         this.ver.addActionListener(lis);
+        this.realizarEntrega.addActionListener(lis);
     }
 
         public void habilitarCamposVentas(boolean b) {
-        realizarCobro.setEnabled(b);
+        cobrarFactura.setEnabled(b);
         eliminarVenta.setEnabled(b);
-        verFactura.setEnabled(b);
+        verHistorial.setEnabled(b);
         ver.setEnabled(b);
         }
         
@@ -450,6 +462,7 @@ public class ClienteGui extends javax.swing.JInternalFrame {
         telefono.setText("");
         celular.setText("");
         ventasDefault.setRowCount(0);
+        adeuda.setText("");
         }
         
         public void CargarCampos(Cliente cliente) {
@@ -530,20 +543,20 @@ public class ClienteGui extends javax.swing.JInternalFrame {
         this.ventasRealizadas = ventasRealizadas;
     }
 
-    public JButton getRealizarCobro() {
-        return realizarCobro;
+    public JButton getCobrarFactura() {
+        return cobrarFactura;
     }
 
-    public void setRealizarCobro(JButton realizarCobro) {
-        this.realizarCobro = realizarCobro;
+    public void setCobrarFactura(JButton cobrarFactura) {
+        this.cobrarFactura = cobrarFactura;
     }
 
     public JButton getEliminarVenta() {
         return eliminarVenta;
     }
 
-    public JButton getVerFactura() {
-        return verFactura;
+    public JButton getVerHistorial() {
+        return verHistorial;
     }
 
     public JComboBox getVer() {
@@ -556,6 +569,10 @@ public class ClienteGui extends javax.swing.JInternalFrame {
 
     public void setAdeuda(JLabel adeuda) {
         this.adeuda = adeuda;
+    }
+
+    public JButton getRealizarEntrega() {
+        return realizarEntrega;
     }
     
     

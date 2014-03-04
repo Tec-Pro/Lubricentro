@@ -8,6 +8,7 @@ import abm.ABMVenta;
 import abm.ManejoIp;
 import busqueda.Busqueda;
 import interfaz.AplicacionGui;
+import interfaz.PagoFacturaGui;
 import interfaz.VentaGui;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -28,7 +29,9 @@ import javax.swing.event.CellEditorListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.table.DefaultTableModel;
 import modelos.Articulo;
+import modelos.ArticulosVentas;
 import modelos.Cliente;
+import modelos.Pago;
 import modelos.Venta;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.util.Pair;
@@ -40,7 +43,8 @@ import org.javalite.activejdbc.Base;
  */
 public class ControladorVenta implements ActionListener, CellEditorListener {
 
-    private static BigDecimal iva = new BigDecimal("0.21");
+    private static BigDecimal iva = new BigDecimal("21");
+    private static BigDecimal cien = new BigDecimal("100");
     private JTextField textan;
     private JTextField textFram;
     private JTextField textcodprod;
@@ -59,7 +63,7 @@ public class ControladorVenta implements ActionListener, CellEditorListener {
     private AplicacionGui apgui;
 
     public ControladorVenta(VentaGui ventaGui, AplicacionGui apgui) throws JRException, ClassNotFoundException, SQLException {
-
+        this.apgui = apgui;
         prodlista = new LinkedList<Articulo>();
         clientelista = new LinkedList<Cliente>();
         busqueda = new Busqueda();
@@ -124,19 +128,23 @@ public class ControladorVenta implements ActionListener, CellEditorListener {
 
     private void tablaProdMouseClicked(MouseEvent evt) {
         abrirBase();
+        BigDecimal porcentaje;
         int[] rows = ventaGui.getTablaArticulos().getSelectedRows();
         if (rows.length > 0) {
             for (int i = 0; i < rows.length; i++) {
                 abrirBase();
                 if (!existeProdFacc(Integer.valueOf((String) tablap.getValueAt(rows[i], 0)))) {
                     Articulo p = Articulo.findFirst("id = ?", (tablap.getValueAt(rows[i], 0)));
-                    Object cols[] = new Object[6];
+                    Object cols[] = new Object[7];
                     cols[0] = p.get("id");
                     cols[1] = BigDecimal.valueOf(1).setScale(2, RoundingMode.CEILING);
                     cols[2] = p.get("codigo");
-                    cols[3] = BigDecimal.valueOf(p.getFloat("precio_venta")).setScale(2, RoundingMode.CEILING);
-                    cols[4] = p.getBigDecimal("precio_venta").multiply(iva);
-                    cols[5] = BigDecimal.valueOf(p.getFloat("precio_venta")).setScale(2, RoundingMode.CEILING);
+                    cols[3] = p.get("descripcion");
+                    cols[4] = BigDecimal.valueOf(p.getFloat("precio_venta")).setScale(2, RoundingMode.CEILING);
+                    String porcentajeS = BigDecimal.valueOf(p.getFloat("precio_venta")).multiply(iva).divide(cien).setScale(2, RoundingMode.CEILING).toString();
+                    porcentaje = new BigDecimal(porcentajeS);
+                    cols[5] = p.getBigDecimal("precio_venta").subtract(porcentaje);
+                    cols[6] = BigDecimal.valueOf(p.getFloat("precio_venta")).setScale(2, RoundingMode.CEILING);
                     if (Base.hasConnection()) {
                         Base.close();
                     }
@@ -192,46 +200,41 @@ public class ControladorVenta implements ActionListener, CellEditorListener {
             if (ventaGui.getClienteFactura().getText().equals("") || ventaGui.getCalenFacturaText().getText().equals("") || ventaGui.getTablaFactura().getRowCount() == 0) {
                 JOptionPane.showMessageDialog(ventaGui, "Fecha, cliente vacio o no hay productos cargados", "Error!", JOptionPane.ERROR_MESSAGE);
             } else {
-                if ((ventaGui.getAbonaNo().isSelected() && ventaGui.getAbonaSi().isSelected()) || (!ventaGui.getAbonaNo().isSelected() && !ventaGui.getAbonaSi().isSelected())) {
-                    JOptionPane.showMessageDialog(apgui, "Olvido marcar si la venta se abona o no, o ambas opciones se encuentran marcadas");
-                } else {
+                System.out.println("entre a registrar venta");
+                if (ventaGui.getAbonaSi().isSelected()) {
+                    abrirBase();
                     Venta v = new Venta();
                     LinkedList<Pair> parDeProductos = new LinkedList();
                     LinkedList<BigDecimal> preciosFinales = new LinkedList();
                     String laFecha = ventaGui.getCalenFacturaText().getText(); //saco la fecha
                     String cliente = ventaGui.getClienteFactura().getText();
-                    Integer idCliente = Integer.valueOf(cliente.split(" ")[0]); //saco el id prov
+                    Integer idCliente = Integer.valueOf(cliente.split(" ")[0]); //saco el id cliente
                     v.set("cliente_id", idCliente);
                     for (int i = 0; i < ventaGui.getTablaFactura().getRowCount(); i++) {
                         abrirBase();
                         Articulo producto = Articulo.findFirst("id = ?", tablafac.getValueAt(i, 0));
                         BigDecimal cantidad = ((BigDecimal) tablafac.getValueAt(i, 1)).setScale(2, RoundingMode.CEILING); //saco la cantidad
-                        if (ventaGui.getAbonaSi().isSelected()) {
-                            BigDecimal precioFinal = ((BigDecimal) tablafac.getValueAt(i, 3)).setScale(2, RoundingMode.CEILING);
-                            preciosFinales.add(precioFinal);
-                            Pair par = new Pair(producto, cantidad); //creo el par
-                            parDeProductos.add(par); //meto el par a la lista
-                        } else {
-                            Pair par = new Pair(producto, cantidad); //creo el par
-                            parDeProductos.add(par); //meto el par a la lista
-                        }
+                        BigDecimal precioFinal = ((BigDecimal) tablafac.getValueAt(i, 6)).setScale(2, RoundingMode.CEILING);
+                        preciosFinales.add(precioFinal);
+                        Pair par = new Pair(producto, cantidad); //creo el par
+                        parDeProductos.add(par); //meto el par a la lista
                     }
                     v.set("fecha", laFecha);
-                    if (ventaGui.getAbonaSi().isSelected()) {
-                        v.setPreciosFinales(preciosFinales);
-                        v.setProductos(parDeProductos);
-                        v.set("pago", true);
-                        BigDecimal bd = new BigDecimal(ventaGui.getTotalFactura().getText());
-                        v.set("monto", bd);
-                    } else {
-                        if (ventaGui.getAbonaNo().isSelected()) {
-                            v.set("pago", false);
-                            v.setProductos(parDeProductos);
-                        }
-                    }
+                    v.setPreciosFinales(preciosFinales);
+                    v.setProductos(parDeProductos);
+                    v.set("pago", true);
+                    BigDecimal bd = new BigDecimal(ventaGui.getTotalFactura().getText());
+                    v.set("monto", bd);
                     abrirBase();
                     if (abmVenta.alta(v)) {
-
+                        Pago pago = new Pago();
+                        pago.set("fecha", laFecha);
+                        pago.set("monto", bd);
+                        pago.set("cliente_id", idCliente);
+                        pago.saveIt();
+                        String pagoId = Pago.findFirst("fecha = ? and monto = ? and cliente_id = ?", laFecha, bd, idCliente).getString("id");
+                        v.set("pago_id", pagoId);
+                        v.saveIt();
                         JOptionPane.showMessageDialog(apgui, "Venta realizada con exito.");
                         ventaGui.limpiarVentana();
                         try {
@@ -247,7 +250,49 @@ public class ControladorVenta implements ActionListener, CellEditorListener {
                         } catch (JRException ex) {
                             Logger.getLogger(ControladorVenta.class.getName()).log(Level.SEVERE, null, ex);
                         }
-
+                    } else {
+                        JOptionPane.showMessageDialog(apgui, "Ocurrió un error inesperado, venta no realizada");
+                    }
+                    if (Base.hasConnection()) {
+                        Base.close();
+                    }
+                } else {
+                    Venta v = new Venta();
+                    LinkedList<Pair> parDeProductos = new LinkedList();
+                    String laFecha = ventaGui.getCalenFacturaText().getText(); //saco la fecha
+                    String cliente = ventaGui.getClienteFactura().getText();
+                    Integer idCliente = Integer.valueOf(cliente.split(" ")[0]); //saco el id cliente
+                    v.set("cliente_id", idCliente);
+                    for (int i = 0; i < ventaGui.getTablaFactura().getRowCount(); i++) {
+                        abrirBase();
+                        Articulo producto = Articulo.findFirst("id = ?", tablafac.getValueAt(i, 0));
+                        BigDecimal cantidad = ((BigDecimal) tablafac.getValueAt(i, 1)).setScale(2, RoundingMode.CEILING); //saco la cantidad
+                        Pair par = new Pair(producto, cantidad); //creo el par
+                        parDeProductos.add(par); //meto el par a la lista
+                    }
+                    v.set("fecha", laFecha);
+                    v.set("pago", false);
+                    v.setProductos(parDeProductos);
+                    abrirBase();
+                    if (abmVenta.alta(v)) {
+                        JOptionPane.showMessageDialog(apgui, "Venta realizada con exito.");
+                        ventaGui.limpiarVentana();
+                        try {
+                            if (v.getBoolean("pago")) {
+                                reporteFactura.mostrarFactura(abmVenta.getUltimoIdVenta());
+                            } else {
+                                reporteFacturaSinPagar.mostrarFactura(abmVenta.getUltimoIdVenta());
+                            }
+                        } catch (ClassNotFoundException ex) {
+                            Logger.getLogger(ControladorVenta.class
+                                    .getName()).log(Level.SEVERE, null, ex);
+                        } catch (SQLException ex) {
+                            Logger.getLogger(ControladorVenta.class
+                                    .getName()).log(Level.SEVERE, null, ex);
+                        } catch (JRException ex) {
+                            Logger.getLogger(ControladorVenta.class
+                                    .getName()).log(Level.SEVERE, null, ex);
+                        }
                     } else {
                         JOptionPane.showMessageDialog(apgui, "Ocurrió un error inesperado, venta no realizada");
                     }
@@ -284,14 +329,15 @@ public class ControladorVenta implements ActionListener, CellEditorListener {
     private void actualizarListaProd() {
         abrirBase();
         tablaProd.setRowCount(0);
-        prodlista = busqueda.filtroProducto(textcodprod.getText(), textFram.getText());
+        prodlista = Articulo.where("codigo like ? or descripcion like ?", "%" + textcodprod.getText() + "%", "%" + textcodprod.getText() + "%");
         Iterator<Articulo> it = prodlista.iterator();
         while (it.hasNext()) {
             Articulo a = it.next();
-            String rowArray[] = new String[3];
+            String rowArray[] = new String[4];
             rowArray[0] = a.getId().toString();
             rowArray[1] = a.getString("codigo");
             rowArray[2] = a.getString("marca");
+            rowArray[3] = a.getString("descripcion");
             tablaProd.addRow(rowArray);
         }
         Articulo a = Articulo.findFirst("codigo = ?", textcodprod.getText());
@@ -303,10 +349,11 @@ public class ControladorVenta implements ActionListener, CellEditorListener {
                 while (it.hasNext()) {
                     Articulo b = it.next();
                     if (!(b.getInteger("id").equals(a.getInteger("id")))) {
-                        String rowArray[] = new String[3];
+                        String rowArray[] = new String[4];
                         rowArray[0] = b.getId().toString();
                         rowArray[1] = b.getString("codigo");
                         rowArray[2] = b.getString("marca");
+                        rowArray[3] = a.getString("descripcion");
                         tablaProd.addRow(rowArray);
                         {
                         }
@@ -349,11 +396,11 @@ public class ControladorVenta implements ActionListener, CellEditorListener {
         BigDecimal importe;
         BigDecimal total = new BigDecimal(0);
         for (int i = 0; i < tablafac.getRowCount(); i++) {
-            importe = ((BigDecimal) tablafac.getValueAt(i, 1)).multiply((BigDecimal) ventaGui.getTablaFactura().getValueAt(i, 3)).setScale(2, RoundingMode.CEILING);
-            tablafac.setValueAt(importe, i, 5);
+            importe = ((BigDecimal) tablafac.getValueAt(i, 1)).multiply((BigDecimal) ventaGui.getTablaFactura().getValueAt(i, 4)).setScale(2, RoundingMode.CEILING);
+            tablafac.setValueAt(importe, i, 6);
         }
         for (int i = 0; i < tablafac.getRowCount(); i++) {
-            total = total.add((BigDecimal) tablafac.getValueAt(i, 5)).setScale(2, RoundingMode.CEILING);;
+            total = total.add((BigDecimal) tablafac.getValueAt(i, 6)).setScale(2, RoundingMode.CEILING);;
         }
         ventaGui.getTotalFactura().setText(total.toString());
     }
@@ -367,4 +414,6 @@ public class ControladorVenta implements ActionListener, CellEditorListener {
     public void editingCanceled(ChangeEvent e) {
         //  throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
+
 }

@@ -10,13 +10,17 @@ import abm.ManejoIp;
 import busqueda.Busqueda;
 import interfaz.AplicacionGui;
 import interfaz.ClienteGui;
+import interfaz.PagoFacturaGui;
 import interfaz.VentaGui;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
 import javax.swing.JComboBox;
@@ -27,6 +31,7 @@ import javax.swing.table.DefaultTableModel;
 import modelos.Articulo;
 import modelos.ArticulosVentas;
 import modelos.Cliente;
+import modelos.Pago;
 import modelos.Venta;
 import org.javalite.activejdbc.Base;
 import org.javalite.activejdbc.LazyList;
@@ -37,6 +42,7 @@ import org.javalite.activejdbc.LazyList;
  */
 public class ControladorCliente implements ActionListener {
 
+    private static BigDecimal iva = new BigDecimal("0.21");
     private JTextField nomcli;
     private ClienteGui clienteGui;
     private AplicacionGui aplicacionGui;
@@ -52,6 +58,7 @@ public class ControladorCliente implements ActionListener {
     private JComboBox ver;
     Busqueda busqueda;
     VentaGui ventaGui;
+    private Color Color;
 
     public ControladorCliente(ClienteGui clienteGui, AplicacionGui aplicacionGui, VentaGui ventaGui) {
         this.aplicacionGui = aplicacionGui;
@@ -85,12 +92,75 @@ public class ControladorCliente implements ActionListener {
                 tablaClienteMouseClicked(evt);
             }
         });
+        tablaVentas.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tablaVentasMouseClicked(evt);
+            }
+        });
         ver = clienteGui.getVer();
     }
 
     private void busquedaKeyReleased(KeyEvent evt) {
         System.out.println("apreté el caracter: " + evt.getKeyChar());
         realizarBusqueda();
+    }
+
+    private void tablaVentasMouseClicked(MouseEvent evt) {
+        if (evt.getClickCount() == 2) {
+            Integer idFac = Integer.valueOf((String) clienteGui.getVentasRealizadas().getValueAt(clienteGui.getVentasRealizadas().getSelectedRow(), 0));
+            abrirBase();
+            Venta factura = Venta.findById(idFac);
+            Object idCliente = factura.get("cliente_id");
+            DefaultTableModel tablita = ventaGui.getTablaFacturaDefault();
+            tablita.setRowCount(0);
+            Cliente cli = Cliente.findById(idCliente);
+            System.out.println(cli.getId());
+            if (cli != null) {
+                String nombre = idCliente + " " + cli.getString("nombre");
+                ventaGui.getClienteFactura().setText(nombre);
+                LazyList<ArticulosVentas> pr = ArticulosVentas.find("venta_id = ?", idFac);
+                Iterator<ArticulosVentas> it = pr.iterator();
+                while (it.hasNext()) {
+                    ArticulosVentas prod = it.next();
+                    Articulo producto = Articulo.findFirst("id = ?", prod.get("articulo_id"));
+                    if (producto != null) {
+                        BigDecimal precio;
+                        BigDecimal precioSinIva;
+                        if (factura.getBoolean("pago")) {
+                            precio = prod.getBigDecimal("precio_final").setScale(2, RoundingMode.CEILING);
+                            precioSinIva = prod.getBigDecimal("precio_final").setScale(2, RoundingMode.CEILING);
+                        } else {
+                            precio = producto.getBigDecimal("precio_venta").setScale(2, RoundingMode.CEILING);
+                            precioSinIva = producto.getBigDecimal("precio_venta").setScale(2, RoundingMode.CEILING);
+                        }
+                        BigDecimal cantidad = prod.getBigDecimal("cantidad").setScale(2, RoundingMode.CEILING);
+                        Object cols[] = new Object[7];
+                        cols[0] = producto.get("id");
+                        cols[1] = cantidad;
+                        cols[2] = producto.get("codigo");
+                        cols[3] = producto.get("descripcion");
+                        cols[4] = precio;
+                        cols[5] = precioSinIva.multiply(iva);
+                        cols[6] = precio.multiply(cantidad).setScale(2, RoundingMode.CEILING);
+                        ventaGui.getTablaFacturaDefault().addRow(cols);
+                    }
+                }
+                if (factura.getBoolean("pago")) {
+                    ventaGui.getTotalFactura().setText(String.valueOf(factura.getFloat("monto")));
+                } else {
+                    actualizarPrecio();
+                }
+                Base.close();
+                System.out.println("sali");
+                ventaGui.paraVerVenta(true);
+                ventaGui.setVisible(true);
+                ventaGui.toFront();
+                System.out.println("termine");
+            } else {
+                JOptionPane.showMessageDialog(aplicacionGui, "El cliente asociado a esta factura ya no existe", "CLIENTE INEXISTENTE", JOptionPane.ERROR_MESSAGE);
+            }
+        }
     }
 
     public void cargarTodos() {
@@ -109,7 +179,7 @@ public class ControladorCliente implements ActionListener {
             clienteGui.getModificar().setEnabled(true);
             clienteGui.getGuardar().setEnabled(false);
             clienteGui.getNuevo().setEnabled(true);
-            clienteGui.getRealizarCobro().setEnabled(true);
+            clienteGui.getRealizarEntrega().setEnabled(true);
             System.out.println("hice doble click en un cliente");
             clienteGui.limpiarCampos();
             abrirBase();
@@ -117,7 +187,7 @@ public class ControladorCliente implements ActionListener {
             clienteGui.CargarCampos(cliente);
             cargarVentas();
             clienteGui.habilitarCamposVentas(true);
-            deudaTotal();
+            calcularCtaCte();
         }
     }
 
@@ -130,7 +200,7 @@ public class ControladorCliente implements ActionListener {
             isNuevo = true;
             editandoInfo = true;
             clienteGui.getBorrar().setEnabled(false);
-            clienteGui.getRealizarCobro().setEnabled(false);
+            clienteGui.getRealizarEntrega().setEnabled(false);
             clienteGui.getModificar().setEnabled(false);
             clienteGui.getGuardar().setEnabled(true);
         }
@@ -151,6 +221,7 @@ public class ControladorCliente implements ActionListener {
                 cerrarBase();
                 realizarBusqueda();
             }
+
         }
         if (e.getSource() == clienteGui.getBorrar()) {
             System.out.println("Boton borrar pulsado");
@@ -167,7 +238,7 @@ public class ControladorCliente implements ActionListener {
                         realizarBusqueda();
                         clienteGui.getBorrar().setEnabled(false);
                         clienteGui.getModificar().setEnabled(false);
-                        clienteGui.getRealizarCobro().setEnabled(false);
+                        clienteGui.getRealizarEntrega().setEnabled(false);
                     } else {
                         JOptionPane.showMessageDialog(clienteGui, "Ocurrió un error, no se borró el cliente", "Error!", JOptionPane.ERROR_MESSAGE);
                     }
@@ -184,7 +255,7 @@ public class ControladorCliente implements ActionListener {
             clienteGui.getBorrar().setEnabled(false);
             clienteGui.getGuardar().setEnabled(true);
             clienteGui.getModificar().setEnabled(false);
-            clienteGui.getRealizarCobro().setEnabled(false);
+            clienteGui.getRealizarEntrega().setEnabled(false);
         }
 
         if (e.getSource() == clienteGui.getGuardar() && editandoInfo && !isNuevo) {
@@ -205,23 +276,13 @@ public class ControladorCliente implements ActionListener {
                 cerrarBase();
             }
         }
-        if (e.getSource() == clienteGui.getRealizarCobro()) {
-            int row = tablaVentas.getSelectedRow();
-            if (row > -1) {
-                abrirBase();
-                String id = (String) tablaVentas.getValueAt(row, 0);
-                BigDecimal monto = new BigDecimal((String) tablaVentas.getValueAt(row, 2));
-                Venta v = Venta.findById(id);
-                ABMVenta ambV = new ABMVenta();
-                if (ambV.pagar(v, monto)) {
-                    JOptionPane.showMessageDialog(clienteGui, "¡Cobro registrado exitosamente!");
-                    cargarVentas();
-                } else {
-                    JOptionPane.showMessageDialog(clienteGui, "Ocurrió un error, el cobro no ha sido registrado", "Error!", JOptionPane.ERROR_MESSAGE);
-
-                }
-                cerrarBase();
-            }
+        if (e.getSource() == clienteGui.getRealizarEntrega()) {
+            PagoFacturaGui pagoFacturaGui = new PagoFacturaGui();
+            RealizarPagoVentaControlador rpvc = new RealizarPagoVentaControlador(pagoFacturaGui,cliente, calcularCtaCte(),aplicacionGui);
+            aplicacionGui.getContenedor().add(pagoFacturaGui);
+            pagoFacturaGui.setVisible(true);
+            pagoFacturaGui.toFront();
+            calcularCtaCte();
         }
         if (e.getSource() == clienteGui.getEliminarVenta()) {
             int row = tablaVentas.getSelectedRow();
@@ -235,71 +296,48 @@ public class ControladorCliente implements ActionListener {
                     cargarVentas();
                 } else {
                     JOptionPane.showMessageDialog(clienteGui, "Ocurrió un error, la venta no ha sido eliminada", "Error!", JOptionPane.ERROR_MESSAGE);
-
                 }
+                calcularCtaCte();
                 cerrarBase();
             }
-        }
-        if (e.getSource() == clienteGui.getVerFactura()) {
         }
         if (e.getSource() == clienteGui.getVer()) {
             cargarVentas();
         }
-        if ((e.getSource() == clienteGui.getVerFactura())) {
-            System.out.println("entre");
-            Integer idFac = Integer.valueOf((String) clienteGui.getVentasRealizadas().getValueAt(clienteGui.getVentasRealizadas().getSelectedRow(), 0));
-            System.out.println("factura:" + idFac);
-            abrirBase();
-            Venta factura = Venta.findById(idFac);
-            System.out.println(factura.getId());
-            Object idCliente = factura.get("cliente_id");
-            DefaultTableModel tablita = ventaGui.getTablaFacturaDefault();
-            tablita.setRowCount(0);
-            Cliente cli = Cliente.findById(idCliente);
-            System.out.println(cli.getId());
-            if (cli != null) {
-                String nombre = idCliente + " " + cli.getString("nombre");
-                System.out.println(nombre);
-                ventaGui.getClienteFactura().setText(nombre);
-                LazyList<ArticulosVentas> pr = ArticulosVentas.find("venta_id = ?", idFac);
-                Iterator<ArticulosVentas> it = pr.iterator();
-                System.out.println("antes del while");
-                while (it.hasNext()) {
-                    ArticulosVentas prod = it.next();
-                    Articulo producto = Articulo.findFirst("id = ?", prod.get("articulo_id"));
-                    if (producto != null) {
-                        System.out.println("entre");
-                        BigDecimal precio;
-                        if (factura.getBoolean("pago")) {
-                            precio = prod.getBigDecimal("precio_final").setScale(2, RoundingMode.CEILING);
-                        } else {
-                            precio = producto.getBigDecimal("precio_venta").setScale(2, RoundingMode.CEILING);
-                        }
-                        BigDecimal cantidad = prod.getBigDecimal("cantidad").setScale(2, RoundingMode.CEILING);
-                        Object cols[] = new Object[5];
-                        cols[0] = producto.get("id");
-                        cols[1] = cantidad;
-                        cols[2] = producto.get("codigo");
-                        cols[3] = precio;
-                        cols[4] = precio.multiply(cantidad).setScale(2, RoundingMode.CEILING);
-                        ventaGui.getTablaFacturaDefault().addRow(cols);
-                    }
-                }
-                if (factura.getBoolean("pago")) {
-                    ventaGui.getTotalFactura().setText(String.valueOf(factura.getFloat("monto")));
+        if ((e.getSource() == clienteGui.getVerHistorial())) {
+            //AGREGARFUNCIONAMIENTO      
+        }
+        if (e.getSource() == clienteGui.getCobrarFactura()) {
+            int row = tablaVentas.getSelectedRow();
+            if (row > -1) {
+                abrirBase();
+                String id = (String) tablaVentas.getValueAt(row, 0);
+                BigDecimal monto = new BigDecimal((String) tablaVentas.getValueAt(row, 2));
+                Venta v = Venta.findById(id);
+                ABMVenta ambV = new ABMVenta();
+                if (ambV.pagar(v, monto)) {
+                    String clienteId = clienteGui.getId().getText();
+                    int idCliente2 = Integer.parseInt(clienteId);
+                    Calendar c = Calendar.getInstance();
+                    c.setTime(new Date());
+                    String d = c.get(Calendar.YEAR) + "-" + c.get(Calendar.MONTH) + "-" + c.get(Calendar.DATE);
+                    Pago pago = new Pago();
+                    pago.set("fecha", d);
+                    pago.set("monto", monto);
+                    pago.set("cliente_id", idCliente2);
+                    pago.saveIt();
+                    String pagoId = Pago.findFirst("fecha = ? and monto = ? and cliente_id = ?", d, monto, idCliente2).getString("id");
+                    v.set("pago_id", pagoId);
+                    v.saveIt();
+                    JOptionPane.showMessageDialog(clienteGui, "¡Cobro registrado exitosamente!");
+                    cargarVentas();
                 } else {
-                    actualizarPrecio();
-                }
-                Base.close();
-                System.out.println("sali");
-                ventaGui.paraVerVenta(true);
-                ventaGui.setVisible(true);
-                ventaGui.toFront();
-                System.out.println("termine");
-            } else {
-                JOptionPane.showMessageDialog(aplicacionGui, "El cliente asociado a esta factura ya no existe", "CLIENTE INEXISTENTE", JOptionPane.ERROR_MESSAGE);
-            }
+                    JOptionPane.showMessageDialog(clienteGui, "Ocurrió un error, el cobro no ha sido registrado", "Error!", JOptionPane.ERROR_MESSAGE);
 
+                }
+                calcularCtaCte();
+                cerrarBase();
+            }
         }
     }
 
@@ -307,7 +345,7 @@ public class ControladorCliente implements ActionListener {
         BigDecimal importe;
         BigDecimal total = new BigDecimal(0);
         for (int i = 0; i < ventaGui.getTablaFactura().getRowCount(); i++) {
-            importe = ((BigDecimal) ventaGui.getTablaFactura().getValueAt(i, 1)).multiply((BigDecimal) ventaGui.getTablaFactura().getValueAt(i, 3)).setScale(2, RoundingMode.CEILING);
+            importe = ((BigDecimal) ventaGui.getTablaFactura().getValueAt(i, 1)).multiply((BigDecimal) ventaGui.getTablaFactura().getValueAt(i, 4)).setScale(2, RoundingMode.CEILING);
             ventaGui.getTablaFactura().setValueAt(importe, i, 4);
         }
         for (int i = 0; i < ventaGui.getTablaFactura().getRowCount(); i++) {
@@ -348,7 +386,8 @@ public class ControladorCliente implements ActionListener {
         }
     }
 
-    private void deudaTotal() {
+    private BigDecimal calcularCtaCte() {
+        abrirBase();
         BigDecimal aux;
         BigDecimal total = new BigDecimal(0);
         for (int i = 0; i < tablaVentas.getRowCount(); i++) {
@@ -357,7 +396,19 @@ public class ControladorCliente implements ActionListener {
                 total = total.add(aux);;
             }
         }
-        clienteGui.getAdeuda().setText((total.setScale(2, RoundingMode.CEILING)).toString());
+        BigDecimal cta = cliente.getBigDecimal("cuenta");
+        cta = cta.subtract(total).setScale(2, RoundingMode.CEILING);
+        if (cta.signum() == -1) {
+            clienteGui.getAdeuda().setForeground(Color.red);
+            cta = cta.negate();
+            clienteGui.getAdeuda().setText(cta.toString());
+            cta = cta.negate();
+            return cta;
+        } else {
+            clienteGui.getAdeuda().setForeground(Color.green);
+            clienteGui.getAdeuda().setText(cta.toString());
+            return cta;
+        }
     }
 
     private void realizarBusqueda() {
@@ -444,5 +495,37 @@ public class ControladorCliente implements ActionListener {
         }
 
         cerrarBase();
+    }
+
+    public LinkedList<Venta> cargarDeuda(String id) {
+        abrirBase();
+        Iterator<Venta> itr = busqueda.filtroVenta(id, "0-0-0", "9999-0-0").iterator();
+        LinkedList<Venta> retorno = new LinkedList<Venta>();
+        while (itr.hasNext()) {
+            Venta v = itr.next();
+            if (!(v.getBoolean("pago"))) {
+                retorno.add(v);
+            }
+        }
+        return retorno;
+    }
+
+    public BigDecimal montoVentaNoAbonada(String id) {
+        abrirBase();
+        BigDecimal montox = null;
+        BigDecimal cuenta;
+        Iterator<ArticulosVentas> itr2 = busqueda.filtroVendidos(id).iterator();
+        while (itr2.hasNext()) {
+            ArticulosVentas arvs = itr2.next();
+            Articulo art = Articulo.findById(arvs.getInteger("articulo_id"));
+            cuenta = (art.getBigDecimal("precio_venta")).multiply(arvs.getBigDecimal("cantidad")).setScale(2, RoundingMode.CEILING);
+            if (montox == null) {
+                montox = new BigDecimal(String.valueOf((cuenta).setScale(2, RoundingMode.CEILING)));
+            } else {
+                montox = new BigDecimal(String.valueOf(montox.add(cuenta).setScale(2, RoundingMode.CEILING)));
+            }
+        }
+
+        return montox.setScale(2, RoundingMode.CEILING);
     }
 }

@@ -57,7 +57,6 @@ public class CompraGui extends javax.swing.JInternalFrame {
         this.compraNueva.addActionListener(lis);
         this.realizarCompra.addActionListener(lis);
         this.borrarArticulosSeleccionados.addActionListener(lis);
-          this.abonaNo.addActionListener(lis);
         this.abonaSi.addActionListener(lis);
     }
 
@@ -230,7 +229,6 @@ public class CompraGui extends javax.swing.JInternalFrame {
          codigo.setEnabled(!si);
          calendarioCompra.setEnabled(!si);
          borrarArticulosSeleccionados.setEnabled(!si);
-         abonaNo.setEnabled(!si);
         abonaSi.setEnabled(!si);
          realizarCompra.setEnabled(!si);
      }
@@ -265,10 +263,6 @@ public class CompraGui extends javax.swing.JInternalFrame {
         return fram;
     }
 
- 
-        public JCheckBox getAbonaNo() {
-        return abonaNo;
-    }
 
     public JCheckBox getAbonaSi() {
         return abonaSi;
@@ -316,7 +310,6 @@ public class CompraGui extends javax.swing.JInternalFrame {
         calendarioCompra = new com.toedter.calendar.JDateChooser();
         jLabel5 = new javax.swing.JLabel();
         abonaSi = new javax.swing.JCheckBox();
-        abonaNo = new javax.swing.JCheckBox();
         labelTotalConDes = new javax.swing.JLabel();
         descuento = new javax.swing.JLabel();
         panelControlFactura = new javax.swing.JPanel();
@@ -354,14 +347,14 @@ public class CompraGui extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "Id", "Codigo", "Marca"
+                "Id", "Codigo", "Marca", "Descripcion"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.String.class
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false
+                false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -452,7 +445,7 @@ public class CompraGui extends javax.swing.JInternalFrame {
             .addGroup(panelProveedoresLayout.createSequentialGroup()
                 .addComponent(labelNombre)
                 .addGap(17, 17, 17)
-                .addComponent(busquedaNombreProveedor, javax.swing.GroupLayout.DEFAULT_SIZE, 153, Short.MAX_VALUE))
+                .addComponent(busquedaNombreProveedor, javax.swing.GroupLayout.DEFAULT_SIZE, 235, Short.MAX_VALUE))
             .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
         );
         panelProveedoresLayout.setVerticalGroup(
@@ -495,11 +488,11 @@ public class CompraGui extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "ID", "Cantidad", "Articulo", "Precio", "importe"
+                "ID", "Cantidad", "Articulo","Descripcion" , "Precio", "importe"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.math.BigDecimal.class, java.lang.String.class, java.math.BigDecimal.class, java.math.BigDecimal.class
+                java.lang.Integer.class, java.math.BigDecimal.class, java.lang.String.class, java.lang.String.class, java.math.BigDecimal.class, java.math.BigDecimal.class
             };
             boolean[] canEdit = new boolean [] {
                 false, true, false, true, false
@@ -532,17 +525,9 @@ public class CompraGui extends javax.swing.JInternalFrame {
         jLabel5.setFont(new java.awt.Font("Century Schoolbook L", 0, 14)); // NOI18N
         jLabel5.setText("Abona");
 
-        abonaSi.setText("Si");
         abonaSi.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 abonaSiActionPerformed(evt);
-            }
-        });
-
-        abonaNo.setText("No");
-        abonaNo.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                abonaNoActionPerformed(evt);
             }
         });
 
@@ -558,23 +543,20 @@ public class CompraGui extends javax.swing.JInternalFrame {
             panelCompraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jScrollPane8, javax.swing.GroupLayout.Alignment.TRAILING)
             .addGroup(panelCompraLayout.createSequentialGroup()
-                .addContainerGap()
                 .addComponent(labelCliente)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(0, 0, 0)
                 .addComponent(proveedorCompra)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(0, 0, 0)
                 .addComponent(jLabel3)
                 .addGap(4, 4, 4)
                 .addComponent(calendarioCompra, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelCompraLayout.createSequentialGroup()
                 .addComponent(borrarArticulosSeleccionados)
-                .addGap(57, 57, 57)
-                .addComponent(jLabel5)
-                .addGap(18, 18, 18)
-                .addComponent(abonaSi)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(abonaNo)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel5)
+                .addGap(6, 6, 6)
+                .addComponent(abonaSi)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 45, Short.MAX_VALUE)
                 .addComponent(labelTotal)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(totalCompra, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -595,17 +577,16 @@ public class CompraGui extends javax.swing.JInternalFrame {
                         .addComponent(jLabel3))
                     .addComponent(calendarioCompra, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane8, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane8, javax.swing.GroupLayout.DEFAULT_SIZE, 194, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelCompraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(borrarArticulosSeleccionados, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(panelCompraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(totalCompra, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(labelTotal)
-                        .addComponent(abonaNo)
                         .addComponent(abonaSi)
                         .addComponent(jLabel5)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(10, 10, 10)
                 .addGroup(panelCompraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(labelTotalConDes)
                     .addComponent(descuento)))
@@ -628,12 +609,12 @@ public class CompraGui extends javax.swing.JInternalFrame {
             .addGroup(fondoImagenLayout.createSequentialGroup()
                 .addGap(0, 0, 0)
                 .addGroup(fondoImagenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(panelTitulo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(panelTitulo, javax.swing.GroupLayout.DEFAULT_SIZE, 820, Short.MAX_VALUE)
                     .addGroup(fondoImagenLayout.createSequentialGroup()
                         .addComponent(panelClientesAarticulos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(0, 0, 0)
-                        .addGroup(fondoImagenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(panelCompra, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(fondoImagenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(panelCompra, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(panelControlFactura, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addGap(0, 0, 0))
         );
@@ -663,7 +644,7 @@ public class CompraGui extends javax.swing.JInternalFrame {
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 410, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         getContentPane().add(jPanel1, java.awt.BorderLayout.CENTER);
@@ -675,12 +656,7 @@ public class CompraGui extends javax.swing.JInternalFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_abonaSiActionPerformed
 
-    private void abonaNoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_abonaNoActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_abonaNoActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JCheckBox abonaNo;
     private javax.swing.JCheckBox abonaSi;
     private javax.swing.JButton borrarArticulosSeleccionados;
     private javax.swing.JTextField busquedaNombreProveedor;
