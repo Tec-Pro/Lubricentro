@@ -61,7 +61,7 @@ public class RealizarPagoVentaControlador implements ActionListener {
             pagoFacturaGui.setCliente(ctaCte.toString());
             ctaCte = ctaCte.negate();
         } else {
-            pagoFacturaGui.getCuenta().setForeground(Color.green);
+            pagoFacturaGui.getCuenta().setForeground(Color.black);
             pagoFacturaGui.setCliente(ctaCte.toString());
         }
     }

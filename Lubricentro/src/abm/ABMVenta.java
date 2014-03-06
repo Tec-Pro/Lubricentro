@@ -36,7 +36,7 @@ public class ABMVenta {
         } else {
             Integer idCliente = (Integer) v.get("cliente_id");
             if (v.getBoolean("pago")) { // SI se paga se calcula el monto, si se fia no.
-                Venta venta = Venta.create("monto", v.get("monto"), "cliente_id", idCliente, "fecha", v.get("fecha"), "pago", v.get("pago"));
+                Venta venta = Venta.create("monto", v.get("monto"), "cliente_id", idCliente, "fecha", v.get("fecha"), "pago", v.get("pago"), "pago_id", v.get("pago_id"));
                 resultOp = resultOp && venta.saveIt();//guardo la venta
                 int idVenta = venta.getInteger("id");
                 ultimoIdVenta = idVenta;

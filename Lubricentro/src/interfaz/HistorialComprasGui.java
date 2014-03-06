@@ -17,14 +17,15 @@ import javax.swing.table.DefaultTableModel;
 public class HistorialComprasGui extends javax.swing.JInternalFrame {
 
     private DefaultTableModel tablaHistorialD;
+
     /**
      * Creates new form HistorialComprasGui
      */
     public HistorialComprasGui() {
         initComponents();
-        tablaHistorialD =  (DefaultTableModel) tablaHistorial.getModel();
-        desde.setDateFormatString("0-1-1");
-        hasta.setDateFormatString("9999-1-1");
+        tablaHistorialD = (DefaultTableModel) tablaHistorial.getModel();
+        desde.setDateFormatString("0-0-0");
+        hasta.setDateFormatString("9999-0-0");
     }
 
     public JButton getBuscar() {
@@ -47,24 +48,22 @@ public class HistorialComprasGui extends javax.swing.JInternalFrame {
         return volver;
     }
 
-    public void setNombre(String c){
+    public void setNombre(String c) {
         cliente.setText(c);
     }
-    
-    public void setCuenta(String c){
+
+    public void setCuenta(String c) {
         cuenta.setText(c);
     }
-    
-    public DefaultTableModel getTablaHistorialDefault(){
+
+    public DefaultTableModel getTablaHistorialDefault() {
         return tablaHistorialD;
     }
 
     public JLabel getCuenta() {
         return cuenta;
     }
-    
-    
-    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

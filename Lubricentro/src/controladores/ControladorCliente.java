@@ -43,7 +43,8 @@ import org.javalite.activejdbc.LazyList;
  */
 public class ControladorCliente implements ActionListener {
 
-    private static BigDecimal iva = new BigDecimal("0.21");
+    private static BigDecimal iva = new BigDecimal("21");
+    private static BigDecimal cien = new BigDecimal("100");
     private JTextField nomcli;
     private ClienteGui clienteGui;
     private AplicacionGui aplicacionGui;
@@ -122,6 +123,7 @@ public class ControladorCliente implements ActionListener {
                 ventaGui.getClienteFactura().setText(nombre);
                 LazyList<ArticulosVentas> pr = ArticulosVentas.find("venta_id = ?", idFac);
                 Iterator<ArticulosVentas> it = pr.iterator();
+                BigDecimal porcentaje;
                 while (it.hasNext()) {
                     ArticulosVentas prod = it.next();
                     Articulo producto = Articulo.findFirst("id = ?", prod.get("articulo_id"));
@@ -142,7 +144,9 @@ public class ControladorCliente implements ActionListener {
                         cols[2] = producto.get("codigo");
                         cols[3] = producto.get("descripcion");
                         cols[4] = precio;
-                        cols[5] = precioSinIva.multiply(iva);
+                        String porcentajeS = BigDecimal.valueOf(producto.getFloat("precio_venta")).multiply(iva).divide(cien).setScale(2, RoundingMode.CEILING).toString();
+                        porcentaje = new BigDecimal(porcentajeS);
+                        cols[5] = producto.getBigDecimal("precio_venta").subtract(porcentaje);
                         cols[6] = precio.multiply(cantidad).setScale(2, RoundingMode.CEILING);
                         ventaGui.getTablaFacturaDefault().addRow(cols);
                     }
@@ -307,7 +311,7 @@ public class ControladorCliente implements ActionListener {
         }
         if ((e.getSource() == clienteGui.getVerHistorial())) {
             HistorialComprasGui hcg = new HistorialComprasGui();
-            HistorialComprasControlador hcc = new HistorialComprasControlador(aplicacionGui, hcg, clienteGui ,cliente, calcularCtaCte());
+            HistorialComprasControlador hcc = new HistorialComprasControlador(aplicacionGui, hcg, clienteGui, cliente, calcularCtaCte());
             aplicacionGui.getContenedor().add(hcg);
             hcg.setVisible(true);
             hcg.toFront();
@@ -410,7 +414,7 @@ public class ControladorCliente implements ActionListener {
             cta = cta.negate();
             return cta;
         } else {
-            clienteGui.getAdeuda().setForeground(Color.green);
+            clienteGui.getAdeuda().setForeground(Color.black);
             clienteGui.getAdeuda().setText(cta.toString());
             return cta;
         }

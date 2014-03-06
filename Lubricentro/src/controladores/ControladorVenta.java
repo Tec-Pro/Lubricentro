@@ -225,23 +225,21 @@ public class ControladorVenta implements ActionListener, CellEditorListener {
                     v.set("pago", true);
                     BigDecimal bd = new BigDecimal(ventaGui.getTotalFactura().getText());
                     v.set("monto", bd);
+                    Pago pago = new Pago();
+                    pago.set("fecha", laFecha);
+                    pago.set("monto", bd);
+                    pago.set("cliente_id", idCliente);
+                    pago.saveIt();
+                    String pagoId = Pago.findFirst("fecha = ? and monto = ? and cliente_id = ?", laFecha, bd, idCliente).getString("id");
+                    System.out.println("el pago id es:  "+pagoId);
+                    v.set("pago_id", pagoId);
                     abrirBase();
                     if (abmVenta.alta(v)) {
-                        Pago pago = new Pago();
-                        pago.set("fecha", laFecha);
-                        pago.set("monto", bd);
-                        pago.set("cliente_id", idCliente);
-                        pago.saveIt();
-                        String pagoId = Pago.findFirst("fecha = ? and monto = ? and cliente_id = ?", laFecha, bd, idCliente).getString("id");
-                        v.set("pago_id", pagoId);
-                        v.saveIt();
                         JOptionPane.showMessageDialog(apgui, "Venta realizada con exito.");
                         ventaGui.limpiarVentana();
                         try {
-                            if (v.getBoolean("pago")) {
+                            {
                                 reporteFactura.mostrarFactura(abmVenta.getUltimoIdVenta());
-                            } else {
-                                reporteFacturaSinPagar.mostrarFactura(abmVenta.getUltimoIdVenta());
                             }
                         } catch (ClassNotFoundException ex) {
                             Logger.getLogger(ControladorVenta.class.getName()).log(Level.SEVERE, null, ex);
@@ -278,9 +276,7 @@ public class ControladorVenta implements ActionListener, CellEditorListener {
                         JOptionPane.showMessageDialog(apgui, "Venta realizada con exito.");
                         ventaGui.limpiarVentana();
                         try {
-                            if (v.getBoolean("pago")) {
-                                reporteFactura.mostrarFactura(abmVenta.getUltimoIdVenta());
-                            } else {
+                            {
                                 reporteFacturaSinPagar.mostrarFactura(abmVenta.getUltimoIdVenta());
                             }
                         } catch (ClassNotFoundException ex) {
@@ -414,6 +410,4 @@ public class ControladorVenta implements ActionListener, CellEditorListener {
     public void editingCanceled(ChangeEvent e) {
         //  throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
-
 }
