@@ -348,14 +348,14 @@ public class RealizarPagoGui extends javax.swing.JDialog {
         prov.set("cuenta_corriente", cuentaActualizada);
         prov.saveIt();
         Base.commitTransaction();
-        System.out.println(compra!=null);
+        System.out.println((compra!=null) +" "+ compra.get("id"));
         if(compra!=null){
             
         Base.openTransaction();
         compra.setBoolean("pago", true);
         compra.set("fecha_pago", sqlFecha);
         compra.set("descuento", porcentaje);
-        compra.saveIt();
+        compra.save();
         Base.commitTransaction();
         }
         cerrarBase();

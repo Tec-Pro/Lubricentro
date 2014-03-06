@@ -21,6 +21,7 @@ import org.javalite.activejdbc.LazyList;
  */
 public class ABMCompra {
 
+    public static int idCompraAlta;//chanchada que no se debe hacer nunca
     public ABMCompra() {
     }
 
@@ -34,6 +35,7 @@ public class ABMCompra {
             Compra compra = Compra.create("monto", c.get("monto"), "proveedor_id", idProveedor, "fecha", c.get("fecha"), "pago", c.get("pago"));
             resultOp = resultOp && compra.saveIt();//guardo la venta
             int idCompra = compra.getInteger("id");
+            idCompraAlta= idCompra;//Agregada para solucionar el problema
             resultOp = resultOp && cargarProductosComprass(idCompra, c.getProductos());//guardo los productos vendidos
         }
 

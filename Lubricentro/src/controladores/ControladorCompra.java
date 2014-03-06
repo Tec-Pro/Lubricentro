@@ -310,6 +310,7 @@ public class ControladorCompra implements ActionListener, CellEditorListener {
                     if (!(prov == null) && (compraGui.getAbonaSi().isSelected())) {
                         BigDecimal cuentaCorriente = prov.getBigDecimal("cuenta_corriente").subtract(v.getBigDecimal("monto"));
                         prov.set("cuenta_corriente", cuentaCorriente);
+                        v= Compra.findById(ABMCompra.idCompraAlta);
                         realizarPagoGui = new RealizarPagoGui(apgui, true, prov, v);
                         realizarPagoGui.setLocationRelativeTo(compraGui);
                         realizarPagoGui.setVisible(true);
