@@ -287,7 +287,7 @@ public class ControladorCompra implements ActionListener, CellEditorListener {
                     abrirBase();
                     Articulo producto = Articulo.findFirst("id = ?", tablafac.getValueAt(i, 0));
                     BigDecimal cantidad = ((BigDecimal) tablafac.getValueAt(i, 1)).setScale(2, RoundingMode.CEILING); //saco la cantidad
-                    BigDecimal precioFinal = ((BigDecimal) tablafac.getValueAt(i, 3)).setScale(2, RoundingMode.CEILING);
+                    BigDecimal precioFinal = ((BigDecimal) tablafac.getValueAt(i, 4)).setScale(2, RoundingMode.CEILING);
                     producto.set("precio_compra", precioFinal);
                     producto.saveIt();
                     Pair par = new Pair(producto, cantidad); //creo el par
@@ -365,7 +365,7 @@ public class ControladorCompra implements ActionListener, CellEditorListener {
         BigDecimal importe;
         BigDecimal total = new BigDecimal(0);
         for (int i = 0; i < tablafac.getRowCount(); i++) {
-            importe = ((BigDecimal) tablafac.getValueAt(i, 1)).multiply((BigDecimal) compraGui.getTablaCompra().getValueAt(i, 3)).setScale(2, RoundingMode.CEILING);
+            importe = ((BigDecimal) tablafac.getValueAt(i, 1)).multiply((BigDecimal) compraGui.getTablaCompra().getValueAt(i, 4)).setScale(2, RoundingMode.CEILING);
             tablafac.setValueAt(importe, i, 5);
         }
         for (int i = 0; i < tablafac.getRowCount(); i++) {
