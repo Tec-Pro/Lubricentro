@@ -25,15 +25,12 @@ public class HistorialComprasGui extends javax.swing.JInternalFrame {
     public HistorialComprasGui() {
         initComponents();
         tablaHistorialD = (DefaultTableModel) tablaHistorial.getModel();
-        //desde.setDateFormatString("0-0-0");
         desde.setDateFormatString("yyyy-MM-dd");
         hasta.setDateFormatString("yyyy-MM-dd");
-        //hasta.setDateFormatString("9999-0-0");
     }
     
     public void setActionListener(ActionListener lis){
-        volver.addActionListener(lis);
-        buscar.addActionListener(lis);
+       
     }
 
     public JDateChooser getDesde() {
@@ -47,16 +44,6 @@ public class HistorialComprasGui extends javax.swing.JInternalFrame {
     public JTable getTablaHistorial() {
         return tablaHistorial;
     }
-
-    public JButton getBuscar() {
-        return buscar;
-    }
-
-    public JButton getVolver() {
-        return volver;
-    }
-
-
 
     public void setNombre(String c) {
         cliente.setText(c);
@@ -91,8 +78,6 @@ public class HistorialComprasGui extends javax.swing.JInternalFrame {
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        buscar = new javax.swing.JButton();
-        volver = new javax.swing.JButton();
         desde = new com.toedter.calendar.JDateChooser();
         hasta = new com.toedter.calendar.JDateChooser();
         cliente = new javax.swing.JLabel();
@@ -141,10 +126,6 @@ public class HistorialComprasGui extends javax.swing.JInternalFrame {
 
         jLabel4.setText("Cta Cte:");
 
-        buscar.setText("Buscar");
-
-        volver.setText("Vovlver");
-
         desde.setDateFormatString("yyyy-MM-dd");
 
         hasta.setDateFormatString("yyyy-MM-dd");
@@ -172,19 +153,12 @@ public class HistorialComprasGui extends javax.swing.JInternalFrame {
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(hasta, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 42, Short.MAX_VALUE)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(buscar)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel4)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(cuenta, javax.swing.GroupLayout.PREFERRED_SIZE, 241, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 47, Short.MAX_VALUE)
+                .addComponent(jLabel4)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(cuenta, javax.swing.GroupLayout.PREFERRED_SIZE, 241, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(115, 115, 115))
             .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(volver, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -194,9 +168,8 @@ public class HistorialComprasGui extends javax.swing.JInternalFrame {
                     .addComponent(desde, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel1)
                     .addComponent(jLabel3)
-                    .addComponent(hasta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(buscar))
-                .addGap(19, 19, 19)
+                    .addComponent(hasta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(21, 21, 21)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -204,10 +177,8 @@ public class HistorialComprasGui extends javax.swing.JInternalFrame {
                         .addComponent(cliente)
                         .addComponent(cuenta)))
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 295, Short.MAX_VALUE)
-                .addGap(16, 16, 16)
-                .addComponent(volver)
-                .addContainerGap())
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 322, Short.MAX_VALUE)
+                .addGap(56, 56, 56))
         );
 
         jScrollPane2.setViewportView(jPanel2);
@@ -226,7 +197,6 @@ public class HistorialComprasGui extends javax.swing.JInternalFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton buscar;
     private javax.swing.JLabel cliente;
     private javax.swing.JLabel cuenta;
     private com.toedter.calendar.JDateChooser desde;
@@ -239,6 +209,5 @@ public class HistorialComprasGui extends javax.swing.JInternalFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTable tablaHistorial;
-    private javax.swing.JButton volver;
     // End of variables declaration//GEN-END:variables
 }

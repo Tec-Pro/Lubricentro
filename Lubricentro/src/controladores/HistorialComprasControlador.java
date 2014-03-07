@@ -63,7 +63,7 @@ public class HistorialComprasControlador implements ActionListener {
         busqueda = new Busqueda();
         CargarDatosCli();
         tablaHistorialDef = historialCompras.getTablaHistorialDefault();
-       desde = "0-0-0";
+        desde = "0-0-0";
         hasta = "9999-0-0";
         calenDesde = historialComprasGui.getDesde();
         calenHasta = historialComprasGui.getHasta();
@@ -174,19 +174,6 @@ public class HistorialComprasControlador implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == historialComprasGui.getVolver()) {
-            clienteGui.setVisible(true);
-            clienteGui.toFront();
-            historialComprasGui.dispose();
-            try {
-                this.finalize();
-            } catch (Throwable ex) {
-                Logger.getLogger(HistorialComprasControlador.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-        if (e.getSource() == historialComprasGui.getBuscar()) {
-            cargarHistorial();
-        }
     }
 
     private void abrirBase() {
