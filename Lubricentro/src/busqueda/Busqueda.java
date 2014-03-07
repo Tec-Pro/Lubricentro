@@ -62,7 +62,8 @@ public class Busqueda {
      */
     public List<Venta> filtroVenta(String idcliente, String desde, String hasta) {
         List<Venta> result;
-        result = Venta.where("cliente_id like ? and fecha between ? and ?", idcliente + "%", desde, hasta);
+        result = Venta.where("cliente_id like ? and (fecha between ? and ?)", idcliente, desde, hasta);
+        System.out.println(idcliente+ " "+ desde +" "+hasta);
         return result;
     }
 

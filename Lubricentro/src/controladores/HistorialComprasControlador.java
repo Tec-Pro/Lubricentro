@@ -63,7 +63,7 @@ public class HistorialComprasControlador implements ActionListener {
         busqueda = new Busqueda();
         CargarDatosCli();
         tablaHistorialDef = historialCompras.getTablaHistorialDefault();
-        desde = "0-0-0";
+       desde = "0-0-0";
         hasta = "9999-0-0";
         calenDesde = historialComprasGui.getDesde();
         calenHasta = historialComprasGui.getHasta();
@@ -93,19 +93,19 @@ public class HistorialComprasControlador implements ActionListener {
                 calenHastaPropertyChange(e);
             }
         });
-
+        this.historialComprasGui.setActionListener(this);
         cargarHistorial();
     }
     
      public void calenDesdePropertyChange(PropertyChangeEvent e) {
         final Calendar c = (Calendar) e.getNewValue();
-        desde = c.get(Calendar.YEAR) + "-" + c.get(Calendar.MONTH) + "-" + c.get(Calendar.DATE);
+        desde = c.get(Calendar.YEAR) + "-" + (c.get(Calendar.MONTH)+1) + "-" + c.get(Calendar.DATE);
         cargarHistorial();
     }
 
     public void calenHastaPropertyChange(PropertyChangeEvent e) {
         final Calendar c = (Calendar) e.getNewValue();
-        hasta = c.get(Calendar.YEAR) + "-" + c.get(Calendar.MONTH) + "-" + c.get(Calendar.DATE);
+        hasta = c.get(Calendar.YEAR) + "-" + (c.get(Calendar.MONTH)+1) + "-" + c.get(Calendar.DATE);
         cargarHistorial();
     }
 
@@ -114,10 +114,10 @@ public class HistorialComprasControlador implements ActionListener {
         historialComprasGui.setCuenta(ctaCte.toString());
         if (ctaCte.signum() == -1) {
             historialComprasGui.getCuenta().setForeground(Color.red);
-            historialComprasGui.setNombre(ctaCte.negate().toString());
+            historialComprasGui.setCuenta(ctaCte.abs().toString());
         } else {
             historialComprasGui.getCuenta().setForeground(Color.black);
-            historialComprasGui.setNombre(ctaCte.toString());
+            historialComprasGui.setCuenta(ctaCte.toString());
         }
     }
 

@@ -58,11 +58,11 @@ public class RealizarPagoVentaControlador implements ActionListener {
         if (ctaCte.signum() == -1) {
             pagoFacturaGui.getCuenta().setForeground(Color.red);
             ctaCte = ctaCte.negate();
-            pagoFacturaGui.setCliente(ctaCte.toString());
+            pagoFacturaGui.setCuenta(ctaCte.toString());
             ctaCte = ctaCte.negate();
         } else {
             pagoFacturaGui.getCuenta().setForeground(Color.black);
-            pagoFacturaGui.setCliente(ctaCte.toString());
+            pagoFacturaGui.setCuenta(ctaCte.toString());
         }
     }
 

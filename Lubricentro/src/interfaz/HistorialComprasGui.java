@@ -5,6 +5,7 @@
 package interfaz;
 
 import com.toedter.calendar.JDateChooser;
+import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JTable;
@@ -24,12 +25,15 @@ public class HistorialComprasGui extends javax.swing.JInternalFrame {
     public HistorialComprasGui() {
         initComponents();
         tablaHistorialD = (DefaultTableModel) tablaHistorial.getModel();
-        desde.setDateFormatString("0-0-0");
-        hasta.setDateFormatString("9999-0-0");
+        //desde.setDateFormatString("0-0-0");
+        desde.setDateFormatString("yyyy-MM-dd");
+        hasta.setDateFormatString("yyyy-MM-dd");
+        //hasta.setDateFormatString("9999-0-0");
     }
-
-    public JButton getBuscar() {
-        return buscar;
+    
+    public void setActionListener(ActionListener lis){
+        volver.addActionListener(lis);
+        buscar.addActionListener(lis);
     }
 
     public JDateChooser getDesde() {
@@ -44,9 +48,15 @@ public class HistorialComprasGui extends javax.swing.JInternalFrame {
         return tablaHistorial;
     }
 
+    public JButton getBuscar() {
+        return buscar;
+    }
+
     public JButton getVolver() {
         return volver;
     }
+
+
 
     public void setNombre(String c) {
         cliente.setText(c);
@@ -93,6 +103,7 @@ public class HistorialComprasGui extends javax.swing.JInternalFrame {
         setIconifiable(true);
         setMaximizable(true);
         setResizable(true);
+        setPreferredSize(new java.awt.Dimension(950, 498));
 
         tablaHistorial.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -173,7 +184,7 @@ public class HistorialComprasGui extends javax.swing.JInternalFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(volver, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(30, 30, 30))
+                .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -193,10 +204,10 @@ public class HistorialComprasGui extends javax.swing.JInternalFrame {
                         .addComponent(cliente)
                         .addComponent(cuenta)))
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 302, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 295, Short.MAX_VALUE)
+                .addGap(16, 16, 16)
                 .addComponent(volver)
-                .addGap(19, 19, 19))
+                .addContainerGap())
         );
 
         jScrollPane2.setViewportView(jPanel2);
@@ -209,7 +220,7 @@ public class HistorialComprasGui extends javax.swing.JInternalFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 477, Short.MAX_VALUE)
+            .addComponent(jScrollPane2)
         );
 
         pack();
