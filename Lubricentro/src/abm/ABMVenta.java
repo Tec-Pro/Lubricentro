@@ -29,6 +29,7 @@ public class ABMVenta {
 
     //FUNCIONA CORRECTAMENTE
     public boolean alta(Venta v) {
+        
         Base.openTransaction();
         boolean resultOp = true;
         if (v == null) {
@@ -112,7 +113,6 @@ public class ABMVenta {
                 BigDecimal precioActual = art.getBigDecimal("precio_venta");
                 preciosFinales.add(precioActual);
             }
-
             return v.saveIt() && cargarProductosVendidos(v.getInteger("id"), pairList, preciosFinales);
         }
     }

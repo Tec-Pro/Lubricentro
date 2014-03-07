@@ -482,7 +482,7 @@ public class ControladorCliente implements ActionListener {
                         montox = new BigDecimal(String.valueOf(montox.add(cuenta).setScale(2, RoundingMode.CEILING)));
                     }
                 }
-                montox.setScale(2, RoundingMode.CEILING);
+                montox.setScale(2, RoundingMode.CEILING);     
                 row[2] = montox.toString();
                 row[3] = "No";
             }

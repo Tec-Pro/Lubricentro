@@ -87,7 +87,6 @@ public class RealizarPagoVentaControlador implements ActionListener {
                 Venta ventaAPagar = null;
                 boolean sePuedePagar = true;
                 BigDecimal montoVentaAPagar = new BigDecimal(0);
-                itrVenta = cargarDeuda(clienteId).iterator();
                 BigDecimal aux;
                 ABMVenta ambV = new ABMVenta();
                 while (sePuedePagar) {
@@ -105,14 +104,15 @@ public class RealizarPagoVentaControlador implements ActionListener {
                     }
                     if (sePuedePagar) {
                         entrega = entrega.subtract(montoVentaAPagar);
-                        ambV.pagar(ventaAPagar, montoVentaAPagar);
                         ventaAPagar.set("pago_id", pagoId);
                         ventaAPagar.saveIt();
                         itrVenta = cargarDeuda(clienteId).iterator();
+                        montoVentaAPagar = new BigDecimal(0);
+                        aux = null;
+                        ventaAPagar = null;
                     }
                 }
                 cli.set("cuenta", entrega);
-                cli.saveIt();
                 JOptionPane.showMessageDialog(apgui, "¡Cobro registrado exitosamente!");
                 cerrarBase();
             }
