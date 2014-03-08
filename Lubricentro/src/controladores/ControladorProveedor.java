@@ -359,11 +359,12 @@ public class ControladorProveedor implements ActionListener {
             realizarPagoGui = new RealizarPagoGui(aplicacionGui, true, proveedor);
             realizarPagoGui.setLocationRelativeTo(proveedorGui);
             realizarPagoGui.setVisible(true);
-            cargarPagos();
             abrirBase();
             proveedor= abmProveedor.getProveedor(proveedor);
             proveedorGui.CargarCampos(proveedor);
+            cargarCompras();
             cerrarBase();
+            cargarPagos();
             
         }
         if (e.getSource() == proveedorGui.getBorrarPago()) {
@@ -427,7 +428,7 @@ public class ControladorProveedor implements ActionListener {
             realizarPagoGui.setLocationRelativeTo(proveedorGui);
             realizarPagoGui.setVisible(true);
             cargarPagos();
-            
+            abrirBase();
             proveedor= abmProveedor.getProveedor(proveedor);
             proveedorGui.CargarCampos(proveedor);
             cargarCompras();
@@ -490,8 +491,9 @@ public class ControladorProveedor implements ActionListener {
             row[0] = sdf.format(sqlFecha);
             row[1] = formateador.format(pago.getFloat("monto"));
             tablaPagosDefault.addRow(row);
-            cerrarBase();
         }
+                    cerrarBase();
+
     }
 
     private void cargarCompras() {
@@ -511,7 +513,7 @@ public class ControladorProveedor implements ActionListener {
             row[4]= new DecimalFormat("#########.##").format(compra.getFloat("monto") - (compra.getFloat("descuento") * compra.getFloat("monto") / 100));
             row[5]= compra.get("fecha_pago");
             tablaComprasDefault.addRow(row);
-            cerrarBase();
         }
+        cerrarBase();
     }
 }

@@ -14,11 +14,14 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
 import javax.swing.JOptionPane;
 import modelos.Compra;
 import modelos.Pago;
 import modelos.Proveedor;
+import modelos.Venta;
 import org.javalite.activejdbc.Base;
+import org.javalite.activejdbc.LazyList;
 import org.javalite.activejdbc.Model;
 import org.jdesktop.swingx.renderer.FormatStringValue;
 
@@ -64,16 +67,20 @@ public class RealizarPagoGui extends javax.swing.JDialog {
         numeroFac.setText("");
         totalFac.setText("");
         descuento.setText("");
-        this.compra= compra;
+        this.compra = compra;
         if (compra != null) {
             totalFac.setText(compra.getString("monto"));
             numeroFac.setText(compra.getString("id"));
+            monto.setText(compra.getString("monto"));
         }
         cuenta.setText(new DecimalFormat("#########.##").format(prov.getFloat("cuenta_corriente")));
         cerrarBase();
         proveedor.setText(prov.getString("nombre"));
         fecha.setDate(Calendar.getInstance().getTime());
-        monto.requestFocus();
+        descuento.requestFocus();
+        descuento.setText("0");
+
+        monto.setEnabled(false);
 
     }
 
@@ -339,32 +346,65 @@ public class RealizarPagoGui extends javax.swing.JDialog {
         abrirBase();
         //try {
         java.sql.Date sqlFecha = new java.sql.Date(fecha.getDate().getTime());
-        Pago pago = Pago.create("fecha", sqlFecha, "monto", monto.getText());
+        Pago pago = Pago.createIt("fecha", sqlFecha, "monto", monto.getText());
         pago.saveIt();
         prov.add(pago);
-        Base.openTransaction();
-        Float cuentaActualizada = prov.getFloat("cuenta_corriente") + pago.getFloat("monto");
-        System.out.println(cuentaActualizada);
-        prov.set("cuenta_corriente", cuentaActualizada);
-        prov.saveIt();
-        Base.commitTransaction();
-        System.out.println((compra!=null) +" "+ compra.get("id"));
-        if(compra!=null){
-            
-        Base.openTransaction();
-        compra.setBoolean("pago", true);
-        compra.set("fecha_pago", sqlFecha);
-        compra.set("descuento", porcentaje);
-        compra.save();
-        Base.commitTransaction();
-        }
+        String pagoId = pago.getString("id");
+        if (compra == null) {
+            Float entrega = pago.getFloat("monto");//pago
+            Float cuentaCorriente = prov.getFloat("cuenta_corriente");//CC
+            //entrega = entrega + cuentaCorriente; //4+(-6)=-2
+            LazyList<Compra> compras = Compra.where("pago = ? and proveedor_id = ?", 0, prov.getId()).orderBy("fecha");
+            Float deuda=calcularDeuda(compras);
+            Float dif= deuda+cuentaCorriente;
+            Iterator<Compra> it = compras.iterator();
+            boolean sePuedePagar = true;
+            Float entreMasDif= entrega+dif;
+            Compra compraAPagar;
+            while (sePuedePagar && it.hasNext()) {
+                sePuedePagar = false;
+                compraAPagar = it.next();
+                if (entreMasDif>= compraAPagar.getFloat("monto")) {
+                    sePuedePagar= true;
+                    System.out.println("estoy pagando");
+                        Base.openTransaction();
+                        compraAPagar.setBoolean("pago", true);
+                        compraAPagar.set("fecha_pago", sqlFecha);
+                        compraAPagar.set("pago_id", pagoId);
+                        compraAPagar.save();
+                        entreMasDif= entreMasDif-compraAPagar.getFloat("monto");
+                        Base.commitTransaction();
+                }
+            }
+                Base.openTransaction();
+                System.out.println(cuentaCorriente+entrega);
+                prov.set("cuenta_corriente", cuentaCorriente+entrega);
+                prov.saveIt();
+                Base.commitTransaction();
+            }
+        else {
+
+            Base.openTransaction();
+            compra.setBoolean("pago", true);
+            compra.set("fecha_pago", sqlFecha);
+            compra.set("descuento", porcentaje);
+            compra.set("pago_id", pagoId);
+            compra.save();
+            prov.set("cuenta_corriente", prov.getFloat("cuenta_corriente")+pago.getFloat("monto"));
+            prov.saveIt();
+            Base.commitTransaction();
+        }//else{
+
+        // }
+
+
         cerrarBase();
         JOptionPane.showMessageDialog(this, "¡Pago registrado correctamente");
         this.dispose();
         //} catch (Exception ex) {
         //    JOptionPane.showMessageDialog(this, "Ocurrió un error","Error",JOptionPane.ERROR_MESSAGE);
         //}
-
+    
 
     }//GEN-LAST:event_aceptarActionPerformed
 
@@ -396,7 +436,6 @@ public class RealizarPagoGui extends javax.swing.JDialog {
             monto.requestFocus();
         }
     }//GEN-LAST:event_descuentoKeyPressed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton aceptar;
     private javax.swing.JButton cancelar;
@@ -437,5 +476,14 @@ public class RealizarPagoGui extends javax.swing.JDialog {
         if (Base.hasConnection()) {
             Base.close();
         }
+    }
+    
+    private Float calcularDeuda(LazyList<Compra> compras){
+        Iterator<Compra> calcularDeuda= compras.iterator();
+            Float deuda=new Float(0);
+            while (calcularDeuda.hasNext()){
+                deuda= deuda+(calcularDeuda.next().getFloat("monto"));
+            }
+            return deuda;
     }
 }

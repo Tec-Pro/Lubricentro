@@ -147,6 +147,8 @@ ALTER TABLE `lubricentro`.`ventas` ADD COLUMN `pago_id` INT NULL DEFAULT NULL  A
 
 ALTER TABLE `lubricentro`.`clientes` ADD COLUMN `cuenta` FLOAT NULL DEFAULT 0  AFTER `celular` ;
 
+ALTER TABLE `lubricentro`.`compras` ADD COLUMN `pago_id` INT NULL  AFTER `descuento` ;
+
 /* constraints de calve foraneas.
 ALTER TABLE `lubricentro`.`ventas` ADD constraint fkventapago foreign key(pago_id) references pagos(id) on delete set null;
 ALTER TABLE `lubricentro`.`articulos_ventas` ADD constraint fkartvent foreign key (venta_id) references ventas(id) on delete cascade;
