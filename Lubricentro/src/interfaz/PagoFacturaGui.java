@@ -97,6 +97,7 @@ public class PagoFacturaGui extends javax.swing.JInternalFrame {
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
 
+        setClosable(true);
         setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
 
         aceptar.setText("Aceptar");
@@ -175,7 +176,7 @@ public class PagoFacturaGui extends javax.swing.JInternalFrame {
                     .addComponent(jLabel7))
                 .addGap(18, 18, 18)
                 .addComponent(aceptar)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(15, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());

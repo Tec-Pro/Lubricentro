@@ -84,7 +84,7 @@ public class Modulo {
         if (selecGuardaBack == 1) {
             Runtime rt = Runtime.getRuntime();
             try {
-                String command = installMysql + "mysqldump --opt -u " + login + " -p" + password + " " + bd + " -r \"" + rutabackup + ".sql\"";
+                String command = installMysql + "mysqldump --opt -u " + login + " -p" + password + " -h "+ManejoIp.ipServer+" " + bd + " -r \"" + rutabackup + ".sql\"";
                 System.out.println(command);
                 rt.exec(command);
                 JOptionPane.showMessageDialog(null, "Backup creado exitosamente!");
@@ -209,7 +209,7 @@ public class Modulo {
 
     private void restaurar() throws IOException {
         obtenerRutaMysql();
-        Process p = Runtime.getRuntime().exec(installMysql + "mysql -u root -proot lubricentro");
+        Process p = Runtime.getRuntime().exec(installMysql + "mysql -u tecpro -ptecpro -h "+ ManejoIp.ipServer +" lubricentro");
         final InputStream es = p.getErrorStream();
         Thread hiloError = new Thread() {
             public void run() {
@@ -247,7 +247,7 @@ public class Modulo {
         Runtime rt = Runtime.getRuntime();
         try {
             String dir = (new File(System.getProperty("user.dir")).getAbsolutePath());
-            String command = installMysql + "mysqldump --opt -u " + login + " -p" + password + " " + bd + " -r \"" + dir + "/backupEmail.sql\"";
+            String command = installMysql + "mysqldump --opt -u " + login + " -p" + password + " -h "+ManejoIp.ipServer+" " + bd + " -r \"" + dir + "/backupEmail.sql\"";
             System.out.println(command);
             rt.exec(command);
         } catch (IOException ex) {

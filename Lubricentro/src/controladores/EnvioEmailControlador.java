@@ -37,8 +37,8 @@ public class EnvioEmailControlador {
     public String bd = "lubricentro";
     public static String login = "tecpro";
     public static String password = "tecpro";
-    public String url = "jdbc:mysql://localhost/" + bd;
-    public String urlcero = "jdbc:mysql://localhost/";
+    public String url = "jdbc:mysql://"+ ManejoIp.ipServer+"/" + bd;
+    public String urlcero = "jdbc:mysql://"+ ManejoIp.ipServer+"/";
     public Connection conn = null;
     String mail = "";
     String passwo = "";

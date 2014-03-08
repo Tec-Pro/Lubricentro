@@ -2,6 +2,7 @@
 
 <Form version="1.3" maxVersion="1.8" type="org.netbeans.modules.form.forminfo.JInternalFrameFormInfo">
   <Properties>
+    <Property name="closable" type="boolean" value="true"/>
     <Property name="defaultCloseOperation" type="int" value="1"/>
   </Properties>
   <SyntheticProperties>
@@ -102,7 +103,7 @@
                   </Group>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Component id="aceptar" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace max="32767" attributes="0"/>
+                  <EmptySpace pref="15" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>

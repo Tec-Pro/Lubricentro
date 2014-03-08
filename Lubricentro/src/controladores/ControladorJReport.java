@@ -4,6 +4,7 @@
  */
 package controladores;
 
+import abm.ManejoIp;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -32,7 +33,7 @@ public class ControladorJReport {
     //listado de clientes productos y proveedores.
     public void mostrarReporte() throws ClassNotFoundException, SQLException, JRException {
         Class.forName("com.mysql.jdbc.Driver");
-        Connection connection = DriverManager.getConnection("jdbc:mysql://localhost/lubricentro", "tecpro", "tecpro");
+        Connection connection = DriverManager.getConnection("jdbc:mysql://"+ManejoIp.ipServer+"/lubricentro", "tecpro", "tecpro");
         Map parametros = new HashMap();
         parametros.clear();
         parametros.put("logo", this.getClass().getResourceAsStream(logo));
@@ -44,7 +45,7 @@ public class ControladorJReport {
     public void mostrarFactura(int venta) throws ClassNotFoundException, SQLException, JRException {
         Class.forName("com.mysql.jdbc.Driver");
 
-        Connection connection = DriverManager.getConnection("jdbc:mysql://localhost/lubricentro", "tecpro", "tecpro");
+        Connection connection = DriverManager.getConnection("jdbc:mysql://"+ManejoIp.ipServer+"/lubricentro", "tecpro", "tecpro");
         Map parametros = new HashMap();
         parametros.clear();
         parametros.put("numFactura", venta);
