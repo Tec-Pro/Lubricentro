@@ -79,9 +79,7 @@ public class RealizarPagoVentaControlador implements ActionListener {
                 pago.set("fecha", pagoFacturaGui.getCalendarioText().getText());
                 pago.set("monto", entrega);
                 pago.set("cliente_id", idCliente);
-                Base.openTransaction();
                 pago.saveIt();
-                Base.commitTransaction();
                 String pagoId = Pago.findFirst("fecha = ? and monto = ? and cliente_id = ?", pagoFacturaGui.getCalendarioText().getText(), entrega, idCliente).getString("id");
                 BigDecimal cuentaCliente = new BigDecimal(cli.getString("cuenta"));
                 entrega = entrega.add(cuentaCliente);
@@ -92,7 +90,6 @@ public class RealizarPagoVentaControlador implements ActionListener {
                 BigDecimal aux;
                 ABMVenta ambV = new ABMVenta();
                 while (sePuedePagar) {
-                    sePuedePagar = false;
                     while (itrVenta.hasNext()) {
                         String ventaId = itrVenta.next().getString("id");
                         aux = montoVentaNoAbonada(ventaId);
@@ -105,21 +102,19 @@ public class RealizarPagoVentaControlador implements ActionListener {
                         }
                     }
                     if (sePuedePagar) {
+                        abrirBase();
                         entrega = entrega.subtract(montoVentaAPagar);
-                        Base.openTransaction();
+                        ambV.pagar(ventaAPagar, montoVentaAPagar);
                         ventaAPagar.set("pago_id", pagoId);
                         ventaAPagar.saveIt();
-                        Base.commitTransaction();
                         itrVenta = cargarDeuda(clienteId).iterator();
                         montoVentaAPagar = new BigDecimal(0);
                         aux = null;
                         ventaAPagar = null;
                     }
                 }
-                Base.openTransaction();
                 cli.set("cuenta", entrega);
                 cli.saveIt();
-                Base.commitTransaction();
                 JOptionPane.showMessageDialog(apgui, "¡Cobro registrado exitosamente!");
                 cerrarBase();
             }
