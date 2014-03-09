@@ -90,6 +90,7 @@ public class RealizarPagoVentaControlador implements ActionListener {
                 BigDecimal aux;
                 ABMVenta ambV = new ABMVenta();
                 while (sePuedePagar) {
+                    sePuedePagar = false;
                     while (itrVenta.hasNext()) {
                         String ventaId = itrVenta.next().getString("id");
                         aux = montoVentaNoAbonada(ventaId);
