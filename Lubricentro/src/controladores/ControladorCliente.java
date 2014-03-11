@@ -144,9 +144,9 @@ public class ControladorCliente implements ActionListener {
                         cols[2] = producto.get("codigo");
                         cols[3] = producto.get("descripcion");
                         cols[4] = precio;
-                        String porcentajeS = BigDecimal.valueOf(producto.getFloat("precio_venta")).multiply(iva).divide(cien).setScale(2, RoundingMode.CEILING).toString();
+                        String porcentajeS = precio.multiply(iva).divide(cien).setScale(2, RoundingMode.CEILING).toString();
                         porcentaje = new BigDecimal(porcentajeS);
-                        cols[5] = producto.getBigDecimal("precio_venta").subtract(porcentaje);
+                        cols[5] = precioSinIva.subtract(porcentaje);
                         cols[6] = precio.multiply(cantidad).setScale(2, RoundingMode.CEILING);
                         ventaGui.getTablaFacturaDefault().addRow(cols);
                     }
@@ -354,10 +354,10 @@ public class ControladorCliente implements ActionListener {
         BigDecimal total = new BigDecimal(0);
         for (int i = 0; i < ventaGui.getTablaFactura().getRowCount(); i++) {
             importe = ((BigDecimal) ventaGui.getTablaFactura().getValueAt(i, 1)).multiply((BigDecimal) ventaGui.getTablaFactura().getValueAt(i, 4)).setScale(2, RoundingMode.CEILING);
-            ventaGui.getTablaFactura().setValueAt(importe, i, 4);
+            ventaGui.getTablaFactura().setValueAt(importe, i, 6);
         }
         for (int i = 0; i < ventaGui.getTablaFactura().getRowCount(); i++) {
-            total = total.add((BigDecimal) ventaGui.getTablaFactura().getValueAt(i, 4)).setScale(2, RoundingMode.CEILING);;
+            total = total.add((BigDecimal) ventaGui.getTablaFactura().getValueAt(i, 6)).setScale(2, RoundingMode.CEILING);;
         }
         ventaGui.getTotalFactura().setText(total.toString());
     }
