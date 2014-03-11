@@ -330,12 +330,11 @@ public class ControladorCliente implements ActionListener {
                     Calendar c = Calendar.getInstance();
                     c.setTime(new Date());
                     String d = c.get(Calendar.YEAR) + "-" + c.get(Calendar.MONTH) + "-" + c.get(Calendar.DATE);
-                    Pago pago = new Pago();
-                    pago.set("fecha", d);
-                    pago.set("monto", monto);
-                    pago.set("cliente_id", idCliente2);
+                    Base.openTransaction();
+                    Pago pago = Pago.createIt("fecha", d,"monto", monto,"cliente_id", idCliente2);
+                    Base.commitTransaction();
                     pago.saveIt();
-                    String pagoId = Pago.findFirst("fecha = ? and monto = ? and cliente_id = ?", d, monto, idCliente2).getString("id");
+                    String pagoId = pago.getString("id");//Pago.findFirst("fecha = ? and monto = ? and cliente_id = ?", d, monto, idCliente2).getString("id");
                     v.set("pago_id", pagoId);
                     v.saveIt();
                     JOptionPane.showMessageDialog(clienteGui, "¡Cobro registrado exitosamente!");
@@ -471,18 +470,23 @@ public class ControladorCliente implements ActionListener {
             } else {
                 BigDecimal montox = null;
                 BigDecimal cuenta;
+                System.out.println(v.getString("id") + " " + v.getDate("fecha").toString() + " " + v.getBoolean("pago"));
                 Iterator<ArticulosVentas> itr2 = busqueda.filtroVendidos(v.getString("id")).iterator();
                 while (itr2.hasNext()) {
                     ArticulosVentas arvs = itr2.next();
+                    System.out.println(arvs.getInteger("articulo_id"));
                     Articulo art = Articulo.findById(arvs.getInteger("articulo_id"));
-                    cuenta = (art.getBigDecimal("precio_venta")).multiply(arvs.getBigDecimal("cantidad")).setScale(2, RoundingMode.CEILING);
-                    if (montox == null) {
-                        montox = new BigDecimal(String.valueOf((cuenta).setScale(2, RoundingMode.CEILING)));
-                    } else {
-                        montox = new BigDecimal(String.valueOf(montox.add(cuenta).setScale(2, RoundingMode.CEILING)));
+                    if (art != null) {
+                        System.out.println(art == null);
+                        cuenta = (art.getBigDecimal("precio_venta")).multiply(arvs.getBigDecimal("cantidad")).setScale(2, RoundingMode.CEILING);
+                        if (montox == null) {
+                            montox = new BigDecimal(String.valueOf((cuenta).setScale(2, RoundingMode.CEILING)));
+                        } else {
+                            montox = new BigDecimal(String.valueOf(montox.add(cuenta).setScale(2, RoundingMode.CEILING)));
+                        }
                     }
                 }
-                montox.setScale(2, RoundingMode.CEILING);     
+                montox.setScale(2, RoundingMode.CEILING);
                 row[2] = montox.toString();
                 row[3] = "No";
             }

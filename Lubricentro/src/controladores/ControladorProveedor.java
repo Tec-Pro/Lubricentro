@@ -14,6 +14,8 @@ import interfaz.ProveedorGui;
 import interfaz.RealizarPagoGui;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
@@ -65,6 +67,7 @@ public class ControladorProveedor implements ActionListener {
     private DecimalFormat formateador = new DecimalFormat("############.##");
 
     public ControladorProveedor(ProveedorGui proveedorGui, AplicacionGui aplicacionGui, ArticuloGui articuloGui, CompraGui compraGui) throws JRException, ClassNotFoundException, SQLException {
+        formateador.getDecimalFormatSymbols().setDecimalSeparator('.');
         this.aplicacionGui = aplicacionGui;
         this.articuloGui = articuloGui;
         this.compraGui = compraGui;
@@ -176,21 +179,21 @@ public class ControladorProveedor implements ActionListener {
                 if (art != null) {
                     Integer numeroProducto = art.getInteger("id");
                     String codigo = art.getString("codigo");
-                    Float precio = prodCom.getFloat("precio_final");
-                    Float cantidad = prodCom.getFloat("cantidad");
+                    BigDecimal precio = prodCom.getBigDecimal("precio_final").setScale(2, RoundingMode.CEILING);
+                    BigDecimal cantidad = prodCom.getBigDecimal("cantidad").setScale(2, RoundingMode.CEILING);
                     Object cols[] = new Object[5];
                     cols[0] = numeroProducto;
                     cols[1] = cantidad;
                     cols[2] = codigo;
-                    cols[3] = formateador.format(precio);
-                    cols[4] = formateador.format(precio * cantidad);
+                    cols[3] = precio;
+                    cols[4] = (precio.multiply(cantidad));
                     compraGui.getTablaCompraDefault().addRow(cols);
                 }
             }
-            compraGui.getTotalCompra().setText(String.valueOf(compra.getFloat("monto")));
+            compraGui.getTotalCompra().setText(String.valueOf(compra.getBigDecimal("monto").setScale(2, RoundingMode.CEILING)));
             compraGui.getDescuento().setVisible(true);
             compraGui.getLabelTotalConDes().setVisible(true);
-            compraGui.getDescuento().setText(new DecimalFormat("#########.##").format(compra.getFloat("monto") - (compra.getFloat("descuento") * compra.getFloat("monto") / 100))+" ("+compra.getString("descuento")+" %)");
+            compraGui.getDescuento().setText(compra.getBigDecimal("monto").subtract(compra.getBigDecimal("descuento").multiply(compra.getBigDecimal("monto").divide(new BigDecimal(100)))).setScale(2, RoundingMode.CEILING)+" ("+compra.getString("descuento")+" %)");
             Base.close();
             compraGui.setVisible(true);
             compraGui.toFront();
@@ -242,7 +245,7 @@ public class ControladorProveedor implements ActionListener {
                 row[0] = art.getString("codigo");
                 row[1] = art.getString("descripcion");
                 row[2] = art.getString("marca");
-                row[3] = formateador.format("precio_compra");
+                row[3] = formateador.format("precio_compra").replaceAll(",", ".");
                 tablaArtProvDefault.addRow(row);
             }
             cargarPagos();
@@ -417,7 +420,7 @@ public class ControladorProveedor implements ActionListener {
                 proveedorGui.getCuenta().setEnabled(true);
             } else {
                 proveedorGui.getCuenta().setEnabled(false);
-                proveedorGui.getCuenta().setText(proveedor.getString("cuenta_corriente"));
+                proveedorGui.getCuenta().setText(String.valueOf(proveedor.getBigDecimal("cuenta_corriente").setScale(2, RoundingMode.CEILING)));
 
             }
         }
@@ -468,8 +471,8 @@ public class ControladorProveedor implements ActionListener {
         }
         try {
             String cuenta = TratamientoString.eliminarTildes(proveedorGui.getCuenta().getText());
-            Float cuentaFloat = Float.valueOf(cuenta);
-            prov.set("cuenta_corriente", formateador.format(cuentaFloat));
+            BigDecimal cuentaBig = BigDecimal.valueOf(Double.valueOf(cuenta));
+            prov.set("cuenta_corriente",cuentaBig.setScale(2, RoundingMode.CEILING));
         } catch (ClassCastException e) {
             ret = false;
             JOptionPane.showMessageDialog(proveedorGui, "Error en la cuenta ", "Error!", JOptionPane.ERROR_MESSAGE);
@@ -489,7 +492,7 @@ public class ControladorProveedor implements ActionListener {
             Date sqlFecha = pago.getDate("fecha");
             SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd/MM/yyyy");
             row[0] = sdf.format(sqlFecha);
-            row[1] = formateador.format(pago.getFloat("monto"));
+            row[1] = pago.getBigDecimal("monto").setScale(2, RoundingMode.CEILING).toString();
             tablaPagosDefault.addRow(row);
         }
                     cerrarBase();
@@ -508,9 +511,9 @@ public class ControladorProveedor implements ActionListener {
             SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd/MM/yyyy");
             row[0] = compra.getId();
             row[1] = sdf.format(sqlFecha);
-            row[2] = formateador.format(compra.getFloat("monto"));
+            row[2] =(compra.getBigDecimal("monto").setScale(2, RoundingMode.CEILING)).toString();
             row[3] = compra.getBoolean("pago");
-            row[4]= new DecimalFormat("#########.##").format(compra.getFloat("monto") - (compra.getFloat("descuento") * compra.getFloat("monto") / 100));
+            row[4]= compra.getBigDecimal("monto").subtract(compra.getBigDecimal("descuento").multiply(compra.getBigDecimal("monto").divide(new BigDecimal(100)))).setScale(2, RoundingMode.CEILING).toString();
             row[5]= compra.get("fecha_pago");
             tablaComprasDefault.addRow(row);
         }
