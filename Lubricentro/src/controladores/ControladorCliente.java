@@ -349,15 +349,15 @@ public class ControladorCliente implements ActionListener {
         }
     }
 
-    private void actualizarPrecio() {
+     public void actualizarPrecio() {
         BigDecimal importe;
         BigDecimal total = new BigDecimal(0);
-        for (int i = 0; i < ventaGui.getTablaFactura().getRowCount(); i++) {
-            importe = ((BigDecimal) ventaGui.getTablaFactura().getValueAt(i, 1)).multiply((BigDecimal) ventaGui.getTablaFactura().getValueAt(i, 4)).setScale(2, RoundingMode.CEILING);
-            ventaGui.getTablaFactura().setValueAt(importe, i, 4);
+        for (int i = 0; i < tablafac.getRowCount(); i++) {
+            importe = ((BigDecimal) tablafac.getValueAt(i, 1)).multiply((BigDecimal) ventaGui.getTablaFactura().getValueAt(i, 4)).setScale(2, RoundingMode.CEILING);
+            tablafac.setValueAt(importe, i, 6);
         }
-        for (int i = 0; i < ventaGui.getTablaFactura().getRowCount(); i++) {
-            total = total.add((BigDecimal) ventaGui.getTablaFactura().getValueAt(i, 4)).setScale(2, RoundingMode.CEILING);;
+        for (int i = 0; i < tablafac.getRowCount(); i++) {
+            total = total.add((BigDecimal) tablafac.getValueAt(i, 6)).setScale(2, RoundingMode.CEILING);;
         }
         ventaGui.getTotalFactura().setText(total.toString());
     }
