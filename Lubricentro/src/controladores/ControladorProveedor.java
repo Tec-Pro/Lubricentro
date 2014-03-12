@@ -181,12 +181,13 @@ public class ControladorProveedor implements ActionListener {
                     String codigo = art.getString("codigo");
                     BigDecimal precio = prodCom.getBigDecimal("precio_final").setScale(2, RoundingMode.CEILING);
                     BigDecimal cantidad = prodCom.getBigDecimal("cantidad").setScale(2, RoundingMode.CEILING);
-                    Object cols[] = new Object[5];
+                    Object cols[] = new Object[6];
                     cols[0] = numeroProducto;
                     cols[1] = cantidad;
                     cols[2] = codigo;
-                    cols[3] = precio;
-                    cols[4] = (precio.multiply(cantidad));
+                    cols[3]=    art.getString("descripcion");
+                    cols[4] = precio;
+                    cols[5] = (precio.multiply(cantidad)).setScale(2, RoundingMode.CEILING);
                     compraGui.getTablaCompraDefault().addRow(cols);
                 }
             }

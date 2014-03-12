@@ -58,7 +58,7 @@ where v.id=$P{numFactura};]]>
 				<textElement textAlignment="Center">
 					<font size="17" isBold="true"/>
 				</textElement>
-				<text><![CDATA[COMPROBANTE DE COMPRA]]></text>
+				<text><![CDATA[PRESUPUESTO]]></text>
 			</staticText>
 			<rectangle>
 				<reportElement x="9" y="56" width="259" height="53" backcolor="#CCCCCC" uuid="a7f7f78b-7db1-4acf-b126-fa7f900dbb78"/>
