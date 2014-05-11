@@ -43,8 +43,7 @@ import org.javalite.activejdbc.Base;
  */
 public class ControladorVenta implements ActionListener, CellEditorListener {
 
-    private static BigDecimal iva = new BigDecimal("21");
-    private static BigDecimal cien = new BigDecimal("100");
+    private static BigDecimal iva = new BigDecimal("1.21").setScale(2, RoundingMode.CEILING);
     private JTextField textan;
     private JTextField textFram;
     private JTextField textcodprod;
@@ -141,9 +140,7 @@ public class ControladorVenta implements ActionListener, CellEditorListener {
                     cols[2] = p.get("codigo");
                     cols[3] = p.get("descripcion");
                     cols[4] = BigDecimal.valueOf(p.getFloat("precio_venta")).setScale(2, RoundingMode.CEILING);
-                    String porcentajeS = BigDecimal.valueOf(p.getFloat("precio_venta")).multiply(iva).divide(cien).setScale(2, RoundingMode.CEILING).toString();
-                    porcentaje = new BigDecimal(porcentajeS);
-                    cols[5] = p.getBigDecimal("precio_venta").subtract(porcentaje);
+                    cols[5] = p.getBigDecimal("precio_venta").divide(iva, 2, RoundingMode.CEILING);
                     cols[6] = BigDecimal.valueOf(p.getFloat("precio_venta")).setScale(2, RoundingMode.CEILING);
                     if (Base.hasConnection()) {
                         Base.close();
